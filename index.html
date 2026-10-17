@@ -18,26 +18,24 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            /* Full-screen vibrant cathedral stained glass backdrop */
+            /* Uses your uploaded background image saved as background.jpg */
             background: 
-                linear-gradient(rgba(10, 15, 30, 0.45), rgba(10, 15, 30, 0.65)),
-                url('https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+                url('background.jpg') center/cover no-repeat fixed;
+            background-color: #0d1117;
             color: #f8fafc;
         }
 
-        /* Frosted Glassmorphism Card */
         .card {
-            background: rgba(15, 23, 42, 0.55);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 28px;
             padding: 36px 28px;
             max-width: 440px;
             width: 100%;
-            box-shadow: 
-                0 30px 60px rgba(0, 0, 0, 0.7),
-                inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
             text-align: center;
         }
 
@@ -48,7 +46,6 @@
             color: #7dd3fc;
             font-weight: 700;
             margin-bottom: 24px;
-            text-shadow: 0 0 12px rgba(125, 211, 252, 0.6);
         }
 
         .bg-votd-text {
@@ -57,7 +54,7 @@
             color: #ffffff;
             margin-bottom: 16px;
             font-style: italic;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         .bg-votd-title {
@@ -68,17 +65,6 @@
             text-shadow: 0 0 10px rgba(253, 224, 71, 0.5);
         }
 
-        .bg-votd-copyright {
-            font-size: 0.7rem;
-            color: #cbd5e1;
-            margin-top: 15px;
-        }
-
-        .bg-votd-copyright a {
-            color: #cbd5e1;
-            text-decoration: none;
-        }
-
         .section-divider {
             margin: 24px 0;
             border: 0;
@@ -86,7 +72,6 @@
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
         }
 
-        /* Action Buttons */
         .btn {
             display: inline-block;
             width: 100%;
@@ -96,8 +81,8 @@
             text-decoration: none;
             cursor: pointer;
             border: none;
-            transition: all 0.2s ease;
             font-size: 0.95rem;
+            transition: background 0.2s;
         }
 
         .btn-primary {
@@ -105,22 +90,12 @@
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.4);
             margin-bottom: 12px;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-            background: rgba(255, 255, 255, 0.35);
         }
 
         .btn-music {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.5), rgba(59, 130, 246, 0.5));
+            background: rgba(56, 189, 248, 0.25);
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-        }
-
-        .btn-music:active {
-            transform: scale(0.98);
+            border: 1px solid rgba(56, 189, 248, 0.5);
         }
 
         .audio-controls {
@@ -130,11 +105,6 @@
             align-items: center;
             justify-content: center;
         }
-
-        .audio-controls input[type=range] {
-            accent-color: #fde047;
-            width: 120px;
-        }
     </style>
 </head>
 <body>
@@ -142,16 +112,17 @@
     <div class="card">
         <div class="tag">✦ Verse of the Day ✦</div>
 
-        <div id="votd-box">Loading today's verse...</div>
+        <div id="votd-box">
+            <div class="bg-votd-text">"Trust in the LORD with all your heart and lean not on your own understanding."</div>
+            <div class="bg-votd-title">— Proverbs 3:5</div>
+        </div>
 
         <hr class="section-divider">
 
-        <!-- Direct Audio Bible Link -->
-        <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Gen.1" target="_blank" class="btn btn-primary">
+        <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Prov.3" target="_blank" class="btn btn-primary">
             🔊 Listen to Audio Scripture
         </a>
 
-        <!-- Ambient Background Music Player -->
         <button id="music-btn" class="btn btn-music" onclick="toggleMusic()">
             🎵 Play Ambient Music
         </button>
@@ -162,31 +133,49 @@
         </div>
 
         <audio id="bg-music" loop preload="auto">
-            <source src="https://www.fesliyanstudios.com/musicfiles/2019-06-25_-_Heaven_-_David_Fesliyan.mp3" type="audio/mpeg">
+            <source src="music.mp3" type="audio/mpeg">
         </audio>
     </div>
 
     <script>
-        // Daily Verse Callback Handler
         function votdCallback(votd) {
-            var verseText = votd.text || votd.content || "Trust in the LORD with all your heart and lean not on your own understanding.";
-            var verseRef = votd.reference || votd.display_ref || "Proverbs 3:5";
-            var copyright = votd.copyright || "";
+            var verseText = votd.text || votd.content;
+            var verseRef = votd.reference || votd.display_ref;
 
-            document.getElementById('votd-box').innerHTML = 
-                '<div class="bg-votd-text">' + verseText + '</div>' +
-                '<div class="bg-votd-title">— ' + verseRef + '</div>' +
-                (copyright ? '<div class="bg-votd-copyright">' + copyright + '</div>' : '');
+            if (verseText && verseRef) {
+                document.getElementById('votd-box').innerHTML = 
+                    '<div class="bg-votd-text">' + verseText + '</div>' +
+                    '<div class="bg-votd-title">— ' + verseRef + '</div>';
 
-            if (votd.reference) {
-                var cleanRef = encodeURIComponent(votd.reference);
-                document.getElementById('audio-link').href = "https://www.biblegateway.com/audio/mclean/niv/" + cleanRef;
+                var cleanRef = encodeURIComponent(verseRef);
+                document.getElementById('audio-link').href = "https://www.biblegateway.com/passage/?search=" + cleanRef + "&version=NIV";
             }
         }
 
-        // Background Music Logic
         var music = document.getElementById("bg-music");
         var musicBtn = document.getElementById("music-btn");
         var controls = document.getElementById("audio-controls");
 
-        function toggle
+        function toggleMusic() {
+            if (music.paused) {
+                music.play().then(function() {
+                    musicBtn.innerText = "⏸ Pause Ambient Music";
+                    controls.style.display = "flex";
+                }).catch(function(e) {
+                    alert("Please upload music.mp3 to your repository root folder to enable background audio.");
+                });
+            } else {
+                music.pause();
+                musicBtn.innerText = "🎵 Play Ambient Music";
+                controls.style.display = "none";
+            }
+        }
+
+        function adjustVolume(val) {
+            music.volume = val;
+        }
+    </script>
+    <script src="https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=votdCallback"></script>
+
+</body>
+</html>
