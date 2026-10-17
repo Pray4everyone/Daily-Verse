@@ -7,7 +7,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Cormorant+Garamond:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -22,154 +22,177 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 24px;
+            padding: 80px 20px 40px 20px;
             background-color: #0f172a;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            color: #000000;
+            color: #ffffff;
             position: relative;
-            transition: background-image 0.5s ease-in-out;
+            transition: background-image 0.6s ease-in-out;
+            overflow-x: hidden;
         }
 
-        /* Top Right Control Bar */
-        .top-controls {
+        /* Top Horizontal Glass Navbar */
+        .top-navbar {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 10px;
-            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            z-index: 1000;
+            max-width: 95vw;
+            flex-wrap: wrap;
         }
 
-        /* Compact Top-Right Buttons */
-        .btn-compact {
+        .btn-nav {
             font-family: 'Cinzel', serif;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: 30px;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 20px;
             font-weight: 700;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
+            font-size: 0.7rem;
+            letter-spacing: 0.8px;
             text-decoration: none;
             cursor: pointer;
-            border: 1px solid rgba(0, 0, 0, 0.3);
-            background: rgba(255, 255, 255, 0.85);
-            color: #000000;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            color: #f8fafc;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
-        .btn-compact:hover, .btn-compact:active {
-            background: rgba(255, 255, 255, 0.98);
-            transform: scale(1.03);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+        .btn-nav:hover, .btn-nav:active {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+            color: #ffffff;
         }
 
-        /* Center Main Container - No Box */
-        .verse-container {
-            max-width: 850px;
+        /* Frosted Dark Glass Card Container */
+        .verse-card {
+            max-width: 820px;
             width: 100%;
             text-align: center;
-            padding: 20px;
+            padding: 48px 36px;
             margin: auto;
+            background: rgba(15, 23, 42, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         /* Header Accent Label */
         .tag {
             font-family: 'Cinzel', serif;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            font-size: 0.9rem;
-            color: #000000;
+            letter-spacing: 3px;
+            font-size: 0.85rem;
+            color: #fef08a;
             font-weight: 800;
             margin-bottom: 24px;
-            text-shadow: 
-                0 0 12px rgba(255, 255, 255, 0.9),
-                0 0 20px rgba(255, 255, 255, 0.7);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        /* Extra Large Bold Black Verse Text */
+        /* Large Ivory Verse Text */
         .bg-votd-text {
-            font-size: 2.8rem;
-            line-height: 1.4;
-            color: #000000;
-            margin-bottom: 24px;
+            font-size: 2.5rem;
+            line-height: 1.45;
+            color: #fffbeb;
+            margin-bottom: 28px;
             font-style: italic;
-            font-weight: 700;
-            text-shadow: 
-                0 0 15px rgba(255, 255, 255, 0.95),
-                0 0 30px rgba(255, 255, 255, 0.8),
-                2px 2px 4px rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
         }
 
-        /* Extra Large Bold Reference */
+        /* Large Ivory Reference Title */
         .bg-votd-title {
             font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #000000;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #fef3c7;
             letter-spacing: 2px;
-            text-shadow: 
-                0 0 12px rgba(255, 255, 255, 0.95),
-                0 0 25px rgba(255, 255, 255, 0.8);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 650px) {
+            body {
+                padding-top: 100px;
+            }
+            .verse-card {
+                padding: 32px 20px;
+            }
             .bg-votd-text {
-                font-size: 2.0rem;
+                font-size: 1.85rem;
             }
             .bg-votd-title {
-                font-size: 1.4rem;
+                font-size: 1.25rem;
             }
-            .top-controls {
-                top: 12px;
-                right: 12px;
+            .top-navbar {
+                top: 10px;
+                padding: 4px 8px;
+                gap: 4px;
+            }
+            .btn-nav {
+                font-size: 0.62rem;
+                padding: 5px 9px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Small Control Buttons Pinned Top-Right -->
-    <div class="top-controls">
-        <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Prov.3" target="_blank" class="btn-compact">
+    <!-- Top Navigation Bar -->
+    <nav class="top-navbar">
+        <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Prov.3" target="_blank" class="btn-nav">
             🔊 Scripture
         </a>
 
-        <button id="music-btn" class="btn-compact" onclick="toggleMusic()">
-            🎵 Music
+        <button id="music-btn" class="btn-nav" onclick="toggleMusic()">
+            ▶ Play
         </button>
 
-        <button class="btn-compact" onclick="changeSceneRandom()">
+        <button class="btn-nav" onclick="nextTrack()">
+            ⏭ Next Track
+        </button>
+
+        <button class="btn-nav" onclick="changeSceneRandom()">
             🔀 Scene
         </button>
 
-        <a href="https://localchurches.org/" target="_blank" rel="noopener noreferrer" class="btn-compact">
-            ⛪ Find Church
+        <a href="https://localchurches.org/" target="_blank" rel="noopener noreferrer" class="btn-nav">
+            ⛪ Find A Church Near You
         </a>
-    </div>
+    </nav>
 
-    <!-- Main Borderless Verse Display -->
-    <div class="verse-container">
-        <div class="tag">✦ Verse of the Day ✦</div>
+    <!-- Main Scripture Card -->
+    <main class="verse-card">
+        <div class="tag">✦ Scripture for Your Path ✦</div>
 
         <div id="votd-box">
             <div class="bg-votd-text">"Trust in the LORD with all your heart and lean not on your own understanding."</div>
             <div class="bg-votd-title">— Proverbs 3:5</div>
         </div>
-    </div>
+    </main>
 
     <audio id="bg-music" loop preload="auto"></audio>
 
     <script>
-        var TOTAL_ITEMS = 10; // Matches background1-10.jpg and music1-10.mp3
+        var TOTAL_ITEMS = 10;
         var currentIndex = 1;
         var music = document.getElementById("bg-music");
         var musicBtn = document.getElementById("music-btn");
@@ -204,7 +227,7 @@
 
             if (isMusicPlaying) {
                 music.play().catch(function(e) {
-                    console.log("Autoplay prevented or track missing.");
+                    console.log("Autoplay waiting for user action.");
                 });
             }
         }
@@ -218,7 +241,7 @@
 
             img.onload = function() {
                 document.body.style.backgroundImage = 
-                    "linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)), url('" + bgUrl + "')";
+                    "linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.35)), url('" + bgUrl + "')";
             };
 
             img.onerror = function() {
@@ -228,22 +251,50 @@
             img.src = bgUrl;
         }
 
-        setDailyScene();
-
         function toggleMusic() {
             if (music.paused) {
                 music.play().then(function() {
                     isMusicPlaying = true;
-                    musicBtn.innerHTML = "⏸ Music";
+                    musicBtn.innerHTML = "⏸ Pause";
                 }).catch(function(e) {
-                    alert("Ensure 'music" + currentIndex + ".mp3' is uploaded to your repository root folder.");
+                    alert("Please ensure 'music" + currentIndex + ".mp3' is uploaded to your main repository folder.");
                 });
             } else {
                 music.pause();
                 isMusicPlaying = false;
-                musicBtn.innerHTML = "🎵 Music";
+                musicBtn.innerHTML = "▶ Play";
             }
         }
+
+        function nextTrack() {
+            currentIndex = (currentIndex % TOTAL_ITEMS) + 1;
+            music.src = "music" + currentIndex + ".mp3";
+            music.load();
+            if (isMusicPlaying || music.paused) {
+                music.play().then(function() {
+                    isMusicPlaying = true;
+                    musicBtn.innerHTML = "⏸ Pause";
+                }).catch(function(e) {
+                    console.log("Track change requires user interaction.");
+                });
+            }
+        }
+
+        setDailyScene();
+
+        // Autoplay attempt on load
+        window.addEventListener('DOMContentLoaded', function() {
+            var playPromise = music.play();
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    isMusicPlaying = true;
+                    musicBtn.innerHTML = "⏸ Pause";
+                }).catch(function() {
+                    isMusicPlaying = false;
+                    musicBtn.innerHTML = "▶ Play";
+                });
+            }
+        });
 
         function votdCallback(votd) {
             var verseText = votd.text || votd.content;
