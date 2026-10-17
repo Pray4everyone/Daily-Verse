@@ -18,29 +18,25 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            /* Stained Glass Multi-Color Gradient Backdrop */
+            /* Full-screen vibrant cathedral stained glass backdrop */
             background: 
-                radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.6) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.6) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.6) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(234, 179, 8, 0.5) 0%, transparent 50%),
-                linear-gradient(135deg, #090d16, #111827);
-            background-attachment: fixed;
+                linear-gradient(rgba(10, 15, 30, 0.45), rgba(10, 15, 30, 0.65)),
+                url('https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
             color: #f8fafc;
         }
 
         /* Frosted Glassmorphism Card */
         .card {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 28px;
             padding: 36px 28px;
             max-width: 440px;
             width: 100%;
             box-shadow: 
-                0 30px 60px rgba(0, 0, 0, 0.6),
+                0 30px 60px rgba(0, 0, 0, 0.7),
                 inset 0 1px 1px rgba(255, 255, 255, 0.3);
             text-align: center;
         }
@@ -52,7 +48,7 @@
             color: #7dd3fc;
             font-weight: 700;
             margin-bottom: 24px;
-            text-shadow: 0 0 12px rgba(125, 211, 252, 0.5);
+            text-shadow: 0 0 12px rgba(125, 211, 252, 0.6);
         }
 
         .bg-votd-text {
@@ -61,7 +57,7 @@
             color: #ffffff;
             margin-bottom: 16px;
             font-style: italic;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
         }
 
         .bg-votd-title {
@@ -69,17 +65,17 @@
             font-weight: 700;
             color: #fde047;
             margin-bottom: 24px;
-            text-shadow: 0 0 10px rgba(253, 224, 71, 0.4);
+            text-shadow: 0 0 10px rgba(253, 224, 71, 0.5);
         }
 
         .bg-votd-copyright {
             font-size: 0.7rem;
-            color: #94a3b8;
+            color: #cbd5e1;
             margin-top: 15px;
         }
 
         .bg-votd-copyright a {
-            color: #94a3b8;
+            color: #cbd5e1;
             text-decoration: none;
         }
 
@@ -87,7 +83,7 @@
             margin: 24px 0;
             border: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
         }
 
         /* Action Buttons */
@@ -105,7 +101,7 @@
         }
 
         .btn-primary {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.2);
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.4);
             margin-bottom: 12px;
@@ -118,9 +114,9 @@
         }
 
         .btn-music {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.4), rgba(59, 130, 246, 0.4));
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.5), rgba(59, 130, 246, 0.5));
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.35);
         }
 
         .btn-music:active {
@@ -128,7 +124,7 @@
         }
 
         .audio-controls {
-            margin-top: 10px;
+            margin-top: 14px;
             display: none;
             gap: 10px;
             align-items: center;
@@ -137,7 +133,7 @@
 
         .audio-controls input[type=range] {
             accent-color: #fde047;
-            width: 100px;
+            width: 120px;
         }
     </style>
 </head>
@@ -161,7 +157,7 @@
         </button>
 
         <div id="audio-controls" class="audio-controls">
-            <span style="font-size: 0.8rem; color: #cbd5e1;">Vol:</span>
+            <span style="font-size: 0.8rem; color: #cbd5e1;">Volume:</span>
             <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.5" onchange="adjustVolume(this.value)">
         </div>
 
@@ -193,23 +189,4 @@
         var musicBtn = document.getElementById("music-btn");
         var controls = document.getElementById("audio-controls");
 
-        function toggleMusic() {
-            if (music.paused) {
-                music.play();
-                musicBtn.innerText = "⏸ Pause Ambient Music";
-                controls.style.display = "flex";
-            } else {
-                music.pause();
-                musicBtn.innerText = "🎵 Play Ambient Music";
-                controls.style.display = "none";
-            }
-        }
-
-        function adjustVolume(val) {
-            music.volume = val;
-        }
-    </script>
-    <script src="https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=votdCallback"></script>
-
-</body>
-</html>
+        function toggle
