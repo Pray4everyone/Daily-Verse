@@ -147,7 +147,7 @@
             🎵 Music
         </button>
 
-        <button class="btn-compact" onclick="changeBackgroundRandom()">
+        <button class="btn-compact" onclick="changeSceneRandom()">
             🔀 Scene
         </button>
     </div>
@@ -162,33 +162,51 @@
         </div>
     </div>
 
-    <audio id="bg-music" loop preload="auto">
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bg-music" loop preload="auto"></audio>
 
     <script>
-        var TOTAL_BACKGROUNDS = 10;
-        var currentBgIndex = 1;
+        var TOTAL_ITEMS = 10; // Matches background1-10.jpg and music1-10.mp3
+        var currentIndex = 1;
+        var music = document.getElementById("bg-music");
+        var musicBtn = document.getElementById("music-btn");
+        var isMusicPlaying = false;
 
-        function setDailyBackground() {
+        // Automatically set background and matching music track based on day of year
+        function setDailyScene() {
             var now = new Date();
             var start = new Date(now.getFullYear(), 0, 0);
             var diff = now - start;
             var oneDay = 1000 * 60 * 60 * 24;
             var dayOfYear = Math.floor(diff / oneDay);
 
-            currentBgIndex = (dayOfYear % TOTAL_BACKGROUNDS) + 1;
-            tryLoadingImage(currentBgIndex, 0);
+            currentIndex = (dayOfYear % TOTAL_ITEMS) + 1;
+            applyScene(currentIndex);
         }
 
-        function changeBackgroundRandom() {
+        // Randomize both background and music track together
+        function changeSceneRandom() {
             var newIndex;
             do {
-                newIndex = Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1;
-            } while (newIndex === currentBgIndex && TOTAL_BACKGROUNDS > 1);
+                newIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
+            } while (newIndex === currentIndex && TOTAL_ITEMS > 1);
 
-            currentBgIndex = newIndex;
-            tryLoadingImage(currentBgIndex, 0);
+            currentIndex = newIndex;
+            applyScene(currentIndex);
+        }
+
+        // Apply image and update audio source
+        function applyScene(index) {
+            tryLoadingImage(index, 0);
+            
+            // Update music source to match the corresponding track number (music1.mp3, music2.mp3, etc.)
+            music.src = "music" + index + ".mp3";
+            music.load();
+
+            if (isMusicPlaying) {
+                music.play().catch(function(e) {
+                    console.log("Autoplay prevented or track missing.");
+                });
+            }
         }
 
         function tryLoadingImage(index, extIndex) {
@@ -210,7 +228,22 @@
             img.src = bgUrl;
         }
 
-        setDailyBackground();
+        setDailyScene();
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play().then(function() {
+                    isMusicPlaying = true;
+                    musicBtn.innerHTML = "⏸ Music";
+                }).catch(function(e) {
+                    alert("Ensure 'music" + currentIndex + ".mp3' is uploaded to your repository root folder.");
+                });
+            } else {
+                music.pause();
+                isMusicPlaying = false;
+                musicBtn.innerHTML = "🎵 Music";
+            }
+        }
 
         function votdCallback(votd) {
             var verseText = votd.text || votd.content;
@@ -223,22 +256,6 @@
 
                 var cleanRef = encodeURIComponent(verseRef);
                 document.getElementById('audio-link').href = "https://www.biblegateway.com/passage/?search=" + cleanRef + "&version=NIV";
-            }
-        }
-
-        var music = document.getElementById("bg-music");
-        var musicBtn = document.getElementById("music-btn");
-
-        function toggleMusic() {
-            if (music.paused) {
-                music.play().then(function() {
-                    musicBtn.innerHTML = "⏸ Music";
-                }).catch(function(e) {
-                    alert("Ensure 'music.mp3' is uploaded to your main repository folder.");
-                });
-            } else {
-                music.pause();
-                musicBtn.innerHTML = "🎵 Music";
             }
         }
     </script>
