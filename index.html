@@ -100,7 +100,7 @@
             position: absolute;
             top: 42px;
             right: 0;
-            width: 220px;
+            width: 230px;
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -336,8 +336,14 @@
             <button class="dropdown-item" onclick="changeSceneRandom()">
                 🔀 Shuffle Scene
             </button>
+            <button class="dropdown-item" onclick="saveCurrentVerse()">
+                ⭐ Save to Favorites
+            </button>
+            <button class="dropdown-item" onclick="shareCurrentVerse()">
+                🔗 Share Verse
+            </button>
             <button class="dropdown-item" onclick="openSavedVerses()">
-                ⭐ Favorite Verses
+                📖 View Favorites
             </button>
             <button class="dropdown-item" onclick="openMilestones()">
                 🏆 Streak Badges
@@ -363,11 +369,11 @@
     <div id="saved-modal" class="modal-overlay" onclick="closeModals(event)">
         <div class="modal-card">
             <div class="modal-header">
-                <span>⭐ Favorite Verses</span>
+                <span>📖 Favorite Verses</span>
                 <button class="close-modal" onclick="closeModals()">✕</button>
             </div>
             <div id="saved-verses-list" style="font-size: 0.95rem; line-height: 1.5; color: #fffbeb;">
-                <p style="opacity: 0.7;">No saved verses yet. Click the star icon on any daily verse to save it here!</p>
+                <p style="opacity: 0.7;">No saved verses yet. Click the star icon or menu option to save daily verses here!</p>
             </div>
         </div>
     </div>
@@ -520,13 +526,35 @@
             });
         }
 
+        // --- SHARE & COPY VERSE ---
+        function shareCurrentVerse() {
+            var text = document.getElementById("verse-text").innerText;
+            var ref = document.getElementById("verse-ref").innerText;
+            var shareText = text + " " + ref + " (Shared via Daily Scripture)";
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Daily Scripture',
+                    text: shareText,
+                    url: window.location.href
+                }).catch(function(err) {
+                    console.log("Share canceled or failed", err);
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(function() {
+                    alert("Verse copied to clipboard! You can now paste and share it anywhere.");
+                }).catch(function() {
+                    alert("Unable to copy text automatically.");
+                });
+            }
+        }
+
         // --- FAVORITE VERSES & BOOKMARKS ---
         function saveCurrentVerse() {
             var text = document.getElementById("verse-text").innerText;
             var ref = document.getElementById("verse-ref").innerText;
             var saved = JSON.parse(localStorage.getItem("favorite_verses") || "[]");
 
-            // Avoid duplicate saves
             var exists = saved.some(function(v) { return v.ref === ref; });
             if (!exists) {
                 saved.push({ text: text, ref: ref });
@@ -542,7 +570,7 @@
             var container = document.getElementById("saved-verses-list");
             
             if (saved.length === 0) {
-                container.innerHTML = '<p style="opacity: 0.7;">No saved verses yet. Click the star icon on any daily verse to save it here!</p>';
+                container.innerHTML = '<p style="opacity: 0.7;">No saved verses yet. Click the star icon or menu option to save daily verses here!</p>';
             } else {
                 var html = "";
                 saved.forEach(function(item) {
