@@ -561,4 +561,77 @@
                 localStorage.setItem("favorite_verses", JSON.stringify(saved));
                 alert("Verse saved to your favorites!");
             } else {
-                alert("
+                alert("This verse is already in your favorites.");
+            }
+        }
+
+        function openSavedVerses() {
+            var saved = JSON.parse(localStorage.getItem("favorite_verses") || "[]");
+            var container = document.getElementById("saved-verses-list");
+            
+            if (saved.length === 0) {
+                container.innerHTML = '<p style="opacity: 0.7;">No saved verses yet. Click the star icon or menu option to save daily verses here!</p>';
+            } else {
+                var html = "";
+                saved.forEach(function(item) {
+                    html += '<div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);"><p style="font-style: italic; margin-bottom: 6px;">"' + item.text + '"</p><p style="font-family: Cinzel, serif; color: #fef08a; font-size: 0.85rem;">' + item.ref + '</p></div>';
+                });
+                container.innerHTML = html;
+            }
+            document.getElementById("saved-modal").style.display = "flex";
+        }
+
+        // --- MILESTONE BADGES ---
+        function openMilestones() {
+            var milestones = [
+                { days: 1, title: "🌱 First Step", desc: "Started your daily scripture journey." },
+                { days: 3, title: "🌿 Faithful 3", desc: "Maintained a 3-day reading streak." },
+                { days: 7, title: "🌳 Devoted Week", desc: "Completed a full 7-day streak!" },
+                { days: 14, title: "✨ Two Week Pillar", desc: "14 days walking in the Word." },
+                { days: 30, title: "👑 Monthly Disciple", desc: "An incredible 30-day streak milestone." },
+                { days: 90, title: "🕊️ Apostle", desc: "3 months of dedicated daily devotion." },
+                { days: 180, title: "⛪ Deacon", desc: "6 months serving steadfastly in faith." },
+                { days: 365, title: "⭐ Anointed", desc: "A full 365-day year of continuous devotion." }
+            ];
+
+            var container = document.getElementById("badge-container");
+            var html = "";
+
+            milestones.forEach(function(m) {
+                var unlocked = currentStreakCount >= m.days;
+                var cls = unlocked ? "badge-item unlocked" : "badge-item";
+                var status = unlocked ? "Unlocked ✓" : "Locked (" + (m.days - currentStreakCount) + " days left)";
+                html += '<div class="' + cls + '"><div><strong>' + m.title + '</strong><br><small style="opacity:0.8;">' + m.desc + '</small></div><div style="font-size:0.75rem; font-weight:bold;">' + status + '</div></div>';
+            });
+
+            container.innerHTML = html;
+            document.getElementById("milestone-modal").style.display = "flex";
+        }
+
+        function closeModals(e) {
+            if (!e || e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-modal')) {
+                document.getElementById("saved-modal").style.display = "none";
+                document.getElementById("milestone-modal").style.display = "none";
+            }
+        }
+
+        updateDailyStreak();
+        initRandomExperience();
+
+        function votdCallback(votd) {
+            var verseText = votd.text || votd.content;
+            var verseRef = votd.reference || votd.display_ref;
+
+            if (verseText && verseRef) {
+                document.getElementById('verse-text').innerText = verseText;
+                document.getElementById('verse-ref').innerText = "— " + verseRef;
+
+                var cleanRef = encodeURIComponent(verseRef);
+                document.getElementById('audio-link').href = "https://www.biblegateway.com/passage/?search=" + cleanRef + "&version=NIV";
+            }
+        }
+    </script>
+    <script src="https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=votdCallback"></script>
+
+</body>
+</html>
