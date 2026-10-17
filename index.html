@@ -202,7 +202,7 @@
         </a>
 
         <button id="music-btn" class="btn-nav" onclick="toggleMusic()">
-            ▶ Play
+            ⏸ Pause
         </button>
 
         <button class="btn-nav" onclick="nextTrack()">
@@ -235,7 +235,6 @@
         var currentIndex = 1;
         var music = document.getElementById("bg-music");
         var musicBtn = document.getElementById("music-btn");
-        var isMusicPlaying = false;
 
         // --- LOCAL STORAGE STREAK COUNTER LOGIC ---
         function updateDailyStreak() {
@@ -269,14 +268,9 @@
             document.getElementById("streak-display").innerText = "🔥 " + currentStreak + (currentStreak === 1 ? " Day Streak" : " Days Streak");
         }
 
-        function setDailyScene() {
-            var now = new Date();
-            var start = new Date(now.getFullYear(), 0, 0);
-            var diff = now - start;
-            var oneDay = 1000 * 60 * 60 * 24;
-            var dayOfYear = Math.floor(diff / oneDay);
-
-            currentIndex = (dayOfYear % TOTAL_ITEMS) + 1;
+        // Randomly initialize background scene and music on load
+        function initRandomScene() {
+            currentIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
             applyScene(currentIndex);
         }
 
@@ -296,9 +290,13 @@
             music.src = "music" + index + ".mp3";
             music.load();
 
-            if (isMusicPlaying) {
-                music.play().catch(function(e) {
-                    console.log("Autoplay waiting for user action.");
+            // Attempt autoplay on scene change
+            var playPromise = music.play();
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    musicBtn.innerHTML = "⏸ Pause";
+                }).catch(function(e) {
+                    musicBtn.innerHTML = "▶ Play";
                 });
             }
         }
@@ -325,47 +323,23 @@
         function toggleMusic() {
             if (music.paused) {
                 music.play().then(function() {
-                    isMusicPlaying = true;
                     musicBtn.innerHTML = "⏸ Pause";
                 }).catch(function(e) {
-                    alert("Please ensure 'music" + currentIndex + ".mp3' is uploaded to your main repository folder.");
+                    alert("Please ensure 'music" + currentIndex + ".mp3' is uploaded to your GitHub repository.");
                 });
             } else {
                 music.pause();
-                isMusicPlaying = false;
                 musicBtn.innerHTML = "▶ Play";
             }
         }
 
         function nextTrack() {
             currentIndex = (currentIndex % TOTAL_ITEMS) + 1;
-            music.src = "music" + currentIndex + ".mp3";
-            music.load();
-            if (isMusicPlaying || music.paused) {
-                music.play().then(function() {
-                    isMusicPlaying = true;
-                    musicBtn.innerHTML = "⏸ Pause";
-                }).catch(function(e) {
-                    console.log("Track change requires user interaction.");
-                });
-            }
+            applyScene(currentIndex);
         }
 
         updateDailyStreak();
-        setDailyScene();
-
-        window.addEventListener('DOMContentLoaded', function() {
-            var playPromise = music.play();
-            if (playPromise !== undefined) {
-                playPromise.then(function() {
-                    isMusicPlaying = true;
-                    musicBtn.innerHTML = "⏸ Pause";
-                }).catch(function() {
-                    isMusicPlaying = false;
-                    musicBtn.innerHTML = "▶ Play";
-                });
-            }
-        });
+        initRandomScene();
 
         function votdCallback(votd) {
             var verseText = votd.text || votd.content;
