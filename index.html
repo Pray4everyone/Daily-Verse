@@ -150,6 +150,10 @@
         <button class="btn-compact" onclick="changeSceneRandom()">
             🔀 Scene
         </button>
+
+        <a href="https://localchurches.org/" target="_blank" rel="noopener noreferrer" class="btn-compact">
+            ⛪ Find Church
+        </a>
     </div>
 
     <!-- Main Borderless Verse Display -->
@@ -171,7 +175,6 @@
         var musicBtn = document.getElementById("music-btn");
         var isMusicPlaying = false;
 
-        // Automatically set background and matching music track based on day of year
         function setDailyScene() {
             var now = new Date();
             var start = new Date(now.getFullYear(), 0, 0);
@@ -183,7 +186,6 @@
             applyScene(currentIndex);
         }
 
-        // Randomize both background and music track together
         function changeSceneRandom() {
             var newIndex;
             do {
@@ -194,11 +196,9 @@
             applyScene(currentIndex);
         }
 
-        // Apply image and update audio source
         function applyScene(index) {
             tryLoadingImage(index, 0);
             
-            // Update music source to match the corresponding track number (music1.mp3, music2.mp3, etc.)
             music.src = "music" + index + ".mp3";
             music.load();
 
