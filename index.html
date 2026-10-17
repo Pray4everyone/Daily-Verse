@@ -59,52 +59,86 @@
             color: #fef08a;
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
             white-space: nowrap;
+            cursor: pointer;
         }
 
-        /* Top Horizontal Glass Navbar */
-        .top-navbar {
+        /* Top Right Menu Container */
+        .top-menu-container {
             position: fixed;
             top: 16px;
             right: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 6px 12px;
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
             z-index: 1000;
-            max-width: calc(100vw - 120px);
-            flex-wrap: wrap;
         }
 
-        .btn-nav {
+        .menu-toggle-btn {
             font-family: 'Cinzel', serif;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
-            border-radius: 20px;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #f8fafc;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            transition: all 0.2s ease;
+        }
+
+        .menu-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Dropdown Content Box */
+        .dropdown-menu {
+            position: absolute;
+            top: 42px;
+            right: 0;
+            width: 220px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            padding: 8px;
+            gap: 4px;
+        }
+
+        .dropdown-menu.show {
+            display: flex;
+        }
+
+        .dropdown-item {
+            font-family: 'Cinzel', serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
             font-weight: 700;
             font-size: 0.7rem;
             letter-spacing: 0.8px;
             text-decoration: none;
             cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            background: transparent;
             color: #f8fafc;
-            transition: all 0.2s ease;
-            white-space: nowrap;
+            text-align: left;
+            transition: background 0.2s ease;
         }
 
-        .btn-nav:hover, .btn-nav:active {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-1px);
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.15);
             color: #ffffff;
         }
 
@@ -121,6 +155,31 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
             border-radius: 24px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        /* Bookmark Button on Card */
+        .bookmark-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #fef08a;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .bookmark-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
         }
 
         /* Header Accent Label */
@@ -156,6 +215,77 @@
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
         }
 
+        /* Modals for Saved Verses & Milestones */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            color: #f8fafc;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fef08a;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .badge-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .badge-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .badge-item.unlocked {
+            border-color: #fef08a;
+            background: rgba(254, 240, 138, 0.08);
+            color: #fef08a;
+        }
+
         @media (max-width: 650px) {
             body {
                 padding-top: 110px;
@@ -174,16 +304,9 @@
                 left: 10px;
                 padding: 5px 10px;
             }
-            .top-navbar {
+            .top-menu-container {
                 top: 10px;
                 right: 10px;
-                padding: 4px 8px;
-                gap: 4px;
-                max-width: calc(100vw - 110px);
-            }
-            .btn-nav {
-                font-size: 0.62rem;
-                padding: 5px 8px;
             }
         }
     </style>
@@ -191,42 +314,76 @@
 <body>
 
     <!-- Top Left Glass Streak Badge -->
-    <div class="top-left-streak">
+    <div class="top-left-streak" onclick="openMilestones()">
         <span id="streak-display" class="streak-count-text">🔥 1 Day Streak</span>
     </div>
 
-    <!-- Top Navigation Bar -->
-    <nav class="top-navbar">
-        <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Prov.3" target="_blank" class="btn-nav">
-            🔊 Scripture
-        </a>
-
-        <button id="music-btn" class="btn-nav" onclick="toggleMusic()">
-            ⏸ Pause
+    <!-- Top Right Compact Dropdown Menu -->
+    <div class="top-menu-container">
+        <button class="menu-toggle-btn" onclick="toggleMenu()">
+            ☰ Menu
         </button>
-
-        <button class="btn-nav" onclick="nextTrack()">
-            ⏭ Next Track
-        </button>
-
-        <button class="btn-nav" onclick="changeSceneRandom()">
-            🔀 Scene
-        </button>
-
-        <a href="https://localchurches.org/" target="_blank" rel="noopener noreferrer" class="btn-nav">
-            ⛪ Find A Church Near You
-        </a>
-    </nav>
+        <div id="dropdown-menu" class="dropdown-menu">
+            <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Prov.3" target="_blank" class="dropdown-item">
+                🔊 Scripture Audio
+            </a>
+            <button id="music-btn" class="dropdown-item" onclick="toggleMusic()">
+                ⏸ Pause Music
+            </button>
+            <button class="dropdown-item" onclick="nextTrack()">
+                ⏭ Next Track
+            </button>
+            <button class="dropdown-item" onclick="changeSceneRandom()">
+                🔀 Shuffle Scene
+            </button>
+            <button class="dropdown-item" onclick="openSavedVerses()">
+                ⭐ Favorite Verses
+            </button>
+            <button class="dropdown-item" onclick="openMilestones()">
+                🏆 Streak Badges
+            </button>
+            <a href="https://localchurches.org/" target="_blank" rel="noopener noreferrer" class="dropdown-item">
+                ⛪ Find A Church
+            </a>
+        </div>
+    </div>
 
     <!-- Main Scripture Card -->
     <main class="verse-card">
+        <button class="bookmark-btn" onclick="saveCurrentVerse()" title="Save to Favorites">⭐</button>
         <div class="tag">✦ Scripture for Your Path ✦</div>
 
         <div id="votd-box">
-            <div class="bg-votd-text">"Trust in the LORD with all your heart and lean not on your own understanding."</div>
-            <div class="bg-votd-title">— Proverbs 3:5</div>
+            <div class="bg-votd-text" id="verse-text">"Trust in the LORD with all your heart and lean not on your own understanding."</div>
+            <div class="bg-votd-title" id="verse-ref">— Proverbs 3:5</div>
         </div>
     </main>
+
+    <!-- Saved Verses Modal -->
+    <div id="saved-modal" class="modal-overlay" onclick="closeModals(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span>⭐ Favorite Verses</span>
+                <button class="close-modal" onclick="closeModals()">✕</button>
+            </div>
+            <div id="saved-verses-list" style="font-size: 0.95rem; line-height: 1.5; color: #fffbeb;">
+                <p style="opacity: 0.7;">No saved verses yet. Click the star icon on any daily verse to save it here!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Milestone Badges Modal -->
+    <div id="milestone-modal" class="modal-overlay" onclick="closeModals(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span>🏆 Streak Milestones</span>
+                <button class="close-modal" onclick="closeModals()">✕</button>
+            </div>
+            <div class="badge-grid" id="badge-container">
+                <!-- Populated via JS -->
+            </div>
+        </div>
+    </div>
 
     <audio id="bg-music" loop preload="auto"></audio>
 
@@ -236,8 +393,26 @@
         var currentImageIndex = 1;
         var music = document.getElementById("bg-music");
         var musicBtn = document.getElementById("music-btn");
+        var currentStreakCount = 1;
 
-        // --- LOCAL STORAGE STREAK COUNTER LOGIC ---
+        // Toggle Dropdown Menu
+        function toggleMenu() {
+            document.getElementById("dropdown-menu").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.menu-toggle-btn') && !event.target.closest('.dropdown-menu')) {
+                var dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // --- STREAK COUNTER LOGIC ---
         function updateDailyStreak() {
             var today = new Date();
             var todayStr = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -265,33 +440,32 @@
 
             localStorage.setItem("last_verse_visit_date", todayStr);
             localStorage.setItem("verse_streak_count", currentStreak.toString());
+            currentStreakCount = currentStreak;
 
             document.getElementById("streak-display").innerText = "🔥 " + currentStreak + (currentStreak === 1 ? " Day Streak" : " Days Streak");
         }
 
-        // Randomly initialize independent music and background image on load
+        // --- RANDOM EXPERIENCE ON LOAD ---
         function initRandomExperience() {
             currentMusicIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
             currentImageIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
 
-            // Load Image
             tryLoadingImage(currentImageIndex, 0);
 
-            // Load Music
             music.src = "music" + currentMusicIndex + ".mp3";
             music.load();
 
             var playPromise = music.play();
             if (playPromise !== undefined) {
                 playPromise.then(function() {
-                    musicBtn.innerHTML = "⏸ Pause";
+                    musicBtn.innerHTML = "⏸ Pause Music";
                 }).catch(function(e) {
-                    musicBtn.innerHTML = "▶ Play";
+                    musicBtn.innerHTML = "▶ Play Music";
                 });
             }
         }
 
-        // Shuffle ONLY the background image independently
+        // Independent Image Shuffler
         function changeSceneRandom() {
             var newImageIndex;
             do {
@@ -324,26 +498,90 @@
         function toggleMusic() {
             if (music.paused) {
                 music.play().then(function() {
-                    musicBtn.innerHTML = "⏸ Pause";
+                    musicBtn.innerHTML = "⏸ Pause Music";
                 }).catch(function(e) {
                     alert("Please ensure 'music" + currentMusicIndex + ".mp3' is uploaded to your GitHub repository.");
                 });
             } else {
                 music.pause();
-                musicBtn.innerHTML = "▶ Play";
+                musicBtn.innerHTML = "▶ Play Music";
             }
         }
 
-        // Advance ONLY the music track independently
+        // Independent Music Track Advancer
         function nextTrack() {
             currentMusicIndex = (currentMusicIndex % TOTAL_ITEMS) + 1;
             music.src = "music" + currentMusicIndex + ".mp3";
             music.load();
             music.play().then(function() {
-                musicBtn.innerHTML = "⏸ Pause";
+                musicBtn.innerHTML = "⏸ Pause Music";
             }).catch(function(e) {
-                musicBtn.innerHTML = "▶ Play";
+                musicBtn.innerHTML = "▶ Play Music";
             });
+        }
+
+        // --- FAVORITE VERSES & BOOKMARKS ---
+        function saveCurrentVerse() {
+            var text = document.getElementById("verse-text").innerText;
+            var ref = document.getElementById("verse-ref").innerText;
+            var saved = JSON.parse(localStorage.getItem("favorite_verses") || "[]");
+
+            // Avoid duplicate saves
+            var exists = saved.some(function(v) { return v.ref === ref; });
+            if (!exists) {
+                saved.push({ text: text, ref: ref });
+                localStorage.setItem("favorite_verses", JSON.stringify(saved));
+                alert("Verse saved to your favorites!");
+            } else {
+                alert("This verse is already in your favorites.");
+            }
+        }
+
+        function openSavedVerses() {
+            var saved = JSON.parse(localStorage.getItem("favorite_verses") || "[]");
+            var container = document.getElementById("saved-verses-list");
+            
+            if (saved.length === 0) {
+                container.innerHTML = '<p style="opacity: 0.7;">No saved verses yet. Click the star icon on any daily verse to save it here!</p>';
+            } else {
+                var html = "";
+                saved.forEach(function(item) {
+                    html += '<div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);"><p style="font-style: italic; margin-bottom: 6px;">"' + item.text + '"</p><p style="font-family: Cinzel, serif; color: #fef08a; font-size: 0.85rem;">' + item.ref + '</p></div>';
+                });
+                container.innerHTML = html;
+            }
+            document.getElementById("saved-modal").style.display = "flex";
+        }
+
+        // --- MILESTONE BADGES ---
+        function openMilestones() {
+            var milestones = [
+                { days: 1, title: "🌱 First Step", desc: "Started your daily scripture journey." },
+                { days: 3, title: "🌿 Faithful 3", desc: "Maintained a 3-day reading streak." },
+                { days: 7, title: "🌳 Devoted Week", desc: "Completed a full 7-day streak!" },
+                { days: 14, title: "✨ Two Week Pillar", desc: "14 days walking in the Word." },
+                { days: 30, title: "👑 Monthly Disciple", desc: "An incredible 30-day streak milestone." }
+            ];
+
+            var container = document.getElementById("badge-container");
+            var html = "";
+
+            milestones.forEach(function(m) {
+                var unlocked = currentStreakCount >= m.days;
+                var cls = unlocked ? "badge-item unlocked" : "badge-item";
+                var status = unlocked ? "Unlocked ✓" : "Locked (" + (m.days - currentStreakCount) + " days left)";
+                html += '<div class="' + cls + '"><div><strong>' + m.title + '</strong><br><small style="opacity:0.8;">' + m.desc + '</small></div><div style="font-size:0.75rem; font-weight:bold;">' + status + '</div></div>';
+            });
+
+            container.innerHTML = html;
+            document.getElementById("milestone-modal").style.display = "flex";
+        }
+
+        function closeModals(e) {
+            if (!e || e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-modal')) {
+                document.getElementById("saved-modal").style.display = "none";
+                document.getElementById("milestone-modal").style.display = "none";
+            }
         }
 
         updateDailyStreak();
@@ -354,9 +592,8 @@
             var verseRef = votd.reference || votd.display_ref;
 
             if (verseText && verseRef) {
-                document.getElementById('votd-box').innerHTML = 
-                    '<div class="bg-votd-text">' + verseText + '</div>' +
-                    '<div class="bg-votd-title">— ' + verseRef + '</div>';
+                document.getElementById('verse-text').innerText = verseText;
+                document.getElementById('verse-ref').innerText = "— " + verseRef;
 
                 var cleanRef = encodeURIComponent(verseRef);
                 document.getElementById('audio-link').href = "https://www.biblegateway.com/passage/?search=" + cleanRef + "&version=NIV";
