@@ -18,7 +18,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            /* Uses your uploaded background image saved as background.jpg */
+            /* Uses background.jpg from your repository root */
             background: 
                 linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
                 url('background.jpg') center/cover no-repeat fixed;
@@ -26,6 +26,7 @@
             color: #f8fafc;
         }
 
+        /* Frosted Glassmorphism Card */
         .card {
             background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(20px);
@@ -92,10 +93,18 @@
             margin-bottom: 12px;
         }
 
+        .btn-primary:active {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
         .btn-music {
             background: rgba(56, 189, 248, 0.25);
             color: #ffffff;
             border: 1px solid rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-music:active {
+            background: rgba(56, 189, 248, 0.4);
         }
 
         .audio-controls {
@@ -104,6 +113,11 @@
             gap: 10px;
             align-items: center;
             justify-content: center;
+        }
+
+        .audio-controls input[type=range] {
+            accent-color: #fde047;
+            width: 120px;
         }
     </style>
 </head>
@@ -132,6 +146,7 @@
             <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.5" onchange="adjustVolume(this.value)">
         </div>
 
+        <!-- References music.mp3 in your GitHub repository -->
         <audio id="bg-music" loop preload="auto">
             <source src="music.mp3" type="audio/mpeg">
         </audio>
@@ -162,7 +177,7 @@
                     musicBtn.innerText = "⏸ Pause Ambient Music";
                     controls.style.display = "flex";
                 }).catch(function(e) {
-                    alert("Please upload music.mp3 to your repository root folder to enable background audio.");
+                    alert("Ensure 'music.mp3' is uploaded to your main repository folder.");
                 });
             } else {
                 music.pause();
