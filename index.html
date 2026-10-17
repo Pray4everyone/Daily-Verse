@@ -99,30 +99,4 @@
     </div>
 
     <script>
-        async function fetchDailyVerse() {
-            try {
-                const response = await fetch('https://labs.bible.org/api/?passage=votd&type=json');
-                const data = await response.json();
-                const verse = data[0];
-
-                const passageText = `"${verse.text.trim()}"`;
-                const referenceText = `— ${verse.bookname} ${verse.chapter}:${verse.verse}`;
-
-                document.getElementById('verse-content').innerText = passageText;
-                document.getElementById('verse-reference').innerText = referenceText;
-
-                const searchRef = encodeURIComponent(`${verse.bookname} ${verse.chapter}`);
-                document.getElementById('audio-link').href = `https://www.biblegateway.com/audio/mclean/niv/${searchRef}`;
-
-            } catch (error) {
-                document.getElementById('verse-content').innerText = "Trust in the LORD with all your heart and lean not on your own understanding.";
-                document.getElementById('verse-reference').innerText = "— Proverbs 3:5";
-                document.getElementById('audio-link').href = "https://www.biblegateway.com/audio/mclean/niv/Prov.3";
-            }
-        }
-
-        fetchDailyVerse();
-    </script>
-
-</body>
-</html>
+        const verses =
