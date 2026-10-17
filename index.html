@@ -94,15 +94,18 @@
     <div class="card">
         <div class="tag">✦ Verse of the Day ✦</div>
 
-        <!-- Bible Gateway Official Feed -->
         <div id="votd-box">Loading today's verse...</div>
 
         <script>
             function votdCallback(votd) {
+                var verseText = votd.text || votd.content || "Trust in the LORD with all your heart and lean not on your own understanding.";
+                var verseRef = votd.reference || votd.display_ref || "Proverbs 3:5";
+                var copyright = votd.copyright || "";
+
                 document.getElementById('votd-box').innerHTML = 
-                    '<div class="bg-votd-text">' + votd.content + '</div>' +
-                    '<div class="bg-votd-title">— ' + votd.reference + '</div>' +
-                    '<div class="bg-votd-copyright">' + votd.copyright + '</div>';
+                    '<div class="bg-votd-text">' + verseText + '</div>' +
+                    '<div class="bg-votd-title">— ' + verseRef + '</div>' +
+                    (copyright ? '<div class="bg-votd-copyright">' + copyright + '</div>' : '');
             }
         </script>
         <script src="https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=votdCallback"></script>
