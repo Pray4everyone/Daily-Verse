@@ -23,11 +23,12 @@
             justify-content: center;
             align-items: center;
             padding: 24px;
-            /* Default fallback image */
             background: 
                 linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)),
-                url('background1.jpg') center/cover no-repeat fixed;
-            background-color: #1a1a1a;
+                radial-gradient(circle, #2d3748 0%, #0f172a 100%);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             color: #000000;
             position: relative;
             transition: background-image 0.5s ease-in-out;
@@ -149,7 +150,6 @@
                 0 0 25px rgba(255, 255, 255, 0.8);
         }
 
-        /* Responsive Mobile Scaling */
         @media (max-width: 600px) {
             .bg-votd-text {
                 font-size: 2.0rem;
@@ -166,7 +166,6 @@
 </head>
 <body>
 
-    <!-- Small Control Buttons Pinned Top-Right -->
     <div class="top-controls">
         <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Prov.3" target="_blank" class="btn-compact">
             🔊 Scripture
@@ -186,7 +185,6 @@
         </div>
     </div>
 
-    <!-- Main Borderless Verse Display -->
     <div class="verse-container">
         <div class="tag">✦ Verse of the Day ✦</div>
 
@@ -201,11 +199,9 @@
     </audio>
 
     <script>
-        // Total number of background images set to 10
         var TOTAL_BACKGROUNDS = 10;
         var currentBgIndex = 1;
 
-        // Automatically set background based on the current day of the year
         function setDailyBackground() {
             var now = new Date();
             var start = new Date(now.getFullYear(), 0, 0);
@@ -217,7 +213,6 @@
             applyBackground(currentBgIndex);
         }
 
-        // Randomize background on manual button click
         function changeBackgroundRandom() {
             var newIndex;
             do {
@@ -229,15 +224,27 @@
         }
 
         function applyBackground(index) {
+            // Tries backgroundX.jpg first, then falls back smoothly if needed
+            var img = new Image();
             var bgUrl = "background" + index + ".jpg";
-            document.body.style.backgroundImage = 
-                "linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)), url('" + bgUrl + "')";
+
+            img.onload = function() {
+                document.body.style.backgroundImage = 
+                    "linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)), url('" + bgUrl + "')";
+            };
+
+            img.onerror = function() {
+                // Try .jpeg format if .jpg fails
+                var altUrl = "background" + index + ".jpeg";
+                document.body.style.backgroundImage = 
+                    "linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)), url('" + altUrl + "')";
+            };
+
+            img.src = bgUrl;
         }
 
-        // Initialize daily background
         setDailyBackground();
 
-        // Scripture JSONP Callback
         function votdCallback(votd) {
             var verseText = votd.text || votd.content;
             var verseRef = votd.reference || votd.display_ref;
