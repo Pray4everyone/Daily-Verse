@@ -96,26 +96,31 @@
 
         <div id="votd-box">Loading today's verse...</div>
 
-        <script>
-            function votdCallback(votd) {
-                var verseText = votd.text || votd.content || "Trust in the LORD with all your heart and lean not on your own understanding.";
-                var verseRef = votd.reference || votd.display_ref || "Proverbs 3:5";
-                var copyright = votd.copyright || "";
-
-                document.getElementById('votd-box').innerHTML = 
-                    '<div class="bg-votd-text">' + verseText + '</div>' +
-                    '<div class="bg-votd-title">— ' + verseRef + '</div>' +
-                    (copyright ? '<div class="bg-votd-copyright">' + copyright + '</div>' : '');
-            }
-        </script>
-        <script src="https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=votdCallback"></script>
-
         <div class="audio-container">
-            <a href="https://www.biblegateway.com/audio/mclean/niv" target="_blank" class="audio-btn">
+            <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Gen.1" target="_blank" class="audio-btn">
                 🔊 Listen to Audio Bible
             </a>
         </div>
     </div>
+
+    <script>
+        function votdCallback(votd) {
+            var verseText = votd.text || votd.content || "Trust in the LORD with all your heart and lean not on your own understanding.";
+            var verseRef = votd.reference || votd.display_ref || "Proverbs 3:5";
+            var copyright = votd.copyright || "";
+
+            document.getElementById('votd-box').innerHTML = 
+                '<div class="bg-votd-text">' + verseText + '</div>' +
+                '<div class="bg-votd-title">— ' + verseRef + '</div>' +
+                (copyright ? '<div class="bg-votd-copyright">' + copyright + '</div>' : '');
+
+            if (votd.reference) {
+                var cleanRef = encodeURIComponent(votd.reference);
+                document.getElementById('audio-link').href = "https://www.biblegateway.com/audio/mclean/niv/" + cleanRef;
+            }
+        }
+    </script>
+    <script src="https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=votdCallback"></script>
 
 </body>
 </html>
