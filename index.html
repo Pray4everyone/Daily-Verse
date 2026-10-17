@@ -232,7 +232,8 @@
 
     <script>
         var TOTAL_ITEMS = 10;
-        var currentIndex = 1;
+        var currentMusicIndex = 1;
+        var currentImageIndex = 1;
         var music = document.getElementById("bg-music");
         var musicBtn = document.getElementById("music-btn");
 
@@ -268,29 +269,18 @@
             document.getElementById("streak-display").innerText = "🔥 " + currentStreak + (currentStreak === 1 ? " Day Streak" : " Days Streak");
         }
 
-        // Randomly initialize background scene and music on load
-        function initRandomScene() {
-            currentIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
-            applyScene(currentIndex);
-        }
+        // Randomly initialize independent music and background image on load
+        function initRandomExperience() {
+            currentMusicIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
+            currentImageIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
 
-        function changeSceneRandom() {
-            var newIndex;
-            do {
-                newIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
-            } while (newIndex === currentIndex && TOTAL_ITEMS > 1);
+            // Load Image
+            tryLoadingImage(currentImageIndex, 0);
 
-            currentIndex = newIndex;
-            applyScene(currentIndex);
-        }
-
-        function applyScene(index) {
-            tryLoadingImage(index, 0);
-            
-            music.src = "music" + index + ".mp3";
+            // Load Music
+            music.src = "music" + currentMusicIndex + ".mp3";
             music.load();
 
-            // Attempt autoplay on scene change
             var playPromise = music.play();
             if (playPromise !== undefined) {
                 playPromise.then(function() {
@@ -299,6 +289,17 @@
                     musicBtn.innerHTML = "▶ Play";
                 });
             }
+        }
+
+        // Shuffle ONLY the background image independently
+        function changeSceneRandom() {
+            var newImageIndex;
+            do {
+                newImageIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
+            } while (newImageIndex === currentImageIndex && TOTAL_ITEMS > 1);
+
+            currentImageIndex = newImageIndex;
+            tryLoadingImage(currentImageIndex, 0);
         }
 
         function tryLoadingImage(index, extIndex) {
@@ -325,7 +326,7 @@
                 music.play().then(function() {
                     musicBtn.innerHTML = "⏸ Pause";
                 }).catch(function(e) {
-                    alert("Please ensure 'music" + currentIndex + ".mp3' is uploaded to your GitHub repository.");
+                    alert("Please ensure 'music" + currentMusicIndex + ".mp3' is uploaded to your GitHub repository.");
                 });
             } else {
                 music.pause();
@@ -333,13 +334,20 @@
             }
         }
 
+        // Advance ONLY the music track independently
         function nextTrack() {
-            currentIndex = (currentIndex % TOTAL_ITEMS) + 1;
-            applyScene(currentIndex);
+            currentMusicIndex = (currentMusicIndex % TOTAL_ITEMS) + 1;
+            music.src = "music" + currentMusicIndex + ".mp3";
+            music.load();
+            music.play().then(function() {
+                musicBtn.innerHTML = "⏸ Pause";
+            }).catch(function(e) {
+                musicBtn.innerHTML = "▶ Play";
+            });
         }
 
         updateDailyStreak();
-        initRandomScene();
+        initRandomExperience();
 
         function votdCallback(votd) {
             var verseText = votd.text || votd.content;
