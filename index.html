@@ -23,13 +23,14 @@
             justify-content: center;
             align-items: center;
             padding: 24px;
-            /* Full backdrop stained glass image */
+            /* Default fallback image */
             background: 
                 linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)),
-                url('background.jpg') center/cover no-repeat fixed;
+                url('background1.jpg') center/cover no-repeat fixed;
             background-color: #1a1a1a;
             color: #000000;
             position: relative;
+            transition: background-image 0.5s ease-in-out;
         }
 
         /* Top Right Control Bar */
@@ -58,7 +59,7 @@
             text-decoration: none;
             cursor: pointer;
             border: 1px solid rgba(0, 0, 0, 0.3);
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.85);
             color: #000000;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -67,7 +68,7 @@
         }
 
         .btn-compact:hover, .btn-compact:active {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             transform: scale(1.03);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
         }
@@ -130,7 +131,6 @@
             margin-bottom: 24px;
             font-style: italic;
             font-weight: 700;
-            /* Light backing glow so black text remains razor-sharp over colored glass */
             text-shadow: 
                 0 0 15px rgba(255, 255, 255, 0.95),
                 0 0 30px rgba(255, 255, 255, 0.8),
@@ -176,6 +176,10 @@
             🎵 Music
         </button>
 
+        <button class="btn-compact" onclick="changeBackgroundRandom()">
+            🔀 Scene
+        </button>
+
         <div id="audio-controls" class="audio-controls">
             <span>Vol</span>
             <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.5" onchange="adjustVolume(this.value)">
@@ -197,6 +201,43 @@
     </audio>
 
     <script>
+        // Total number of background images set to 10
+        var TOTAL_BACKGROUNDS = 10;
+        var currentBgIndex = 1;
+
+        // Automatically set background based on the current day of the year
+        function setDailyBackground() {
+            var now = new Date();
+            var start = new Date(now.getFullYear(), 0, 0);
+            var diff = now - start;
+            var oneDay = 1000 * 60 * 60 * 24;
+            var dayOfYear = Math.floor(diff / oneDay);
+
+            currentBgIndex = (dayOfYear % TOTAL_BACKGROUNDS) + 1;
+            applyBackground(currentBgIndex);
+        }
+
+        // Randomize background on manual button click
+        function changeBackgroundRandom() {
+            var newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * TOTAL_BACKGROUNDS) + 1;
+            } while (newIndex === currentBgIndex && TOTAL_BACKGROUNDS > 1);
+
+            currentBgIndex = newIndex;
+            applyBackground(currentBgIndex);
+        }
+
+        function applyBackground(index) {
+            var bgUrl = "background" + index + ".jpg";
+            document.body.style.backgroundImage = 
+                "linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)), url('" + bgUrl + "')";
+        }
+
+        // Initialize daily background
+        setDailyBackground();
+
+        // Scripture JSONP Callback
         function votdCallback(votd) {
             var verseText = votd.text || votd.content;
             var verseRef = votd.reference || votd.display_ref;
