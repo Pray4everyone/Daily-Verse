@@ -23,9 +23,7 @@
             justify-content: center;
             align-items: center;
             padding: 24px;
-            background: 
-                linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)),
-                radial-gradient(circle, #2d3748 0%, #0f172a 100%);
+            background-color: #0f172a;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -72,33 +70,6 @@
             background: rgba(255, 255, 255, 0.98);
             transform: scale(1.03);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-        }
-
-        /* Volume Slider Container */
-        .audio-controls {
-            display: none;
-            gap: 8px;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.85);
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .audio-controls span {
-            font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #000000;
-            letter-spacing: 1px;
-        }
-
-        .audio-controls input[type=range] {
-            accent-color: #000000;
-            width: 90px;
-            cursor: pointer;
         }
 
         /* Center Main Container - No Box */
@@ -166,6 +137,7 @@
 </head>
 <body>
 
+    <!-- Small Control Buttons Pinned Top-Right -->
     <div class="top-controls">
         <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Prov.3" target="_blank" class="btn-compact">
             🔊 Scripture
@@ -178,13 +150,9 @@
         <button class="btn-compact" onclick="changeBackgroundRandom()">
             🔀 Scene
         </button>
-
-        <div id="audio-controls" class="audio-controls">
-            <span>Vol</span>
-            <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.5" onchange="adjustVolume(this.value)">
-        </div>
     </div>
 
+    <!-- Main Borderless Verse Display -->
     <div class="verse-container">
         <div class="tag">✦ Verse of the Day ✦</div>
 
@@ -210,7 +178,7 @@
             var dayOfYear = Math.floor(diff / oneDay);
 
             currentBgIndex = (dayOfYear % TOTAL_BACKGROUNDS) + 1;
-            applyBackground(currentBgIndex);
+            tryLoadingImage(currentBgIndex, 0);
         }
 
         function changeBackgroundRandom() {
@@ -220,13 +188,15 @@
             } while (newIndex === currentBgIndex && TOTAL_BACKGROUNDS > 1);
 
             currentBgIndex = newIndex;
-            applyBackground(currentBgIndex);
+            tryLoadingImage(currentBgIndex, 0);
         }
 
-        function applyBackground(index) {
-            // Tries backgroundX.jpg first, then falls back smoothly if needed
+        function tryLoadingImage(index, extIndex) {
+            var extensions = ['.jpg', '.jpeg', '.png'];
+            if (extIndex >= extensions.length) return;
+
+            var bgUrl = "background" + index + extensions[extIndex];
             var img = new Image();
-            var bgUrl = "background" + index + ".jpg";
 
             img.onload = function() {
                 document.body.style.backgroundImage = 
@@ -234,10 +204,7 @@
             };
 
             img.onerror = function() {
-                // Try .jpeg format if .jpg fails
-                var altUrl = "background" + index + ".jpeg";
-                document.body.style.backgroundImage = 
-                    "linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.15)), url('" + altUrl + "')";
+                tryLoadingImage(index, extIndex + 1);
             };
 
             img.src = bgUrl;
@@ -261,25 +228,18 @@
 
         var music = document.getElementById("bg-music");
         var musicBtn = document.getElementById("music-btn");
-        var controls = document.getElementById("audio-controls");
 
         function toggleMusic() {
             if (music.paused) {
                 music.play().then(function() {
                     musicBtn.innerHTML = "⏸ Music";
-                    controls.style.display = "flex";
                 }).catch(function(e) {
                     alert("Ensure 'music.mp3' is uploaded to your main repository folder.");
                 });
             } else {
                 music.pause();
                 musicBtn.innerHTML = "🎵 Music";
-                controls.style.display = "none";
             }
-        }
-
-        function adjustVolume(val) {
-            music.volume = val;
         }
     </script>
     <script src="https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=votdCallback"></script>
