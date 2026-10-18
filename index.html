@@ -3,212 +3,326 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Scripture</title>
+<meta name="theme-color" content="#101c2d">
+<title>Daily Scripture — Grow Your Faith</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
 
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+    color-scheme: dark;
+    --ink: #fffbeb;
+    --gold: #f3dc9f;
+    --soft: #c8d1dd;
+    --line: rgba(255,255,255,.18);
+    --glass: rgba(15,23,42,.82);
+}
+
+* {
+    box-sizing: border-box;
+}
 
 body {
-    font-family: 'Cormorant Garamond', Georgia, serif;
+    margin: 0;
     min-height: 100vh;
     min-height: 100svh;
-    padding: 90px 20px 40px;
-    background: #0f172a center / cover no-repeat fixed;
-    color: #fffbeb;
-    overflow-x: hidden;
+    padding: calc(150px + env(safe-area-inset-top)) 18px 42px;
+    background: #101c2d center / cover no-repeat fixed;
+    color: var(--ink);
+    font: 18px/1.5 'Cormorant Garamond', Georgia, serif;
 }
 
-button, a { -webkit-tap-highlight-color: transparent; }
-button { cursor: pointer; }
-button:disabled { cursor: default; opacity: .6; }
-button:focus-visible, a:focus-visible {
-    outline: 3px solid #fef08a;
+button, a {
+    touch-action: manipulation;
+}
+
+button {
+    cursor: pointer;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button:disabled {
+    cursor: default;
+    opacity: .55;
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--gold);
     outline-offset: 4px;
 }
-[hidden] { display: none !important; }
 
-.top-left-streak,
-.menu-toggle-btn {
-    font-family: 'Cinzel', serif;
-    padding: 10px 14px;
+[hidden] {
+    display: none !important;
+}
+
+a {
+    color: var(--gold);
+}
+
+h1, h2, h3, p {
+    margin: 0;
+}
+
+h2 {
+    font: 600 21px/1.4 'Cinzel', Georgia, serif;
+}
+
+h3 {
+    font: 600 17px/1.4 'Cinzel', Georgia, serif;
+}
+
+.glass {
+    background: var(--glass);
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 48px #0005;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+/* Two reserved navigation rows prevent overlapping buttons. */
+.site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 12px;
+    padding: max(12px, env(safe-area-inset-top)) 14px 12px;
+    pointer-events: none;
+}
+
+.site-header > * {
+    pointer-events: auto;
+    min-width: 0;
+}
+
+.header-left {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+    min-width: 0;
+}
+
+.header-right {
+    position: relative;
+    justify-self: end;
+}
+
+.pill {
     min-height: 44px;
-    background: rgba(15,23,42,.78);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,.2);
-    border-radius: 30px;
-    box-shadow: 0 8px 32px rgba(0,0,0,.37);
-    font-size: .75rem;
-    font-weight: 700;
-    letter-spacing: .6px;
+    padding: 10px 15px;
+    border-radius: 28px;
+    color: var(--gold);
+    font: 600 12px/1.4 'Cinzel', Georgia, serif;
+    letter-spacing: .3px;
 }
 
-.top-left-streak {
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    color: #fef08a;
-    z-index: 1000;
+#streak-button {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.top-menu-container {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 1000;
+.grow-wrap {
+    position: relative;
+    max-width: 100%;
 }
 
-.menu-toggle-btn { color: #f8fafc; }
+.grow-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    padding: 7px 12px 7px 8px;
+    white-space: nowrap;
+}
 
-.dropdown-menu {
+.grow-toggle span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.jesus-icon {
+    width: 30px;
+    height: 30px;
+    flex: none;
+}
+
+.drop {
     position: absolute;
-    top: 54px;
-    right: 0;
-    width: 240px;
-    max-height: calc(100svh - 100px);
-    overflow-y: auto;
+    top: calc(100% + 9px);
+    left: 0;
+    width: min(310px, calc(100vw - 28px));
+    max-height: calc(100svh - 160px);
+    overflow: auto;
+    border-radius: 17px;
     padding: 8px;
-    background: rgba(15,23,42,.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,.18);
-    border-radius: 16px;
-    box-shadow: 0 15px 35px rgba(0,0,0,.5);
+    background: rgba(15,23,42,.98);
 }
 
-.dropdown-item {
-    font-family: 'Cinzel', serif;
+.header-right .drop {
+    left: auto;
+    right: 0;
+    width: min(245px, calc(100vw - 28px));
+}
+
+.drop-label {
+    padding: 10px 12px 5px;
+    color: var(--soft);
+    font: 11px/1.5 system-ui, sans-serif;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.menu-item {
     display: block;
     width: 100%;
     min-height: 44px;
-    padding: 12px;
+    padding: 11px 12px;
     border: 0;
     border-radius: 10px;
     background: transparent;
-    color: #f8fafc;
+    color: var(--ink);
     text-align: left;
     text-decoration: none;
-    font-size: .72rem;
-    font-weight: 700;
-    letter-spacing: .5px;
+    font: 14px/1.45 system-ui, sans-serif;
 }
 
-.dropdown-item:hover { background: rgba(255,255,255,.12); }
+.menu-item:hover {
+    background: #ffffff12;
+}
 
-.page-content {
+.menu-divider {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: 7px 4px;
+}
+
+.page {
     width: 100%;
     max-width: 820px;
-    margin: 0 auto;
-    min-height: calc(100svh - 130px);
+    min-height: calc(100svh - 196px);
+    margin: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .verse-card {
-    width: 100%;
-    text-align: center;
-    padding: 56px 36px 40px;
-    background: rgba(15,23,42,.74);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,.18);
-    border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,.5);
     position: relative;
-}
-
-.bookmark-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 40px;
-    height: 40px;
-    border: 1px solid rgba(255,255,255,.2);
-    border-radius: 50%;
-    background: rgba(255,255,255,.1);
-    color: #fef08a;
-    font-size: 1rem;
+    padding: 58px 36px 38px;
+    border-radius: 25px;
+    text-align: center;
 }
 
 .tag {
-    font-family: 'Cinzel', serif;
-    text-transform: uppercase;
+    margin: 0 15px 26px;
+    color: var(--gold);
+    font: 600 13px/1.5 'Cinzel', Georgia, serif;
     letter-spacing: 2px;
-    font-size: .85rem;
-    color: #fef08a;
-    font-weight: 800;
-    margin-bottom: 24px;
 }
 
-.verse-text {
-    font-size: 2.5rem;
-    line-height: 1.45;
-    margin-bottom: 28px;
-    font-style: italic;
-    font-weight: 600;
-    text-shadow: 0 2px 8px rgba(0,0,0,.7);
+.verse {
+    margin: 0 0 25px;
+    font: italic 600 clamp(28px, 4vw, 40px)/1.48
+        'Cormorant Garamond', Georgia, serif;
+    text-shadow: 0 2px 8px #0007;
 }
 
-.verse-reference {
-    font-family: 'Cinzel', serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #fef3c7;
-    letter-spacing: 1px;
+.reference {
+    color: var(--gold);
+    font: 600 clamp(17px, 3vw, 23px)/1.5 'Cinzel', Georgia, serif;
+}
+
+.bookmark {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: #ffffff0c;
+    color: var(--gold);
+    font-size: 19px;
+}
+
+.tiny {
+    color: var(--soft);
+    font: 12px/1.6 system-ui, sans-serif;
 }
 
 .feed-status {
-    margin-top: 16px;
-    color: #d2d9e4;
-    font: .8rem/1.5 system-ui, sans-serif;
+    margin-top: 15px;
 }
 
-.scripture-audio {
-    width: 100%;
+.audio-section {
     margin-top: 20px;
     text-align: center;
 }
 
-.scripture-audio-button {
+.primary, .secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 46px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    text-decoration: none;
+    font: 600 13px/1.4 system-ui, sans-serif;
+}
+
+.primary {
+    border: 1px solid var(--gold);
+    background: var(--gold);
+    color: #172135;
+}
+
+.secondary {
+    border: 1px solid var(--line);
+    background: #ffffff09;
+    color: var(--ink);
+}
+
+.primary:hover {
+    background: #fff0c5;
+}
+
+.secondary:hover {
+    background: #ffffff16;
+}
+
+.audio-button {
     min-height: 48px;
-    padding: 14px 24px;
-    border: 1px solid rgba(254,240,138,.4);
+    padding: 14px 23px;
     border-radius: 30px;
-    background: rgba(15,23,42,.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    color: #fef3c7;
-    font-family: 'Cinzel', serif;
-    font-size: .85rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+    color: var(--gold);
+    font: 600 13px/1.5 'Cinzel', Georgia, serif;
 }
 
-.scripture-audio-button:hover:not(:disabled) {
-    background: rgba(40,53,75,.95);
-    border-color: #fef08a;
-}
-
-.scripture-audio-panel {
+.audio-panel {
     margin-top: 16px;
-    padding: 16px;
+    padding: 14px;
     border-radius: 20px;
-    background: rgba(15,23,42,.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,.18);
-    box-shadow: 0 16px 36px rgba(0,0,0,.35);
 }
 
-.scripture-audio-hint { margin-bottom: 12px; font-size: 1.1rem; }
+.audio-panel p {
+    margin-bottom: 12px;
+}
 
-.scripture-audio-frame {
+.audio-frame {
     display: block;
     width: 100%;
     height: 590px;
@@ -217,453 +331,1674 @@ button:focus-visible, a:focus-visible {
     background: white;
 }
 
-.audio-fallback {
+.audio-link {
     display: inline-block;
     margin-top: 12px;
-    color: #fef3c7;
-    font-size: 1rem;
+}
+
+.resume-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 22px;
+    padding: 16px 20px;
+    border-radius: 17px;
+}
+
+.resume-card strong {
+    display: block;
+    color: var(--gold);
 }
 
 dialog {
-    width: calc(100% - 32px);
-    max-width: 520px;
-    max-height: 80svh;
+    width: min(680px, calc(100% - 28px));
+    max-height: calc(100svh - 36px);
     margin: auto;
-    padding: 26px;
-    overflow-y: auto;
-    color: #fffbeb;
-    background: #111d31;
-    border: 1px solid rgba(255,255,255,.2);
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,.6);
+    padding: 0;
+    overflow: auto;
+    border: 1px solid #627086;
+    border-radius: 22px;
+    background: #142034;
+    color: var(--ink);
+    box-shadow: 0 24px 70px #0008;
 }
 
 dialog::backdrop {
-    background: rgba(0,0,0,.65);
-    backdrop-filter: blur(8px);
+    background: #020814ba;
+    backdrop-filter: blur(6px);
 }
 
-.modal-header {
+.dialog-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    margin-bottom: 18px;
-    color: #fef08a;
-    font-family: 'Cinzel', serif;
-    font-size: 1rem;
+    padding: 17px 22px;
+    border-bottom: 1px solid var(--line);
+    background: #142034;
 }
 
-.close-modal {
-    min-width: 44px;
-    min-height: 44px;
-    background: transparent;
+.close {
+    flex: none;
+    width: 44px;
+    height: 44px;
     border: 0;
-    color: white;
-    font-size: 1.3rem;
+    background: transparent;
+    color: var(--ink);
+    font: 24px system-ui, sans-serif;
 }
 
-.saved-verse {
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,.15);
-    font-size: 1.2rem;
+.dialog-body {
+    padding: 23px;
+    overflow-wrap: anywhere;
+}
+
+.eyebrow {
+    margin-bottom: 12px;
+    color: var(--gold);
+    font: 11px/1.5 system-ui, sans-serif;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.reading-verse {
+    margin: 16px 0;
+    font: 600 26px/1.5 'Cormorant Garamond', Georgia, serif;
+}
+
+.reading-ref {
+    margin-bottom: 8px;
+    color: var(--gold);
+    font: 600 16px/1.5 'Cinzel', Georgia, serif;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.reflection {
+    margin: 22px 0;
+    padding: 3px 0 3px 17px;
+    border-left: 2px solid var(--gold);
+}
+
+.reflection p {
+    margin-top: 9px;
+}
+
+.question {
+    color: var(--gold);
+}
+
+.journey-invite {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+.journey-invite p {
+    margin: 8px 0 14px;
+}
+
+.topic-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.journey-choice {
+    display: block;
+    padding: 16px;
+    text-align: left;
+}
+
+.journey-choice span {
+    display: block;
+    margin-top: 7px;
+}
+
+.day-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 17px 0;
+}
+
+.day-nav button {
+    min-width: 38px;
+    min-height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: #ffffff09;
+    color: var(--ink);
+    font: 13px system-ui, sans-serif;
+}
+
+.day-nav button[aria-current="true"] {
+    background: var(--gold);
+    color: #142034;
+}
+
+.day-nav button.done {
+    border-color: #a6c9a9;
+}
+
+.journey-status {
+    margin: 12px 0;
+    color: var(--gold);
+    font: 13px/1.6 system-ui, sans-serif;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+    margin: 8px 0 18px;
+}
+
+.stat {
+    padding: 12px 8px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: #ffffff08;
+    text-align: center;
+}
+
+.stat b {
+    display: block;
+    color: var(--gold);
+    font: 26px/1.3 Georgia, serif;
+}
+
+.stat span {
+    font: 11px/1.5 system-ui, sans-serif;
+}
+
+.badges {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: #ffffff06;
+}
+
+.badge.earned {
+    border-color: #d8c07b;
+    background: #f3dc9f0b;
+}
+
+.badge strong {
+    font-size: 19px;
+}
+
+.badge small {
+    display: block;
+    color: var(--soft);
+    font: 12px/1.5 system-ui, sans-serif;
+}
+
+.badge-status {
+    color: var(--gold);
+    text-align: right;
+    font: 12px/1.5 system-ui, sans-serif;
+}
+
+.saved-entry {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.saved-entry p {
+    font-size: 23px;
     line-height: 1.5;
 }
 
-.saved-reference {
+.saved-entry small {
+    display: block;
     margin-top: 8px;
-    font-family: 'Cinzel', serif;
-    font-size: .85rem;
-    color: #fef08a;
+    color: var(--gold);
 }
-
-.badge-grid { display: grid; gap: 10px; }
-
-.badge-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    padding: 12px;
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 12px;
-    background: rgba(255,255,255,.05);
-}
-
-.badge-item.unlocked {
-    border-color: #fef08a;
-    background: rgba(254,240,138,.08);
-    color: #fef08a;
-}
-
-.badge-status { font: .75rem/1.4 system-ui, sans-serif; }
 
 .toast {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     left: 50%;
-    transform: translateX(-50%);
+    z-index: 100;
     width: max-content;
-    max-width: calc(100% - 32px);
-    padding: 12px 20px;
-    border: 1px solid rgba(254,240,138,.4);
-    border-radius: 14px;
-    background: #162338;
-    color: #fffbeb;
-    box-shadow: 0 8px 30px rgba(0,0,0,.4);
-    font: .9rem/1.5 system-ui, sans-serif;
-    text-align: center;
-    z-index: 3000;
+    max-width: calc(100vw - 32px);
+    padding: 13px 20px;
+    border: 1px solid var(--gold);
+    border-radius: 15px;
+    background: #23344f;
+    color: var(--ink);
+    transform: translateX(-50%);
+    font: 14px/1.5 system-ui, sans-serif;
 }
 
-@media (max-width: 650px) {
-    body { padding: 90px 16px 32px; }
-    .verse-card { padding: 56px 20px 32px; }
-    .verse-text { font-size: 1.85rem; }
-    .verse-reference { font-size: 1.2rem; }
-    .tag { font-size: .72rem; letter-spacing: 1.4px; }
-    .top-left-streak { top: 10px; left: 10px; }
-    .top-menu-container { top: 10px; right: 10px; }
-    .scripture-audio-panel { padding: 10px; }
-    .scripture-audio-frame { height: 650px; }
+.toast:empty {
+    display: none;
+}
+
+.site-footer {
+    margin-top: 27px;
+    text-align: center;
+}
+
+.storage-note {
+    margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: calc(145px + env(safe-area-inset-top)) 14px 30px;
+    }
+
+    .site-header {
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .pill {
+        padding: 10px 12px;
+        font-size: 10px;
+    }
+
+    .grow-toggle {
+        gap: 6px;
+        padding: 7px 10px 7px 7px;
+        font-size: 10px;
+    }
+
+    .jesus-icon {
+        width: 26px;
+        height: 26px;
+    }
+
+    .verse-card {
+        padding: 58px 21px 30px;
+    }
+
+    .tag {
+        margin: 0 0 22px;
+        font-size: 11px;
+        letter-spacing: 1.4px;
+    }
+
+    .audio-frame {
+        height: 650px;
+    }
+
+    .audio-panel {
+        padding: 10px;
+    }
+
+    .dialog-head {
+        padding: 12px 16px;
+    }
+
+    .dialog-body {
+        padding: 18px;
+    }
+
+    .topic-list {
+        grid-template-columns: 1fr;
+    }
+
+    .resume-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .reading-verse {
+        font-size: 25px;
+    }
+
+    .drop {
+        max-height: calc(100svh - 150px);
+    }
 }
 </style>
 </head>
 
 <body>
 
-<button class="top-left-streak" onclick="openMilestones()"
-        aria-label="View streak milestones">
-    <span id="streak-display">🔥 1 Day Streak</span>
-</button>
-
-<div class="top-menu-container">
-    <button id="menu-toggle" class="menu-toggle-btn"
-            onclick="toggleMenu()" aria-expanded="false"
-            aria-controls="dropdown-menu">
-        ☰ Menu
-    </button>
-
-    <div id="dropdown-menu" class="dropdown-menu" hidden>
-        <button id="music-btn" class="dropdown-item" onclick="toggleMusic()">
-            ▶ Play Music
+<header class="site-header" aria-label="Site navigation">
+    <div class="header-left">
+        <button id="streak-button"
+                class="pill glass"
+                onclick="openBadges()"
+                aria-label="View streaks and earned badges">
+            <span id="streak-display">🔥 1 Day Streak</span>
         </button>
-        <button class="dropdown-item" onclick="nextTrack()">⏭ Next Track</button>
-        <button class="dropdown-item" onclick="changeSceneRandom()">🔀 Shuffle Scene</button>
-        <button class="dropdown-item" onclick="saveCurrentVerse()">⭐ Save to Favorites</button>
-        <button class="dropdown-item" onclick="shareCurrentVerse()">🔗 Share Verse</button>
-        <button class="dropdown-item" onclick="openSavedVerses()">📖 View Favorites</button>
-        <button class="dropdown-item" onclick="openMilestones()">🏆 Streak Badges</button>
-        <a href="https://localchurches.org/" target="_blank"
-           rel="noopener noreferrer" class="dropdown-item">⛪ Find A Church</a>
-    </div>
-</div>
 
-<main class="page-content">
-    <section class="verse-card" aria-label="Daily Scripture">
-        <button class="bookmark-btn" onclick="saveCurrentVerse()"
-                aria-label="Save verse to favorites" title="Save to Favorites">⭐</button>
+        <div class="grow-wrap">
+            <button id="grow-toggle"
+                    class="pill glass grow-toggle"
+                    onclick="toggleDropdown('grow')"
+                    aria-expanded="false"
+                    aria-controls="grow-menu">
 
-        <div class="tag">✦ Scripture for Your Path ✦</div>
+                <svg class="jesus-icon"
+                     viewBox="0 0 48 48"
+                     role="img"
+                     aria-label="Illustration of Jesus">
+                    <circle cx="24" cy="24" r="23" fill="#1d3049"/>
+                    <circle cx="24" cy="19" r="16"
+                            fill="none" stroke="#efce78" stroke-width="2"/>
+                    <path d="M8 47c0-13 8-18 16-18s16 5 16 18"
+                          fill="#ede4cb"/>
+                    <path d="M29 31 17 47h11l8-12" fill="#90a9c0"/>
+                    <path d="M12 33V19C12 3 36 3 36 19v14l-7-4H19z"
+                          fill="#473125"/>
+                    <ellipse cx="24" cy="21" rx="9" ry="12" fill="#cb9975"/>
+                    <path d="M15 18c0-11 16-14 18 0-4-1-7-4-9-7-2 4-5 6-9 7"
+                          fill="#473125"/>
+                    <path d="M15 24c2 4 5 5 9 5s7-1 9-5c-1 10-5 13-9 13s-8-3-9-13"
+                          fill="#473125"/>
+                    <path d="M20 27q4 2 8 0"
+                          fill="none" stroke="#f0c6a4" stroke-width="1.3"/>
+                    <path d="M18 21h3m6 0h3"
+                          stroke="#39291f" stroke-linecap="round" stroke-width="1.5"/>
+                </svg>
 
-        <div id="verse-text" class="verse-text">
-            Trust in the LORD with all your heart and lean not on your own understanding.
+                <span>Grow Your Faith ▾</span>
+            </button>
+
+            <div id="grow-menu" class="drop glass" hidden>
+                <p class="drop-label">What’s on your heart?</p>
+                <div id="topic-menu"></div>
+                <hr class="menu-divider">
+                <button class="menu-item" onclick="openJourneys()">
+                    📖 7-Day Scripture Journeys
+                </button>
+            </div>
         </div>
-        <div id="verse-ref" class="verse-reference">— Proverbs 3:5</div>
-        <p id="feed-status" class="feed-status" role="status">
-            Loading today’s Scripture…
+    </div>
+
+    <div class="header-right">
+        <button id="main-toggle"
+                class="pill glass"
+                onclick="toggleDropdown('main')"
+                aria-expanded="false"
+                aria-controls="main-menu">
+            ☰ Menu
+        </button>
+
+        <div id="main-menu" class="drop glass" hidden>
+            <button id="music-btn" class="menu-item" onclick="toggleMusic()">
+                ▶ Play Music
+            </button>
+            <button class="menu-item" onclick="nextTrack()">⏭ Next Track</button>
+            <button class="menu-item" onclick="changeScene()">🔀 Shuffle Scene</button>
+            <button class="menu-item" onclick="saveVerse(currentDaily)">
+                ⭐ Save Daily Verse
+            </button>
+            <button class="menu-item" onclick="shareVerse(currentDaily)">
+                🔗 Share Daily Verse
+            </button>
+            <button class="menu-item" onclick="openFavorites()">📖 View Favorites</button>
+            <button class="menu-item" onclick="openBadges()">🏆 Streaks & Earned Badges</button>
+            <a class="menu-item"
+               href="https://localchurches.org/"
+               target="_blank"
+               rel="noopener noreferrer">
+                ⛪ Find a Church
+            </a>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    <section class="verse-card glass" aria-label="Daily Scripture">
+        <button class="bookmark"
+                onclick="saveVerse(currentDaily)"
+                aria-label="Save daily verse to favorites">⭐</button>
+
+        <h1 class="tag">✦ Scripture for Your Path ✦</h1>
+        <blockquote id="verse-text" class="verse"></blockquote>
+        <p id="verse-ref" class="reference"></p>
+        <p id="daily-version" class="tiny" style="margin-top:10px"></p>
+        <p id="feed-status" class="tiny feed-status" role="status">
+            Loading the daily verse…
         </p>
     </section>
 
-    <section class="scripture-audio" aria-label="Listen to Scripture">
-        <button id="scripture-audio-button" class="scripture-audio-button"
-                onclick="toggleScriptureAudio()" aria-expanded="false"
-                aria-controls="scripture-audio-panel" disabled>
+    <section class="audio-section" aria-label="Scripture audio">
+        <button id="audio-button"
+                class="audio-button glass"
+                onclick="toggleAudio()"
+                aria-expanded="false"
+                aria-controls="audio-panel"
+                disabled>
             Loading Scripture Audio…
         </button>
 
-        <div id="scripture-audio-panel" class="scripture-audio-panel" hidden>
-            <p class="scripture-audio-hint">
-                Press Play below to listen to Scripture.
-            </p>
-            <div id="scripture-player-container"></div>
-            <a id="audio-fallback" class="audio-fallback" target="_blank"
+        <div id="audio-panel" class="audio-panel glass" hidden>
+            <p>Press Play below to listen to Scripture.</p>
+            <div id="audio-host"></div>
+            <a id="audio-fallback"
+               class="tiny audio-link"
+               target="_blank"
                rel="noopener noreferrer">
-                Player not working? Listen on Bible Gateway
+                Listen on Bible Gateway
             </a>
         </div>
     </section>
+
+    <div id="resume-card" class="resume-card glass" hidden>
+        <div>
+            <strong id="resume-title"></strong>
+            <p id="resume-detail" class="tiny"></p>
+        </div>
+        <button class="secondary" onclick="resumeJourney()">Continue Journey →</button>
+    </div>
+
+    <footer class="site-footer tiny">
+        A moment in the Word. A little room to grow.
+    </footer>
 </main>
 
-<dialog id="saved-modal" aria-labelledby="saved-title">
-    <div class="modal-header">
-        <h2 id="saved-title" style="font-size:inherit">📖 Favorite Verses</h2>
-        <button class="close-modal"
-                onclick="document.getElementById('saved-modal').close()"
-                aria-label="Close favorites">✕</button>
+<dialog id="reader-dialog" aria-labelledby="reader-title">
+    <header class="dialog-head">
+        <h2 id="reader-title"></h2>
+        <button class="close"
+                onclick="closeDialog('reader-dialog')"
+                aria-label="Close reading">×</button>
+    </header>
+
+    <div class="dialog-body">
+        <p id="reader-label" class="eyebrow"></p>
+        <div id="day-nav" class="day-nav" hidden></div>
+        <h3 id="reading-heading"></h3>
+        <blockquote id="reader-text" class="reading-verse"></blockquote>
+        <p id="reader-ref" class="reading-ref"></p>
+        <p class="tiny">World English Bible (WEB) • Public domain</p>
+
+        <div id="reflection" class="reflection" hidden>
+            <p class="eyebrow">Reflection • not Scripture</p>
+            <p id="reflection-text"></p>
+            <p id="question" class="question"></p>
+        </div>
+
+        <div class="actions">
+            <button id="another-button" class="primary" onclick="anotherVerse()">
+                Show Another Verse
+            </button>
+            <button class="secondary" onclick="saveVerse(selectedVerse)">☆ Save</button>
+            <button class="secondary" onclick="shareVerse(selectedVerse)">↗ Share</button>
+            <a id="chapter-link"
+               class="secondary"
+               target="_blank"
+               rel="noopener noreferrer">Read Full Chapter ↗</a>
+        </div>
+
+        <p id="journey-status" class="journey-status" role="status" hidden></p>
+        <button id="complete-button"
+                class="primary"
+                onclick="completeJourneyDay()"
+                hidden>
+            Complete Today’s Reading ✓
+        </button>
+
+        <section id="journey-invite" class="journey-invite">
+            <h3>Take this a little further</h3>
+            <p>
+                Seven readings, a reflection, and a question each day.
+                Missed days never erase your progress.
+            </p>
+            <button class="secondary" onclick="startJourney(selectedTopic.id)">
+                Begin or Continue This Journey →
+            </button>
+        </section>
+
+        <p id="topic-note" class="tiny" style="margin-top:20px"></p>
     </div>
-    <div id="saved-verses-list"></div>
 </dialog>
 
-<dialog id="milestone-modal" aria-labelledby="milestone-title">
-    <div class="modal-header">
-        <h2 id="milestone-title" style="font-size:inherit">🏆 Streak Milestones</h2>
-        <button class="close-modal"
-                onclick="document.getElementById('milestone-modal').close()"
-                aria-label="Close milestones">✕</button>
+<dialog id="journeys-dialog" aria-labelledby="journeys-title">
+    <header class="dialog-head">
+        <h2 id="journeys-title">📖 Seven Days in Scripture</h2>
+        <button class="close"
+                onclick="closeDialog('journeys-dialog')"
+                aria-label="Close journeys">×</button>
+    </header>
+
+    <div class="dialog-body">
+        <p>
+            Choose what is on your heart. Complete one reading per journey
+            each day, revisit earlier readings anytime, and earn a lasting
+            badge when you finish.
+        </p>
+        <div id="journey-list" class="topic-list"></div>
+        <p class="tiny storage-note">
+            Progress is saved in this browser on this device.
+            Clearing its data removes saved progress.
+        </p>
     </div>
-    <div id="badge-container" class="badge-grid"></div>
 </dialog>
 
-<div id="toast" class="toast" role="status" hidden></div>
+<dialog id="badges-dialog" aria-labelledby="badges-title">
+    <header class="dialog-head">
+        <h2 id="badges-title">🏆 Your Faith Journey</h2>
+        <button class="close"
+                onclick="closeDialog('badges-dialog')"
+                aria-label="Close badges">×</button>
+    </header>
+
+    <div class="dialog-body">
+        <p>Your earned badges stay with you—even when a streak starts again.</p>
+
+        <div class="stats">
+            <div class="stat">
+                <b id="stat-current"></b>
+                <span>Current streak</span>
+            </div>
+            <div class="stat">
+                <b id="stat-longest"></b>
+                <span>Longest streak</span>
+            </div>
+            <div class="stat">
+                <b id="stat-total"></b>
+                <span>Known reading days</span>
+            </div>
+        </div>
+
+        <p class="tiny">
+            Earlier saved streak days are included. Visits your old version
+            did not record cannot be reconstructed.
+        </p>
+
+        <div id="badge-list" class="badges"></div>
+
+        <h3 style="margin-top:24px">Journey completion badges</h3>
+        <div id="journey-badges" class="badges"></div>
+
+        <p class="tiny storage-note">
+            Saved in this browser on this device. Earned badges survive
+            missed days; clearing browser data removes them.
+        </p>
+    </div>
+</dialog>
+
+<dialog id="favorites-dialog" aria-labelledby="favorites-title">
+    <header class="dialog-head">
+        <h2 id="favorites-title">📖 Favorite Verses</h2>
+        <button class="close"
+                onclick="closeDialog('favorites-dialog')"
+                aria-label="Close favorites">×</button>
+    </header>
+    <div id="favorites-list" class="dialog-body"></div>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <audio id="bg-music" loop preload="none"></audio>
 
 <script>
 "use strict";
 
-const TOTAL_ITEMS = 10;
+/*
+ * Built-in Scripture collection.
+ * World English Bible: public domain.
+ * Topic readings work immediately without another API request.
+ */
+const PASSAGES = {
+"John 14:27": "Peace I leave with you. My peace I give to you; not as the world gives, give I to you. Don’t let your heart be troubled, neither let it be fearful.",
+"Philippians 4:6-7": "In nothing be anxious, but in everything, by prayer and petition with thanksgiving, let your requests be made known to God. And the peace of God, which surpasses all understanding, will guard your hearts and your thoughts in Christ Jesus.",
+"Matthew 11:28-30": "“Come to me, all you who labor and are heavily burdened, and I will give you rest. Take my yoke upon you, and learn from me, for I am gentle and lowly in heart; and you will find rest for your souls. For my yoke is easy, and my burden is light.”",
+"Isaiah 26:3-4": "You will keep whoever’s mind is steadfast in perfect peace, because he trusts in you. Trust in Yahweh forever; for in Yah, Yahweh, is an everlasting Rock.",
+"Colossians 3:15": "And let the peace of God rule in your hearts, to which also you were called in one body; and be thankful.",
+"Romans 12:18": "If it is possible, as much as it is up to you, be at peace with all men.",
+"Psalm 4:8": "In peace I will both lay myself down and sleep, for you, Yahweh alone, make me live in safety.",
+"Psalm 29:11": "Yahweh will give strength to his people. Yahweh will bless his people with peace.",
+"Psalm 46:10": "“Be still, and know that I am God. I will be exalted among the nations. I will be exalted in the earth.”",
+"2 Thessalonians 3:16": "Now may the Lord of peace himself give you peace at all times in all ways. The Lord be with you all.",
+
+"Psalm 56:3-4": "When I am afraid, I will put my trust in you. In God, I praise his word. In God, I put my trust. I will not be afraid. What can flesh do to me?",
+"1 Peter 5:6-7": "Humble yourselves therefore under the mighty hand of God, that he may exalt you in due time; casting all your worries on him, because he cares for you.",
+"Matthew 6:25-27": "Therefore I tell you, don’t be anxious for your life: what you will eat, or what you will drink; nor yet for your body, what you will wear. Isn’t life more than food, and the body more than clothing? See the birds of the sky, that they don’t sow, neither do they reap, nor gather into barns. Your heavenly Father feeds them. Aren’t you of much more value than they? “Which of you, by being anxious, can add one moment to his lifespan?",
+"Matthew 6:33-34": "But seek first God’s Kingdom, and his righteousness; and all these things will be given to you as well. Therefore don’t be anxious for tomorrow, for tomorrow will be anxious for itself. Each day’s own evil is sufficient.",
+"Psalm 94:18-19": "When I said, “My foot is slipping!” Your loving kindness, Yahweh, held me up. In the multitude of my thoughts within me, your comforts delight my soul.",
+"Psalm 62:8": "Trust in him at all times, you people. Pour out your heart before him. God is a refuge for us. Selah.",
+"Luke 12:6-7": "“Aren’t five sparrows sold for two assaria coins? Not one of them is forgotten by God. But the very hairs of your head are all numbered. Therefore don’t be afraid. You are of more value than many sparrows.",
+"Proverbs 12:25": "Anxiety in a man’s heart weighs it down, but a kind word makes it glad.",
+"Psalm 55:22": "Cast your burden on Yahweh, and he will sustain you. He will never allow the righteous to be moved.",
+
+"Psalm 46:1": "God is our refuge and strength, a very present help in trouble.",
+"Isaiah 40:29-31": "He gives power to the weak. He increases the strength of him who has no might. Even the youths faint and get weary, and the young men utterly fall; But those who wait for Yahweh will renew their strength. They will mount up with wings like eagles. They will run, and not be weary. They will walk, and not faint.",
+"2 Corinthians 12:9-10": "He has said to me, “My grace is sufficient for you, for my power is made perfect in weakness.” Most gladly therefore I will rather glory in my weaknesses, that the power of Christ may rest on me. Therefore I take pleasure in weaknesses, in injuries, in necessities, in persecutions, in distresses, for Christ’s sake. For when I am weak, then am I strong.",
+"Psalm 121:1-2": "I will lift up my eyes to the hills. Where does my help come from? My help comes from Yahweh, who made heaven and earth.",
+"Ephesians 6:10-11": "Finally, be strong in the Lord, and in the strength of his might. Put on the whole armor of God, that you may be able to stand against the wiles of the devil.",
+"Galatians 6:9-10": "Let us not be weary in doing good, for we will reap in due season, if we don’t give up. So then, as we have opportunity, let’s do what is good toward all men, and especially toward those who are of the household of the faith.",
+"Habakkuk 3:17-19": "For though the fig tree doesn’t flourish, nor fruit be in the vines; the labor of the olive fails, the fields yield no food; the flocks are cut off from the fold, and there is no herd in the stalls: yet I will rejoice in Yahweh. I will be joyful in the God of my salvation! Yahweh, the Lord, is my strength. He makes my feet like deer’s feet, and enables me to go in high places. For the music director, on my stringed instruments.",
+"Psalm 28:7": "Yahweh is my strength and my shield. My heart has trusted in him, and I am helped. Therefore my heart greatly rejoices. With my song I will thank him.",
+"2 Timothy 1:7": "For God didn’t give us a spirit of fear, but of power, love, and self-control.",
+"Psalm 18:2": "Yahweh is my rock, my fortress, and my deliverer; my God, my rock, in whom I take refuge; my shield, and the horn of my salvation, my high tower.",
+
+"Psalm 42:11": "Why are you in despair, my soul? Why are you disturbed within me? Hope in God! For I shall still praise him, the saving help of my countenance, and my God.",
+"Lamentations 3:21-24": "This I recall to my mind; therefore have I hope. It is because of Yahweh’s loving kindnesses that we are not consumed, because his compassion doesn’t fail. They are new every morning; great is your faithfulness. Yahweh is my portion, says my soul; therefore will I hope in him.",
+"Romans 15:4": "For whatever things were written before were written for our learning, that through patience and through encouragement of the Scriptures we might have hope.",
+"Romans 15:13": "Now may the God of hope fill you with all joy and peace in believing, that you may abound in hope, in the power of the Holy Spirit.",
+"Hebrews 6:19": "This hope we have as an anchor of the soul, a hope both sure and steadfast and entering into that which is within the veil;",
+"2 Corinthians 4:16-18": "Therefore we don’t faint, but though our outward man is decaying, yet our inward man is renewed day by day. For our light affliction, which is for the moment, works for us more and more exceedingly an eternal weight of glory; while we don’t look at the things which are seen, but at the things which are not seen. For the things which are seen are temporal, but the things which are not seen are eternal.",
+"Revelation 21:3-4": "I heard a loud voice out of heaven saying, “Behold, God’s dwelling is with people, and he will dwell with them, and they will be his people, and God himself will be with them as their God. He will wipe away from them every tear from their eyes. Death will be no more; neither will there be mourning, nor crying, nor pain, any more. The first things have passed away.”",
+"Psalm 130:5": "I wait for Yahweh. My soul waits. I hope in his word.",
+"Romans 8:24-25": "For we were saved in hope, but hope that is seen is not hope. For who hopes for that which he sees? But if we hope for that which we don’t see, we wait for it with patience.",
+"1 Peter 1:3": "Blessed be the God and Father of our Lord Jesus Christ, who according to his great mercy became our father again to a living hope through the resurrection of Jesus Christ from the dead,",
+
+"Psalm 100:4-5": "Enter into his gates with thanksgiving, into his courts with praise. Give thanks to him, and bless his name. For Yahweh is good. His loving kindness endures forever, his faithfulness to all generations.",
+"James 1:17": "Every good gift and every perfect gift is from above, coming down from the Father of lights, with whom can be no variation, nor turning shadow.",
+"1 Thessalonians 5:16-18": "Rejoice always. Pray without ceasing. In everything give thanks, for this is the will of God in Christ Jesus toward you.",
+"Luke 17:15-19": "One of them, when he saw that he was healed, turned back, glorifying God with a loud voice. He fell on his face at Jesus’ feet, giving him thanks; and he was a Samaritan. Jesus answered, “Weren’t the ten cleansed? But where are the nine? Were there none found who returned to give glory to God, except this stranger?” Then he said to him, “Get up, and go your way. Your faith has healed you.”",
+"Psalm 103:1-5": "Praise Yahweh, my soul! All that is within me, praise his holy name! Praise Yahweh, my soul, and don’t forget all his benefits; who forgives all your sins; who heals all your diseases; who redeems your life from destruction; who crowns you with loving kindness and tender mercies; who satisfies your desire with good things, so that your youth is renewed like the eagle’s.",
+"Colossians 3:16-17": "Let the word of Christ dwell in you richly; in all wisdom teaching and admonishing one another with psalms, hymns, and spiritual songs, singing with grace in your heart to the Lord. Whatever you do, in word or in deed, do all in the name of the Lord Jesus, giving thanks to God the Father, through him.",
+"Hebrews 13:15-16": "Through him, then, let us offer up a sacrifice of praise to God continually, that is, the fruit of lips which proclaim allegiance to his name. But don’t forget to be doing good and sharing, for with such sacrifices God is well pleased.",
+"Psalm 107:1": "Give thanks to Yahweh, for he is good, for his loving kindness endures forever.",
+"Ephesians 5:20": "giving thanks always concerning all things in the name of our Lord Jesus Christ, to God, even the Father;",
+"Psalm 118:24": "This is the day that Yahweh has made. We will rejoice and be glad in it!",
+
+"Psalm 34:18": "Yahweh is near to those who have a broken heart, and saves those who have a crushed spirit.",
+"Psalm 23:1-4": "Yahweh is my shepherd: I shall lack nothing. He makes me lie down in green pastures. He leads me beside still waters. He restores my soul. He guides me in the paths of righteousness for his name’s sake. Even though I walk through the valley of the shadow of death, I will fear no evil, for you are with me. Your rod and your staff, they comfort me.",
+"James 5:13-16": "Is any among you suffering? Let him pray. Is any cheerful? Let him sing praises. Is any among you sick? Let him call for the elders of the assembly, and let them pray over him, anointing him with oil in the name of the Lord, and the prayer of faith will heal him who is sick, and the Lord will raise him up. If he has committed sins, he will be forgiven. Confess your offenses to one another, and pray for one another, that you may be healed. The insistent prayer of a righteous person is powerfully effective.",
+"2 Corinthians 12:9": "He has said to me, “My grace is sufficient for you, for my power is made perfect in weakness.” Most gladly therefore I will rather glory in my weaknesses, that the power of Christ may rest on me.",
+"2 Corinthians 1:3-4": "Blessed be the God and Father of our Lord Jesus Christ, the Father of mercies and God of all comfort; who comforts us in all our affliction, that we may be able to comfort those who are in any affliction, through the comfort with which we ourselves are comforted by God.",
+"Romans 8:38-39": "For I am persuaded, that neither death, nor life, nor angels, nor principalities, nor things present, nor things to come, nor powers, nor height, nor depth, nor any other created thing, will be able to separate us from the love of God, which is in Christ Jesus our Lord.",
+"Psalm 147:3": "He heals the broken in heart, and binds up their wounds.",
+"3 John 1:2": "Beloved, I pray that you may prosper in all things and be healthy, even as your soul prospers.",
+"Isaiah 40:29": "He gives power to the weak. He increases the strength of him who has no might.",
+
+"Psalm 13:1-2": "How long, Yahweh? Will you forget me forever? How long will you hide your face from me? How long shall I take counsel in my soul, having sorrow in my heart every day? How long shall my enemy triumph over me?",
+"John 11:33-36": "When Jesus therefore saw her weeping, and the Jews weeping who came with her, he groaned in the spirit, and was troubled, and said, “Where have you laid him?” They told him, “Lord, come and see.” Jesus wept. The Jews therefore said, “See how much affection he had for him!”",
+"Matthew 5:4": "Blessed are those who mourn, for they shall be comforted.",
+"1 Thessalonians 4:13-14": "But we don’t want you to be ignorant, brothers, concerning those who have fallen asleep, so that you don’t grieve like the rest, who have no hope. For if we believe that Jesus died and rose again, even so God will bring with him those who have fallen asleep in Jesus.",
+"Revelation 21:4": "He will wipe away from them every tear from their eyes. Death will be no more; neither will there be mourning, nor crying, nor pain, any more. The first things have passed away.”",
+"Romans 12:15": "Rejoice with those who rejoice. Weep with those who weep.",
+"Psalm 23:4": "Even though I walk through the valley of the shadow of death, I will fear no evil, for you are with me. Your rod and your staff, they comfort me.",
+
+"Psalm 25:16": "Turn to me, and have mercy on me, for I am desolate and afflicted.",
+"Psalm 139:1-3": "Yahweh, you have searched me, and you know me. You know my sitting down and my rising up. You perceive my thoughts from afar. You search out my path and my lying down, and are acquainted with all my ways.",
+"Hebrews 13:5-6": "Be free from the love of money, content with such things as you have, for he has said, “I will in no way leave you, neither will I in any way forsake you.” So that with good courage we say, “The Lord is my helper. I will not fear. What can man do to me?”",
+"Ecclesiastes 4:9-10": "Two are better than one, because they have a good reward for their labor. For if they fall, the one will lift up his fellow; but woe to him who is alone when he falls, and doesn’t have another to lift him up.",
+"Romans 12:4-5": "For even as we have many members in one body, and all the members don’t have the same function, so we, who are many, are one body in Christ, and individually members one of another.",
+"Hebrews 10:24-25": "Let us consider how to provoke one another to love and good works, not forsaking our own assembling together, as the custom of some is, but exhorting one another; and so much the more, as you see the Day approaching.",
+"John 15:12-13": "“This is my commandment, that you love one another, even as I have loved you. Greater love has no one than this, that someone lay down his life for his friends.",
+"Psalm 68:5-6": "A father of the fatherless, and a defender of the widows, is God in his holy habitation. God sets the lonely in families. He brings out the prisoners with singing, but the rebellious dwell in a sun-scorched land.",
+"Romans 12:10": "In love of the brothers be tenderly affectionate one to another; in honor preferring one another;",
+"1 John 3:18": "My little children, let’s not love in word only, neither with the tongue only, but in deed and truth.",
+
+"1 Corinthians 13:4-7": "Love is patient and is kind; love doesn’t envy. Love doesn’t brag, is not proud, doesn’t behave itself inappropriately, doesn’t seek its own way, is not provoked, takes no account of evil; doesn’t rejoice in unrighteousness, but rejoices with the truth; bears all things, believes all things, hopes all things, endures all things.",
+"John 13:34-35": "A new commandment I give to you, that you love one another, just like I have loved you; that you also love one another. By this everyone will know that you are my disciples, if you have love for one another.”",
+"James 1:19-20": "So, then, my beloved brothers, let every man be swift to hear, slow to speak, and slow to anger; for the anger of man doesn’t produce the righteousness of God.",
+"Ephesians 4:2-3": "with all lowliness and humility, with patience, bearing with one another in love; being eager to keep the unity of the Spirit in the bond of peace.",
+"Colossians 3:12-14": "Put on therefore, as God’s chosen ones, holy and beloved, a heart of compassion, kindness, lowliness, humility, and perseverance; bearing with one another, and forgiving each other, if any man has a complaint against any; even as Christ forgave you, so you also do. Above all these things, walk in love, which is the bond of perfection.",
+"Romans 12:9-10": "Let love be without hypocrisy. Abhor that which is evil. Cling to that which is good. In love of the brothers be tenderly affectionate one to another; in honor preferring one another;",
+"Proverbs 17:17": "A friend loves at all times; and a brother is born for adversity.",
+"1 John 4:19": "We love him, because he first loved us.",
+"1 Peter 4:8": "And above all things be earnest in your love among yourselves, for love covers a multitude of sins.",
+
+"Psalm 51:10": "Create in me a clean heart, O God. Renew a right spirit within me.",
+"1 John 1:9": "If we confess our sins, he is faithful and righteous to forgive us the sins, and to cleanse us from all unrighteousness.",
+"Psalm 103:11-12": "For as the heavens are high above the earth, so great is his loving kindness toward those who fear him. As far as the east is from the west, so far has he removed our transgressions from us.",
+"Ephesians 4:31-32": "Let all bitterness, wrath, anger, outcry, and slander, be put away from you, with all malice. And be kind to one another, tender hearted, forgiving each other, just as God also in Christ forgave you.",
+"Colossians 3:13": "bearing with one another, and forgiving each other, if any man has a complaint against any; even as Christ forgave you, so you also do.",
+"Matthew 5:23-24": "“If therefore you are offering your gift at the altar, and there remember that your brother has anything against you, leave your gift there before the altar, and go your way. First be reconciled to your brother, and then come and offer your gift.",
+"Romans 12:18-21": "If it is possible, as much as it is up to you, be at peace with all men. Don’t seek revenge yourselves, beloved, but give place to God’s wrath. For it is written, “Vengeance belongs to me; I will repay, says the Lord.” Therefore “If your enemy is hungry, feed him. If he is thirsty, give him a drink; for in doing so, you will heap coals of fire on his head.” Don’t be overcome by evil, but overcome evil with good.",
+"Micah 7:18-19": "Who is a God like you, who pardons iniquity, and passes over the disobedience of the remnant of his heritage? He doesn’t retain his anger forever, because he delights in loving kindness. He will again have compassion on us. He will tread our iniquities under foot; and you will cast all their sins into the depths of the sea.",
+"Luke 6:36": "“Therefore be merciful, even as your Father is also merciful.",
+"Psalm 32:5": "I acknowledged my sin to you. I didn’t hide my iniquity. I said, I will confess my transgressions to Yahweh, and you forgave the iniquity of my sin. Selah.",
+
+"James 1:5": "But if any of you lacks wisdom, let him ask of God, who gives to all liberally and without reproach; and it will be given to him.",
+"Proverbs 3:5-6": "Trust in Yahweh with all your heart, and don’t lean on your own understanding. In all your ways acknowledge him, and he will make your paths straight.",
+"Psalm 119:105": "Your word is a lamp to my feet, and a light for my path.",
+"Proverbs 15:22": "Where there is no counsel, plans fail; but in a multitude of counselors they are established.",
+"Micah 6:8": "He has shown you, O man, what is good. What does Yahweh require of you, but to act justly, to love mercy, and to walk humbly with your God?",
+"James 3:17": "But the wisdom that is from above is first pure, then peaceful, gentle, reasonable, full of mercy and good fruits, without partiality, and without hypocrisy.",
+"Proverbs 16:9": "A man’s heart plans his course, but Yahweh directs his steps.",
+"Psalm 25:4-5": "Show me your ways, Yahweh. Teach me your paths. Guide me in your truth, and teach me, For you are the God of my salvation, I wait for you all day long.",
+"Proverbs 11:14": "Where there is no wise guidance, the nation falls, but in the multitude of counselors there is victory.",
+"Psalm 143:10": "Teach me to do your will, for you are my God. Your Spirit is good. Lead me in the land of uprightness.",
+
+"Psalm 27:14": "Wait for Yahweh. Be strong, and let your heart take courage. Yes, wait for Yahweh.",
+"Psalm 37:7": "Rest in Yahweh, and wait patiently for him. Don’t fret because of him who prospers in his way, because of the man who makes wicked plots happen.",
+"Romans 12:12": "rejoicing in hope; enduring in troubles; continuing steadfastly in prayer;",
+"James 5:7-8": "Be patient therefore, brothers, until the coming of the Lord. Behold, the farmer waits for the precious fruit of the earth, being patient over it, until it receives the early and late rain. You also be patient. Establish your hearts, for the coming of the Lord is at hand.",
+"Galatians 6:9": "Let us not be weary in doing good, for we will reap in due season, if we don’t give up.",
+"Lamentations 3:25-26": "Yahweh is good to those who wait for him, to the soul that seeks him. It is good that a man should hope and quietly wait for the salvation of Yahweh.",
+"Psalm 130:5-6": "I wait for Yahweh. My soul waits. I hope in his word. My soul longs for the Lord more than watchmen long for the morning; more than watchmen for the morning.",
+"Romans 8:25": "But if we hope for that which we don’t see, we wait for it with patience.",
+"Ecclesiastes 3:1": "For everything there is a season, and a time for every purpose under heaven:",
+
+"Hebrews 11:1": "Now faith is assurance of things hoped for, proof of things not seen.",
+"Mark 9:24": "Immediately the father of the child cried out with tears, “I believe. Help my unbelief!”",
+"Romans 10:17": "So faith comes by hearing, and hearing by the word of God.",
+"John 15:4-5": "Remain in me, and I in you. As the branch can’t bear fruit by itself, unless it remains in the vine, so neither can you, unless you remain in me. I am the vine. You are the branches. He who remains in me, and I in him, the same bears much fruit, for apart from me you can do nothing.",
+"James 1:22": "But be doers of the word, and not only hearers, deluding your own selves.",
+"Galatians 5:22-23": "But the fruit of the Spirit is love, joy, peace, patience, kindness, goodness, faith, gentleness, and self-control. Against such things there is no law.",
+"2 Peter 3:18": "But grow in the grace and knowledge of our Lord and Savior Jesus Christ. To him be the glory both now and forever. Amen.",
+"Matthew 7:24-25": "“Everyone therefore who hears these words of mine, and does them, I will liken him to a wise man, who built his house on a rock. The rain came down, the floods came, and the winds blew, and beat on that house; and it didn’t fall, for it was founded on the rock.",
+"Colossians 2:6-7": "As therefore you received Christ Jesus, the Lord, walk in him, rooted and built up in him, and established in the faith, even as you were taught, abounding in it in thanksgiving.",
+"Hebrews 12:1-2": "Therefore let us also, seeing we are surrounded by so great a cloud of witnesses, lay aside every weight and the sin which so easily entangles us, and let us run with patience the race that is set before us, looking to Jesus, the author and perfecter of faith, who for the joy that was set before him endured the cross, despising its shame, and has sat down at the right hand of the throne of God.",
+
+"1 Timothy 2:1-2": "I exhort therefore, first of all, that petitions, prayers, intercessions, and givings of thanks, be made for all men: for kings and all who are in high places; that we may lead a tranquil and quiet life in all godliness and reverence.",
+"Philippians 1:3-5": "I thank my God whenever I remember you, always in every request of mine on behalf of you all making my requests with joy, for your partnership in furtherance of the Good News from the first day until now;",
+"Colossians 1:9-10": "For this cause, we also, since the day we heard this, don’t cease praying and making requests for you, that you may be filled with the knowledge of his will in all spiritual wisdom and understanding, that you may walk worthily of the Lord, to please him in all respects, bearing fruit in every good work, and increasing in the knowledge of God;",
+"Ephesians 3:16-19": "that he would grant you, according to the riches of his glory, that you may be strengthened with power through his Spirit in the inward man; that Christ may dwell in your hearts through faith; to the end that you, being rooted and grounded in love, may be strengthened to comprehend with all the saints what is the breadth and length and height and depth, and to know Christ’s love which surpasses knowledge, that you may be filled with all the fullness of God.",
+"James 5:16": "Confess your offenses to one another, and pray for one another, that you may be healed. The insistent prayer of a righteous person is powerfully effective.",
+"Matthew 5:44": "But I tell you, love your enemies, bless those who curse you, do good to those who hate you, and pray for those who mistreat you and persecute you,",
+"Galatians 6:2": "Bear one another’s burdens, and so fulfill the law of Christ.",
+"Philemon 1:4-6": "I thank my God always, making mention of you in my prayers, hearing of your love, and of the faith which you have toward the Lord Jesus, and toward all the saints; that the fellowship of your faith may become effective, in the knowledge of every good thing which is in us in Christ Jesus."
+};
+
+/*
+ * Each topic has 10 passages.
+ * The first seven entries form its seven-day journey.
+ * Journey entries contain:
+ * reference, heading, reflection, question.
+ */
+const TOPIC_DEFINITIONS = [
+[
+"peace", "🕊️", "Peace",
+[
+["John 14:27", "Peace as a gift", "Jesus comforts his disciples before his departure with peace rooted in him.", "What trouble can you bring to Jesus today?"],
+["Philippians 4:6-7", "Bring your concerns", "Paul connects prayer and thanksgiving with the peace of God.", "Name one concern and one reason for thanks."],
+["Matthew 11:28-30", "Receive rest", "Jesus invites the burdened to learn his gentle way.", "What burden feels heavy right now?"],
+["Isaiah 26:3-4", "Practice trust", "This song of trust points to God as an enduring rock.", "Where could you practice trust in one small way?"],
+["Colossians 3:15", "Peace together", "Paul addresses a community called to peace and gratitude.", "How could you bring peace to a relationship?"],
+["Romans 12:18", "Your part in peace", "Paul asks believers to pursue peace while recognizing its limits.", "What peaceful step is within your control?"],
+["Psalm 4:8", "Rest tonight", "The psalm closes with trust that makes rest possible.", "What would help you end today in prayer?"],
+["Psalm 29:11"], ["Psalm 46:10"], ["2 Thessalonians 3:16"]
+]
+],
+[
+"worry", "🙏", "Worry & Anxiety",
+[
+["Psalm 56:3-4", "Name the fear", "The psalmist acknowledges fear and turns toward trust.", "What fear would you like to name honestly?"],
+["1 Peter 5:6-7", "You are cared for", "Peter connects humility with entrusting anxiety to God.", "What concern can you place in prayer?"],
+["Matthew 6:25-27", "Notice creation", "Jesus points to the birds as an invitation to trust the Father.", "What in nature reminds you to pause?"],
+["Matthew 6:33-34", "One day at a time", "Jesus directs attention toward God’s kingdom and today’s responsibilities.", "What is one manageable step for today?"],
+["Philippians 4:6-7", "Pray with thanks", "Prayer can hold both real needs and gratitude.", "What need and what gratitude can you express together?"],
+["Psalm 94:18-19", "Receive comfort", "The writer describes God’s loving kindness amid anxious thoughts.", "Who or what has brought you comfort recently?"],
+["Psalm 62:8", "Pour out your heart", "The psalm invites people to speak openly to God.", "What would an honest prayer sound like today?"],
+["Luke 12:6-7"], ["Proverbs 12:25"], ["Psalm 55:22"]
+]
+],
+[
+"strength", "💪", "Strength",
+[
+["Psalm 46:1", "A place of refuge", "This psalm begins with God’s presence in trouble.", "Where do you need support today?"],
+["Isaiah 40:29-31", "Strength for the weary", "Isaiah speaks of renewed strength for those who wait for God.", "Where could you allow yourself rest?"],
+["2 Corinthians 12:9-10", "Grace in weakness", "Paul describes grace amid an affliction that was not removed.", "How might you receive help instead of hiding weakness?"],
+["Psalm 121:1-2", "Look for help", "The pilgrim’s song directs hope toward the Creator.", "What help can you ask for today?"],
+["Ephesians 6:10-11", "Stand in faith", "Paul introduces spiritual strength through God rather than self-reliance.", "What would help you stand firm in kindness and truth?"],
+["Galatians 6:9-10", "Keep doing good", "Paul encourages perseverance in practical care for others.", "What small good thing can you continue?"],
+["Habakkuk 3:17-19", "Strength through loss", "Habakkuk expresses trust even when ordinary sources of security fail.", "What can sustain you when circumstances remain difficult?"],
+["Psalm 28:7"], ["2 Timothy 1:7"], ["Psalm 18:2"]
+]
+],
+[
+"hope", "🌅", "Hope",
+[
+["Psalm 42:11", "Speak hope gently", "The psalmist speaks to a downcast soul without denying sorrow.", "What might a gentle word of hope sound like?"],
+["Lamentations 3:21-24", "Mercies amid grief", "These words of hope arise inside a book of profound lament.", "What small mercy can you notice today?"],
+["Romans 15:4", "Learn from Scripture", "Paul points to Scripture as a source of endurance and encouragement.", "Which passage has encouraged you before?"],
+["Romans 15:13", "Hope from God", "Paul offers a blessing of joy, peace, and hope.", "Who could receive this prayer from you?"],
+["Hebrews 6:19", "An anchor", "The writer describes hope grounded in God’s promise as an anchor.", "What helps you feel anchored?"],
+["2 Corinthians 4:16-18", "Beyond this moment", "Paul contrasts present hardship with an enduring perspective.", "What lasting value can guide your next step?"],
+["Revelation 21:3-4", "A future of restoration", "John’s vision portrays God dwelling with people and ending suffering.", "What restoration do you long for?"],
+["Psalm 130:5"], ["Romans 8:24-25"], ["1 Peter 1:3"]
+]
+],
+[
+"gratitude", "💛", "Gratitude",
+[
+["Psalm 100:4-5", "Begin with thanks", "This worship song invites thanksgiving for God’s goodness.", "Name three things you are thankful for."],
+["James 1:17", "Notice the gifts", "James points to God as the source of good gifts.", "Which ordinary gift do you often overlook?"],
+["1 Thessalonians 5:16-18", "A daily practice", "Paul places gratitude alongside prayer and joy in community life.", "How can you make room for thanks without denying difficulty?"],
+["Luke 17:15-19", "Return to say thanks", "One of the people healed by Jesus returns to express gratitude.", "Who deserves a thank-you from you?"],
+["Psalm 103:1-5", "Remember goodness", "The psalm calls the worshipper to remember God’s benefits.", "What past kindness do you want to remember?"],
+["Colossians 3:16-17", "Gratitude in action", "Paul connects thanksgiving with words, worship, and daily actions.", "How could gratitude change something you do today?"],
+["Hebrews 13:15-16", "Share the good", "The writer joins praise with doing good and sharing.", "What can you share with someone this week?"],
+["Psalm 107:1"], ["Ephesians 5:20"], ["Psalm 118:24"]
+]
+],
+[
+"healing", "🩹", "Illness & Healing",
+[
+["Psalm 34:18", "Near in pain", "The psalm describes God’s nearness to broken hearts.", "What would you like someone to understand about your experience?"],
+["Psalm 23:1-4", "Companionship", "The shepherd psalm includes both rest and the darkest valley.", "Who can walk alongside you today?"],
+["Matthew 11:28-30", "Permission to rest", "Jesus invites those carrying heavy burdens to come to him.", "What rest or practical help could you accept?"],
+["James 5:13-16", "Pray together", "James encourages a community to pray and care for its sick members.", "Who could you invite to pray with you?"],
+["2 Corinthians 12:9", "Grace today", "Paul hears of sufficient grace while living with ongoing weakness.", "What support would make today more manageable?"],
+["2 Corinthians 1:3-4", "Comfort shared", "Paul describes comfort received and then offered to others.", "Who has comforted you, and how could you thank them?"],
+["Romans 8:38-39", "Held in love", "Paul declares that hardship cannot sever God’s love in Christ.", "What helps you remember you are loved?"],
+["Psalm 147:3"], ["3 John 1:2"], ["Isaiah 40:29"]
+]
+],
+[
+"grief", "🕯️", "Grief & Loss",
+[
+["Psalm 13:1-2", "Room for lament", "The psalmist speaks openly about sorrow and feeling forgotten.", "What do you need permission to say today?"],
+["John 11:33-36", "Jesus wept", "Jesus shares the sorrow surrounding Lazarus’s death.", "What does shared sorrow mean to you?"],
+["Matthew 5:4", "Comfort for mourners", "Jesus includes those who mourn in his blessings.", "What kind of comfort would help today?"],
+["Psalm 34:18", "Near the brokenhearted", "This passage offers nearness rather than a timetable for grief.", "Who could sit with you without trying to fix anything?"],
+["2 Corinthians 1:3-4", "Receive comfort", "Paul speaks of comfort that can be received and shared.", "What memory or person brings a little comfort?"],
+["1 Thessalonians 4:13-14", "Grief with hope", "Paul addresses a grieving church with hope rooted in Jesus.", "How can sorrow and hope both have room today?"],
+["Revelation 21:4", "Tears remembered", "John’s vision looks toward an end to death and mourning.", "What would you like to hold in prayer?"],
+["Psalm 147:3"], ["Romans 12:15"], ["Psalm 23:4"]
+]
+],
+[
+"loneliness", "🤝", "Loneliness",
+[
+["Psalm 25:16", "An honest prayer", "The psalmist names loneliness directly before God.", "What would you like to say about feeling alone?"],
+["Psalm 139:1-3", "Known", "The psalm portrays God’s intimate knowledge of everyday life.", "What part of your day do you wish someone noticed?"],
+["Hebrews 13:5-6", "Not abandoned", "The writer grounds courage in God’s abiding presence.", "What helps you remember companionship is possible?"],
+["Ecclesiastes 4:9-10", "Reach for support", "The wisdom writer describes the value of mutual help.", "Who could you reach out to with a small message?"],
+["Romans 12:4-5", "Belonging", "Paul describes people as distinct members of one body.", "Where might you find a welcoming community?"],
+["Hebrews 10:24-25", "Encourage each other", "The writer urges believers toward gathering and encouragement.", "What low-pressure opportunity for connection could you try?"],
+["John 15:12-13", "Offer friendship", "Jesus calls his disciples to active, self-giving love.", "What small act of friendship could you offer?"],
+["Psalm 68:5-6"], ["Romans 12:10"], ["1 John 3:18"]
+]
+],
+[
+"love", "❤️", "Love & Relationships",
+[
+["1 Corinthians 13:4-7", "Love in practice", "Paul describes love through patience, kindness, and faithfulness.", "Which quality could you practice today?"],
+["John 13:34-35", "Love as a witness", "Jesus makes mutual love a mark of his disciples.", "Who could experience kindness through you?"],
+["James 1:19-20", "Listen first", "James urges listening and restraint rather than quick anger.", "Where could you pause before responding?"],
+["Ephesians 4:2-3", "Gentleness", "Paul connects humility and patience with unity.", "How could you make a conversation gentler?"],
+["Colossians 3:12-14", "Put on compassion", "Paul uses the image of clothing to describe a loving way of life.", "What would compassion look like in one relationship?"],
+["1 John 3:18", "Love through action", "John asks for love expressed in deeds and truth.", "What practical act would speak louder than words?"],
+["Romans 12:9-10", "Sincere care", "Paul calls for genuine love and mutual honor.", "How can you honor someone this week?"],
+["Proverbs 17:17"], ["1 John 4:19"], ["1 Peter 4:8"]
+]
+],
+[
+"forgiveness", "🌿", "Forgiveness",
+[
+["Psalm 51:10", "Begin honestly", "This prayer asks for inward renewal after wrongdoing.", "What do you want to acknowledge honestly?"],
+["1 John 1:9", "Confession", "John describes confession and God’s faithfulness to forgive.", "What would a sincere confession include?"],
+["Psalm 103:11-12", "Receive mercy", "The psalm uses expansive images for God’s love and forgiveness.", "What makes receiving forgiveness difficult for you?"],
+["Ephesians 4:31-32", "Choose kindness", "Paul contrasts bitterness with compassion and forgiveness.", "What bitterness would you like help carrying?"],
+["Colossians 3:13", "Forgiveness together", "Paul asks a community to bear with and forgive one another.", "What next step toward forgiveness feels honest?"],
+["Matthew 5:23-24", "Make amends", "Jesus emphasizes seeking reconciliation when someone has a grievance.", "Is there a safe and appropriate way to make amends?"],
+["Romans 12:18-21", "Leave revenge behind", "Paul calls believers away from revenge and toward good.", "How can you pursue good while keeping needed boundaries?"],
+["Micah 7:18-19"], ["Luke 6:36"], ["Psalm 32:5"]
+]
+],
+[
+"guidance", "🧭", "Guidance & Decisions",
+[
+["James 1:5", "Ask for wisdom", "James encourages people facing trials to ask God for wisdom.", "What decision needs wisdom rather than speed?"],
+["Proverbs 3:5-6", "Trust beyond yourself", "This wisdom passage invites reliance on God rather than self-sufficiency.", "Which assumption might you need to reconsider?"],
+["Psalm 119:105", "Light for a step", "The psalm pictures God’s word as a lamp for the path.", "What is the next clear, faithful step?"],
+["Proverbs 15:22", "Seek counsel", "Wisdom includes listening to others rather than planning alone.", "Who can offer thoughtful, trustworthy advice?"],
+["Micah 6:8", "A moral compass", "Micah emphasizes justice, kindness, and humility.", "Which choice best reflects these qualities?"],
+["James 3:17", "Recognize wisdom", "James describes wisdom through peace, gentleness, and good fruit.", "Does your plan make room for mercy and honest listening?"],
+["Proverbs 16:9", "Hold plans humbly", "The proverb places human planning alongside God’s direction.", "How could you plan carefully while remaining open to change?"],
+["Psalm 25:4-5"], ["Proverbs 11:14"], ["Psalm 143:10"]
+]
+],
+[
+"patience", "⏳", "Patience & Trust",
+[
+["Psalm 27:14", "Wait with courage", "The psalm closes with encouragement to wait for God.", "What are you waiting for right now?"],
+["Psalm 37:7", "Be still", "The writer counsels stillness rather than comparison with others.", "What comparison could you set aside today?"],
+["Proverbs 3:5-6", "Trust the path", "This passage invites trust without claiming full understanding.", "What uncertainty can you acknowledge in prayer?"],
+["Romans 12:12", "Steady prayer", "Paul joins hope, patience in trouble, and ongoing prayer.", "What small prayer could you return to this week?"],
+["James 5:7-8", "Slow growth", "James uses the farmer’s waiting as an image of patience.", "Where is slow progress still progress?"],
+["Galatians 6:9", "Do not lose heart", "Paul encourages continuing in good work even before results appear.", "What worthwhile action can you keep practicing?"],
+["Lamentations 3:25-26", "Quiet hope", "Words of waiting and hope appear amid deep communal sorrow.", "What would a quiet moment of hope look like today?"],
+["Psalm 130:5-6"], ["Romans 8:25"], ["Ecclesiastes 3:1"]
+]
+],
+[
+"faith", "✝️", "Growing in Faith",
+[
+["Hebrews 11:1", "Begin with faith", "The chapter introduces faith before recalling lives shaped by it.", "What does trust in God mean in your life?"],
+["Mark 9:24", "Honest doubts", "A father brings both belief and unbelief to Jesus.", "What question can you bring without pretending certainty?"],
+["Romans 10:17", "Listen to the word", "Paul connects faith with hearing the message about Christ.", "How could you make space for Scripture today?"],
+["John 15:4-5", "Stay connected", "Jesus uses a vine and branches to describe life connected to him.", "What practice helps you remain connected?"],
+["James 1:22", "Put it into practice", "James asks readers to act on what they hear.", "What is one thing you can put into practice?"],
+["Galatians 5:22-23", "Notice the fruit", "Paul describes qualities associated with the Spirit’s work.", "Which quality would you like to nurture?"],
+["2 Peter 3:18", "Keep growing", "The letter closes with a call to grow in grace and knowledge.", "What gentle habit will you carry into next week?"],
+["Matthew 7:24-25"], ["Colossians 2:6-7"], ["Hebrews 12:1-2"]
+]
+],
+[
+"prayer", "🫶", "Praying for Others",
+[
+["1 Timothy 2:1-2", "Begin broadly", "Paul urges prayer and thanksgiving for all people, including leaders.", "Who is often missing from your prayers?"],
+["Philippians 1:3-5", "Remember with thanks", "Paul thanks God for people who share in his ministry.", "Who has supported you, and how can you thank God for them?"],
+["Colossians 1:9-10", "Pray for wisdom", "Paul prays for understanding that shapes a fruitful life.", "Who needs wisdom for a decision?"],
+["Ephesians 3:16-19", "Pray for strength and love", "Paul asks for inward strength and a deeper grasp of Christ’s love.", "Who could use encouragement in being loved?"],
+["James 5:16", "Pray together", "James describes mutual confession and prayer within a community.", "Who could you ask to pray with you?"],
+["Matthew 5:44", "Pray beyond your circle", "Jesus calls his followers to pray even for those who oppose them.", "Can you pray for someone difficult while keeping healthy boundaries?"],
+["Galatians 6:2", "Carry a burden", "Paul calls believers to support one another in practical ways.", "What act of care could accompany your prayer?"],
+["Romans 12:15"], ["Philemon 1:4-6"], ["3 John 1:2"]
+]
+]
+];
+
+const TOPICS = TOPIC_DEFINITIONS.map(([id, icon, name, entries]) => ({
+    id,
+    icon,
+    name,
+    verses: entries.map(([ref, title = "", reflection = "", question = ""]) => ({
+        ref,
+        text: PASSAGES[ref],
+        title,
+        reflection,
+        question
+    }))
+}));
+
 const $ = id => document.getElementById(id);
-const music = $("bg-music");
-const musicBtn = $("music-btn");
 
-let currentMusicIndex = 1;
-let currentImageIndex = 1;
-let currentStreakCount = 1;
-let dailyScriptureAudioUrl = "";
+const MILESTONES = [
+    [1, "🌱", "First Step"],
+    [3, "🙏", "Dedication"],
+    [7, "📖", "Devoted"],
+    [14, "✝️", "Dedicated"],
+    [30, "🕯️", "Disciple"],
+    [90, "🕊️", "Apostle"],
+    [180, "⛪", "Deacon"],
+    [365, "👑", "Anointed"]
+];
+
+const STATE_KEY = "scripture_growth_v1";
+const memory = {};
 let toastTimer;
-let feedTimer;
-let feedRequest = 0;
-let cleanupFeed = () => {};
-let lastLocalDate = localDateKey();
+let storageWarned = false;
 
-function notify(message) {
+function notify(text) {
     clearTimeout(toastTimer);
-    $("toast").textContent = message;
-    $("toast").hidden = false;
-    toastTimer = setTimeout(() => $("toast").hidden = true, 4500);
+    $("toast").textContent = text;
+
+    document.querySelectorAll("dialog[open]").forEach(dialog => {
+        let status = dialog.querySelector(".local-toast");
+
+        if (!status) {
+            status = document.createElement("p");
+            status.className = "tiny local-toast";
+            status.setAttribute("role", "status");
+            dialog.querySelector(".dialog-body").append(status);
+        }
+
+        status.textContent = text;
+    });
+
+    toastTimer = setTimeout(() => {
+        $("toast").textContent = "";
+        document.querySelectorAll(".local-toast").forEach(node => node.remove());
+    }, 4500);
 }
 
-function readStorage(key, fallback = null) {
+function get(key, fallback = null) {
     try {
-        return localStorage.getItem(key) ?? fallback;
+        return localStorage.getItem(key) ?? memory[key] ?? fallback;
+    } catch {
+        return memory[key] ?? fallback;
+    }
+}
+
+function put(key, value) {
+    memory[key] = value;
+
+    try {
+        localStorage.setItem(key, value);
+        return true;
+    } catch {
+        if (!storageWarned) {
+            storageWarned = true;
+            notify(
+                "This browser cannot save progress. " +
+                "It will last only while this page is open."
+            );
+        }
+
+        return false;
+    }
+}
+
+function readJSON(key, fallback) {
+    try {
+        return JSON.parse(get(key)) ?? fallback;
     } catch {
         return fallback;
     }
 }
 
-function writeStorage(key, value) {
-    try {
-        localStorage.setItem(key, value);
-        return true;
-    } catch {
-        return false;
-    }
-}
-
-function toggleMenu() {
-    const menu = $("dropdown-menu");
-    menu.hidden = !menu.hidden;
-    $("menu-toggle").setAttribute("aria-expanded", String(!menu.hidden));
-}
-
-function closeMenu() {
-    $("dropdown-menu").hidden = true;
-    $("menu-toggle").setAttribute("aria-expanded", "false");
-}
-
-document.addEventListener("click", event => {
-    if (!event.target.closest(".top-menu-container")) closeMenu();
-});
-
-document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-        closeMenu();
-        closeScriptureAudio();
-    }
-});
-
-function localDateKey() {
-    const date = new Date();
+function dayKey(date = new Date()) {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
 
-function dateNumber(key) {
-    if (!key) return NaN;
+function dayNumber(key) {
+    if (typeof key !== "string") return NaN;
+
     const parts = key.split("-").map(Number);
-    if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return NaN;
+
+    if (parts.length !== 3 || parts.some(value => !Number.isFinite(value))) {
+        return NaN;
+    }
+
     return Date.UTC(parts[0], parts[1] - 1, parts[2]) / 86400000;
 }
 
-function updateDailyStreak() {
-    const today = localDateKey();
-    const previous = readStorage("last_verse_visit_date");
-    let streak = parseInt(readStorage("verse_streak_count", "0"), 10);
-    if (!Number.isFinite(streak) || streak < 1) streak = 1;
+function count(value) {
+    return Number.isFinite(Number(value))
+        ? Math.max(0, Math.floor(Number(value)))
+        : 0;
+}
 
-    const difference = dateNumber(today) - dateNumber(previous);
+/* Preserve older streak data and convert it into permanent badges. */
+function loadState() {
+    const saved = readJSON(STATE_KEY, null);
+    const legacy = count(get("verse_streak_count", "0"));
 
-    if (!previous) {
-        streak = 1;
-    } else if (difference === 1) {
-        streak += 1;
-    } else if (difference > 1 || !Number.isFinite(difference)) {
-        streak = 1;
+    const result = saved && saved.version === 1
+        ? saved
+        : {
+            version: 1,
+            current: legacy,
+            longest: legacy,
+            total: legacy,
+            last: get("last_verse_visit_date"),
+            badges: [],
+            journeys: {},
+            active: null
+        };
+
+    result.current = count(result.current);
+    result.longest = Math.max(count(result.longest), result.current);
+    result.total = Math.max(count(result.total), result.longest);
+
+    result.badges = Array.isArray(result.badges)
+        ? result.badges.filter(days =>
+            MILESTONES.some(milestone => milestone[0] === days))
+        : [];
+
+    if (
+        !result.journeys ||
+        typeof result.journeys !== "object" ||
+        Array.isArray(result.journeys)
+    ) {
+        result.journeys = {};
     }
 
-    writeStorage("last_verse_visit_date", today);
-    writeStorage("verse_streak_count", String(streak));
-    currentStreakCount = streak;
+    TOPICS.forEach(topic => {
+        const journey = result.journeys[topic.id];
+
+        if (journey && typeof journey === "object") {
+            journey.completed = Math.min(7, count(journey.completed));
+            journey.last = typeof journey.last === "string"
+                ? journey.last
+                : null;
+        } else {
+            delete result.journeys[topic.id];
+        }
+    });
+
+    if (!TOPICS.some(topic => topic.id === result.active)) {
+        result.active = null;
+    }
+
+    MILESTONES.forEach(([days]) => {
+        if (result.longest >= days && !result.badges.includes(days)) {
+            result.badges.push(days);
+        }
+    });
+
+    return result;
+}
+
+let state = loadState();
+
+function persist() {
+    put(STATE_KEY, JSON.stringify(state));
+    put("verse_streak_count", String(state.current));
+    put("last_verse_visit_date", state.last || dayKey());
+}
+
+function updateVisit(today = dayKey()) {
+    const difference = dayNumber(today) - dayNumber(state.last);
+
+    if (state.last !== today) {
+        if (difference === 1) {
+            state.current += 1;
+        } else if (
+            !state.last ||
+            !Number.isFinite(difference) ||
+            difference > 1
+        ) {
+            state.current = 1;
+        }
+
+        if (!state.last || !Number.isFinite(difference) || difference > 0) {
+            state.total += 1;
+            state.last = today;
+        }
+    } else if (state.current < 1) {
+        state.current = 1;
+    }
+
+    state.longest = Math.max(state.longest, state.current);
+    state.total = Math.max(state.total, state.longest);
+
+    MILESTONES.forEach(([days]) => {
+        if (state.longest >= days && !state.badges.includes(days)) {
+            state.badges.push(days);
+        }
+    });
+
+    persist();
 
     $("streak-display").textContent =
-        `🔥 ${streak} ${streak === 1 ? "Day" : "Days"} Streak`;
+        `🔥 ${state.current} ${state.current === 1 ? "Day" : "Days"} Streak`;
 }
 
-function tryLoadingImage(index, extensionIndex) {
-    const extensions = [".jpg", ".jpeg", ".png"];
-    if (extensionIndex >= extensions.length) return;
-
-    const url = `background${index}${extensions[extensionIndex]}`;
-    const image = new Image();
-
-    image.onload = () => {
-        if (index !== currentImageIndex) return;
-        document.body.style.backgroundImage =
-            `linear-gradient(rgba(15,23,42,.35),rgba(15,23,42,.35)),url("${url}")`;
-    };
-
-    image.onerror = () => {
-        if (index === currentImageIndex) {
-            tryLoadingImage(index, extensionIndex + 1);
-        }
-    };
-
-    image.src = url;
+/* Only one dropdown can be open at a time. */
+function closeMenus() {
+    ["grow", "main"].forEach(id => {
+        $(id + "-menu").hidden = true;
+        $(id + "-toggle").setAttribute("aria-expanded", "false");
+    });
 }
 
-function changeSceneRandom() {
-    let next;
-    do {
-        next = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
-    } while (next === currentImageIndex && TOTAL_ITEMS > 1);
+function toggleDropdown(id) {
+    const shouldOpen = $(id + "-menu").hidden;
+    closeMenus();
 
-    currentImageIndex = next;
-    tryLoadingImage(next, 0);
-    closeMenu();
+    $(id + "-menu").hidden = !shouldOpen;
+    $(id + "-toggle").setAttribute("aria-expanded", String(shouldOpen));
 }
 
-function updateMusicButton() {
-    musicBtn.textContent = music.paused ? "▶ Play Music" : "⏸ Pause Music";
+function showDialog(id) {
+    closeMenus();
+
+    document.querySelectorAll("dialog[open]").forEach(dialog => {
+        if (dialog.id !== id) dialog.close();
+    });
+
+    if (!$(id).open) $(id).showModal();
 }
 
-music.addEventListener("play", updateMusicButton);
-music.addEventListener("pause", updateMusicButton);
-music.addEventListener("error", () => {
-    musicBtn.textContent = "▶ Play Music";
+function closeDialog(id) {
+    $(id).close();
+}
+
+function element(tag, className, text) {
+    const node = document.createElement(tag);
+
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+
+    return node;
+}
+
+TOPICS.forEach(topic => {
+    const button = element(
+        "button",
+        "menu-item",
+        `${topic.icon} ${topic.name}`
+    );
+
+    button.onclick = () => openTopic(topic.id);
+    $("topic-menu").append(button);
 });
 
-async function playMusic() {
-    closeScriptureAudio();
-    try {
-        await music.play();
-    } catch {
-        notify("Music could not play. Check your connection and music files.");
+document.addEventListener("click", event => {
+    if (
+        !event.target.closest(".header-left") &&
+        !event.target.closest(".header-right")
+    ) {
+        closeMenus();
     }
-    updateMusicButton();
-}
+});
 
-function toggleMusic() {
-    if (music.paused) playMusic();
-    else music.pause();
-}
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeMenus();
+});
 
-function nextTrack() {
-    currentMusicIndex = (currentMusicIndex % TOTAL_ITEMS) + 1;
-    music.src = `music${currentMusicIndex}.mp3`;
-    playMusic();
-}
+let selectedTopic = null;
+let selectedVerse = null;
+let journeyMode = false;
+let viewDay = 0;
 
-function initRandomExperience() {
-    currentImageIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
-    currentMusicIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
+const bags = {};
 
-    tryLoadingImage(currentImageIndex, 0);
-    music.src = `music${currentMusicIndex}.mp3`;
+/* Shuffle through every passage before repeating a collection. */
+function nextTopicIndex(topic) {
+    if (!bags[topic.id] || !bags[topic.id].length) {
+        const items = topic.verses.map((_, index) => index);
 
-    // Browsers may require the visitor to tap Play Music first.
-    music.play().catch(updateMusicButton);
-}
+        for (let index = items.length - 1; index > 0; index--) {
+            const other = Math.floor(Math.random() * (index + 1));
+            [items[index], items[other]] = [items[other], items[index]];
+        }
 
-function getFavorites() {
-    try {
-        const saved = JSON.parse(readStorage("favorite_verses", "[]"));
-        return Array.isArray(saved)
-            ? saved.filter(v => v && typeof v.text === "string" &&
-                typeof v.ref === "string")
-            : [];
-    } catch {
-        return [];
+        if (
+            selectedVerse &&
+            topic.verses[items[items.length - 1]].ref === selectedVerse.ref
+        ) {
+            [items[0], items[items.length - 1]] =
+                [items[items.length - 1], items[0]];
+        }
+
+        bags[topic.id] = items;
     }
+
+    return bags[topic.id].pop();
 }
 
-function saveCurrentVerse() {
-    const text = $("verse-text").textContent.trim();
-    const ref = $("verse-ref").textContent.trim();
-    const saved = getFavorites();
+function openTopic(id) {
+    selectedTopic = TOPICS.find(topic => topic.id === id);
+    journeyMode = false;
+    showTopicVerse();
+    showDialog("reader-dialog");
+}
 
-    if (saved.some(v => v.ref === ref)) {
-        notify("This verse is already in your favorites.");
+function showTopicVerse() {
+    const verse = selectedTopic.verses[nextTopicIndex(selectedTopic)];
+
+    paintReading(verse);
+
+    $("reader-title").textContent =
+        `${selectedTopic.icon} ${selectedTopic.name}`;
+
+    $("reader-label").textContent = "A Scripture for your heart";
+    $("reading-heading").textContent = "";
+    $("day-nav").hidden = true;
+    $("reflection").hidden = true;
+    $("another-button").hidden = false;
+    $("journey-invite").hidden = false;
+    $("complete-button").hidden = true;
+    $("journey-status").hidden = true;
+}
+
+function anotherVerse() {
+    if (!journeyMode) showTopicVerse();
+}
+
+function paintReading(verse) {
+    selectedVerse = { ...verse, version: "WEB" };
+
+    $("reader-text").textContent = verse.text;
+    $("reader-ref").textContent = verse.ref;
+
+    const chapter = verse.ref.split(":")[0];
+
+    $("chapter-link").href =
+        "https://www.biblegateway.com/passage/?search=" +
+        encodeURIComponent(chapter) +
+        "&version=WEB";
+
+    $("topic-note").textContent =
+        selectedTopic.id === "healing"
+            ? "These readings offer prayer, comfort, and companionship through illness; they do not promise a particular medical outcome."
+            : selectedTopic.id === "forgiveness"
+                ? "Forgiveness does not require returning to an unsafe situation. Boundaries can remain in place."
+                : "";
+}
+
+function openJourneys() {
+    renderJourneyList();
+    showDialog("journeys-dialog");
+}
+
+function renderJourneyList() {
+    const list = $("journey-list");
+    list.replaceChildren();
+
+    TOPICS.forEach(topic => {
+        const journey = state.journeys[topic.id];
+        const completed = journey?.completed || 0;
+
+        const button = element(
+            "button",
+            "secondary journey-choice",
+            `${topic.icon} ${topic.name}`
+        );
+
+        button.append(element(
+            "span",
+            "tiny",
+            completed === 7
+                ? "✓ Completed • Revisit readings"
+                : completed
+                    ? `${completed} of 7 readings complete`
+                    : "Begin a seven-day journey"
+        ));
+
+        button.onclick = () => startJourney(topic.id);
+        list.append(button);
+    });
+}
+
+function startJourney(id) {
+    selectedTopic = TOPICS.find(topic => topic.id === id);
+
+    if (!state.journeys[id]) {
+        state.journeys[id] = {
+            completed: 0,
+            last: null
+        };
+    }
+
+    state.active = id;
+    persist();
+    journeyMode = true;
+
+    const journey = state.journeys[id];
+
+    viewDay = journey.completed === 7
+        ? 6
+        : journey.last === dayKey() && journey.completed > 0
+            ? journey.completed - 1
+            : journey.completed;
+
+    renderJourney();
+    showDialog("reader-dialog");
+    renderResume();
+}
+
+function renderJourney() {
+    const journey = state.journeys[selectedTopic.id];
+    const today = dayKey();
+
+    const available = journey.completed === 7
+        ? 6
+        : journey.last === today && journey.completed > 0
+            ? journey.completed - 1
+            : journey.completed;
+
+    viewDay = Math.min(viewDay, available);
+
+    const verse = selectedTopic.verses[viewDay];
+    paintReading(verse);
+
+    $("reader-title").textContent =
+        `${selectedTopic.icon} ${selectedTopic.name}`;
+
+    $("reader-label").textContent =
+        `Seven-day journey • Day ${viewDay + 1} of 7`;
+
+    $("reading-heading").textContent = verse.title;
+    $("day-nav").hidden = false;
+    $("day-nav").replaceChildren();
+
+    for (let index = 0; index < 7; index++) {
+        const button = element(
+            "button",
+            index < journey.completed ? "done" : "",
+            String(index + 1)
+        );
+
+        button.disabled = index > available;
+
+        button.setAttribute(
+            "aria-label",
+            `Day ${index + 1}${index < journey.completed ? ", completed" : ""}`
+        );
+
+        button.setAttribute("aria-current", String(index === viewDay));
+
+        button.onclick = () => {
+            viewDay = index;
+            renderJourney();
+        };
+
+        $("day-nav").append(button);
+    }
+
+    $("reflection").hidden = false;
+    $("reflection-text").textContent = verse.reflection;
+    $("question").textContent = verse.question;
+    $("another-button").hidden = true;
+    $("journey-invite").hidden = true;
+    $("complete-button").hidden = false;
+
+    const canComplete =
+        viewDay === journey.completed &&
+        journey.completed < 7 &&
+        journey.last !== today;
+
+    $("complete-button").disabled = !canComplete;
+    $("complete-button").textContent = canComplete
+        ? "Complete Today’s Reading ✓"
+        : "✓ Reading Completed";
+
+    $("journey-status").hidden = false;
+
+    $("journey-status").textContent =
+        journey.completed === 7
+            ? "🏅 Journey complete! Your badge is earned. Revisit any reading whenever you like."
+            : journey.last === today
+                ? `${journey.completed} of 7 complete. Your next reading opens tomorrow. Missed days never reset progress.`
+                : viewDay < journey.completed
+                    ? "You are revisiting a completed reading. Choose the latest available day to continue."
+                    : `${journey.completed} of 7 complete. Read, reflect, then mark today’s reading complete.`;
+}
+
+function completeJourneyDay() {
+    if (!journeyMode || !selectedTopic) return;
+
+    const journey = state.journeys[selectedTopic.id];
+
+    if (
+        viewDay !== journey.completed ||
+        journey.completed >= 7 ||
+        journey.last === dayKey()
+    ) {
         return;
     }
 
-    saved.push({ text, ref });
+    journey.completed++;
+    journey.last = dayKey();
 
-    notify(writeStorage("favorite_verses", JSON.stringify(saved))
-        ? "Verse saved to your favorites!"
-        : "Your browser could not save this verse. Please check its storage settings.");
+    persist();
+    updateVisit();
+    renderJourney();
+    renderResume();
+
+    notify(
+        journey.completed === 7
+            ? "Journey completed! You earned a lasting badge."
+            : "Reading saved. Come back tomorrow for your next day."
+    );
 }
 
-function openSavedVerses() {
-    closeMenu();
-    const container = $("saved-verses-list");
-    container.replaceChildren();
-    const saved = getFavorites();
+function renderResume() {
+    const topic = TOPICS.find(item => item.id === state.active);
+    const journey = topic && state.journeys[topic.id];
 
-    if (!saved.length) {
-        container.textContent = "No saved verses yet. Tap the star to save a verse.";
-    }
+    $("resume-card").hidden = !journey;
+    if (!journey) return;
 
-    saved.forEach(item => {
-        const entry = document.createElement("div");
-        entry.className = "saved-verse";
+    $("resume-title").textContent = `${topic.icon} ${topic.name}`;
 
-        const text = document.createElement("p");
-        text.textContent = item.text;
-        text.style.fontStyle = "italic";
+    $("resume-detail").textContent =
+        journey.completed === 7
+            ? "Journey completed • Your badge is earned"
+            : journey.last === dayKey()
+                ? `${journey.completed} of 7 complete • Next reading tomorrow`
+                : `Continue your journey • Day ${journey.completed + 1} of 7`;
+}
 
-        const reference = document.createElement("p");
-        reference.className = "saved-reference";
-        reference.textContent = item.ref;
+function resumeJourney() {
+    if (state.active) startJourney(state.active);
+}
 
-        entry.append(text, reference);
-        container.append(entry);
+function openBadges() {
+    updateVisit();
+
+    $("stat-current").textContent = state.current;
+    $("stat-longest").textContent = state.longest;
+    $("stat-total").textContent = state.total;
+    $("badge-list").replaceChildren();
+
+    MILESTONES.forEach(([days, icon, name]) => {
+        const earned = state.badges.includes(days);
+        const row = element("div", "badge" + (earned ? " earned" : ""));
+        const details = element("div");
+
+        details.append(
+            element("strong", "", `${icon} ${name}`),
+            element("small", "", `${days}-day streak milestone`)
+        );
+
+        row.append(
+            details,
+            element(
+                "span",
+                "badge-status",
+                earned
+                    ? "Earned ✓"
+                    : `${Math.max(0, days - state.current)} streak days to go`
+            )
+        );
+
+        $("badge-list").append(row);
     });
 
-    $("saved-modal").showModal();
+    const box = $("journey-badges");
+    box.replaceChildren();
+
+    const completed = TOPICS.filter(
+        topic => state.journeys[topic.id]?.completed === 7
+    );
+
+    if (!completed.length) {
+        box.append(element(
+            "p",
+            "tiny",
+            "Finish any seven-day journey to earn your first journey badge."
+        ));
+    }
+
+    completed.forEach(topic => {
+        const row = element("div", "badge earned");
+
+        row.append(
+            element("strong", "", `${topic.icon} ${topic.name}`),
+            element("span", "badge-status", "7-day journey ✓")
+        );
+
+        box.append(row);
+    });
+
+    showDialog("badges-dialog");
 }
 
-async function shareCurrentVerse() {
-    closeMenu();
+/* Keep favorites compatible with your previous website. */
+function favorites() {
+    const items = readJSON("favorite_verses", []);
 
-    const text = `${$("verse-text").textContent.trim()} ${
-        $("verse-ref").textContent.trim()
-    } (Shared via Daily Scripture)`;
+    return Array.isArray(items)
+        ? items.filter(item =>
+            item &&
+            typeof item.text === "string" &&
+            typeof item.ref === "string")
+        : [];
+}
+
+function normalizeRef(reference) {
+    return reference.replace(/^[—–\s]+/, "").trim();
+}
+
+function saveVerse(verse) {
+    if (!verse) return;
+
+    const list = favorites();
+
+    const exists = list.some(item =>
+        normalizeRef(item.ref) === normalizeRef(verse.ref) &&
+        (item.version || "NIV") === (verse.version || "NIV")
+    );
+
+    if (exists) {
+        notify("This verse is already saved.");
+        return;
+    }
+
+    list.push({
+        text: verse.text,
+        ref: verse.ref,
+        version: verse.version || "NIV"
+    });
+
+    if (put("favorite_verses", JSON.stringify(list))) {
+        notify("Verse saved to your favorites.");
+    }
+}
+
+function openFavorites() {
+    const box = $("favorites-list");
+    box.replaceChildren();
+
+    const list = favorites();
+
+    if (!list.length) {
+        box.append(element(
+            "p",
+            "",
+            "Tap a star or Save to keep a verse here."
+        ));
+    }
+
+    list.slice().reverse().forEach(verse => {
+        const row = element("div", "saved-entry");
+
+        row.append(
+            element("p", "", verse.text),
+            element(
+                "small",
+                "",
+                `${verse.ref} • ${verse.version || "Previously saved verse"}`
+            )
+        );
+
+        const button = element("button", "secondary", "Share");
+        button.style.marginTop = "12px";
+        button.onclick = () => shareVerse(verse);
+
+        row.append(button);
+        box.append(row);
+    });
+
+    showDialog("favorites-dialog");
+}
+
+async function shareVerse(verse) {
+    if (!verse) return;
+
+    const text =
+        `${verse.text}\n${verse.ref}` +
+        `${verse.version ? " (" + verse.version + ")" : ""}` +
+        "\nShared via Daily Scripture";
 
     if (navigator.share) {
         try {
             await navigator.share({
                 title: "Daily Scripture",
                 text,
-                url: window.location.href
+                url: location.href
             });
             return;
         } catch (error) {
@@ -673,198 +2008,290 @@ async function shareCurrentVerse() {
 
     try {
         await navigator.clipboard.writeText(text);
-        notify("Verse copied! Paste it into a message to share.");
+        notify("Verse copied. Paste it into your message.");
     } catch {
-        window.prompt("Copy this verse to share:", text);
+        window.prompt("Copy this verse:", text);
     }
 }
 
-function openMilestones() {
-    closeMenu();
+/* Background music and scenery remain independent. */
+const music = $("bg-music");
+let musicIndex = 1;
+let imageIndex = 1;
+let imageRequest = 0;
 
-    const milestones = [
-        [1, "🌱 First Step", "Started your daily scripture journey."],
-        [3, "🌿 Faithful 3", "Maintained a 3-day reading streak."],
-        [7, "🌳 Devoted Week", "Completed a full 7-day streak!"],
-        [14, "✨ Two Week Pillar", "14 days walking in the Word."],
-        [30, "👑 Monthly Disciple", "30 days of daily Scripture."],
-        [90, "🕊️ Apostle", "3 months of dedicated daily devotion."],
-        [180, "⛪ Deacon", "6 months serving steadfastly in faith."],
-        [365, "⭐ Anointed", "A full year of continuous devotion."]
-    ];
-
-    const container = $("badge-container");
-    container.replaceChildren();
-
-    milestones.forEach(([days, title, description]) => {
-        const unlocked = currentStreakCount >= days;
-        const item = document.createElement("div");
-        item.className = "badge-item" + (unlocked ? " unlocked" : "");
-
-        const details = document.createElement("div");
-        const heading = document.createElement("strong");
-        heading.textContent = title;
-        const desc = document.createElement("small");
-        desc.textContent = description;
-        desc.style.display = "block";
-        details.append(heading, desc);
-
-        const status = document.createElement("span");
-        status.className = "badge-status";
-        status.textContent = unlocked
-            ? "Unlocked ✓"
-            : `${days - currentStreakCount} days left`;
-
-        item.append(details, status);
-        container.append(item);
-    });
-
-    $("milestone-modal").showModal();
+function musicLabel() {
+    $("music-btn").textContent =
+        music.paused ? "▶ Play Music" : "⏸ Pause Music";
 }
 
-function validAudioUrl(value) {
+music.addEventListener("play", musicLabel);
+music.addEventListener("pause", musicLabel);
+music.addEventListener("error", () => {
+    $("music-btn").textContent = "▶ Play Music";
+});
+
+async function playMusic() {
+    closeAudio();
+
+    try {
+        await music.play();
+    } catch {
+        notify("Music could not play. Check that your music files are uploaded.");
+    }
+
+    musicLabel();
+}
+
+function toggleMusic() {
+    if (music.paused) playMusic();
+    else music.pause();
+}
+
+function nextTrack() {
+    musicIndex = musicIndex % 10 + 1;
+    music.src = `music${musicIndex}.mp3`;
+    playMusic();
+}
+
+function loadScene(index, extensionIndex, request) {
+    const extensions = [".jpg", ".jpeg", ".png"];
+
+    if (extensionIndex >= extensions.length) return;
+
+    const path = `background${index}${extensions[extensionIndex]}`;
+    const image = new Image();
+
+    image.onload = () => {
+        if (request === imageRequest) {
+            document.body.style.backgroundImage =
+                `linear-gradient(#0f172a59,#0f172a59),url('${path}')`;
+        }
+    };
+
+    image.onerror = () => {
+        if (request === imageRequest) {
+            loadScene(index, extensionIndex + 1, request);
+        }
+    };
+
+    image.src = path;
+}
+
+function changeScene() {
+    let next = imageIndex;
+
+    while (next === imageIndex) {
+        next = Math.floor(Math.random() * 10) + 1;
+    }
+
+    imageIndex = next;
+    loadScene(imageIndex, 0, ++imageRequest);
+    closeMenus();
+}
+
+/* Daily Bible Gateway verse and matching embedded audio. */
+let dailyAudio = "";
+let feedRequest = 0;
+let cleanupFeed = () => {};
+let lastCheckDate = dayKey();
+
+let currentDaily = {
+    text: PASSAGES["Proverbs 3:5-6"],
+    ref: "Proverbs 3:5-6",
+    version: "WEB"
+};
+
+function paintDaily() {
+    $("verse-text").textContent = currentDaily.text;
+    $("verse-ref").textContent = "— " + currentDaily.ref;
+
+    $("daily-version").textContent =
+        currentDaily.version === "NIV"
+            ? "New International Version • Bible Gateway"
+            : "World English Bible • Encouragement while the daily feed loads";
+}
+
+function safeAudio(value) {
     try {
         const url = new URL(value);
-        return url.protocol === "https:" &&
+
+        return (
+            url.protocol === "https:" &&
             url.hostname === "www.biblegateway.com" &&
             url.pathname.startsWith("/audio/")
-            ? url.href
-            : "";
+        ) ? url.href : "";
     } catch {
         return "";
     }
 }
 
-function closeScriptureAudio() {
-    $("scripture-player-container").replaceChildren();
-    $("scripture-audio-panel").hidden = true;
+function closeAudio() {
+    $("audio-host").replaceChildren();
+    $("audio-panel").hidden = true;
+    $("audio-button").setAttribute("aria-expanded", "false");
 
-    const button = $("scripture-audio-button");
-    button.setAttribute("aria-expanded", "false");
-
-    if (dailyScriptureAudioUrl) {
-        button.textContent = "▶ Listen to Scripture";
+    if (dailyAudio) {
+        $("audio-button").textContent = "▶ Listen to Scripture";
     }
 }
 
-function toggleScriptureAudio() {
-    const panel = $("scripture-audio-panel");
-
-    if (!panel.hidden) {
-        closeScriptureAudio();
+function toggleAudio() {
+    if (!$("audio-panel").hidden) {
+        closeAudio();
         return;
     }
 
-    if (!dailyScriptureAudioUrl) return;
+    if (!dailyAudio) return;
 
     music.pause();
-    updateMusicButton();
+    musicLabel();
 
     const frame = document.createElement("iframe");
-    frame.className = "scripture-audio-frame";
+    frame.className = "audio-frame";
     frame.title = "Bible Gateway Scripture Audio";
     frame.allow = "autoplay";
-    frame.src = dailyScriptureAudioUrl;
+    frame.src = dailyAudio;
 
-    $("scripture-player-container").replaceChildren(frame);
-    $("audio-fallback").href = dailyScriptureAudioUrl;
-    panel.hidden = false;
+    $("audio-host").replaceChildren(frame);
+    $("audio-fallback").href = dailyAudio;
+    $("audio-panel").hidden = false;
 
-    $("scripture-audio-button").setAttribute("aria-expanded", "true");
-    $("scripture-audio-button").textContent = "✕ Close Scripture Audio";
+    $("audio-button").textContent = "✕ Close Scripture Audio";
+    $("audio-button").setAttribute("aria-expanded", "true");
 }
 
-function displayDailyVerse(payload) {
-    const verse = payload && (payload.votd || payload);
-    if (!verse) return false;
-
-    const text = verse.text || verse.content;
-    const reference = verse.reference || verse.display_ref;
-    if (!text || !reference) return false;
-
-    const parsed = new DOMParser().parseFromString(text, "text/html");
-
-    closeScriptureAudio();
-    $("verse-text").textContent = parsed.body.textContent;
-    $("verse-ref").textContent = "— " + reference;
-
-    dailyScriptureAudioUrl = validAudioUrl(verse.audiolink);
-
-    const button = $("scripture-audio-button");
-    button.disabled = !dailyScriptureAudioUrl;
-    button.textContent = dailyScriptureAudioUrl
-        ? "▶ Listen to Scripture"
-        : "Scripture Audio Unavailable";
-
-    $("feed-status").hidden = true;
-    return true;
-}
-
-function loadDailyVerse() {
+function loadDaily() {
     cleanupFeed();
+
     const request = ++feedRequest;
-    const callback = "scriptureFeedCallback" + request;
+    const callback = "dailyScriptureCallback" + request;
     const script = document.createElement("script");
+    let timer;
 
     cleanupFeed = () => {
-        clearTimeout(feedTimer);
+        clearTimeout(timer);
         script.remove();
         delete window[callback];
     };
 
-    function failed() {
+    function fail() {
         if (request !== feedRequest) return;
+
         cleanupFeed();
 
         $("feed-status").hidden = false;
         $("feed-status").textContent =
-            "Today’s update could not load. Showing the available verse; refresh to try again.";
+            "The daily update could not load. " +
+            "Showing the available Scripture; refresh to try again.";
 
-        if (!dailyScriptureAudioUrl) {
-            $("scripture-audio-button").textContent =
-                "Scripture Audio Unavailable";
-            $("scripture-audio-button").disabled = true;
+        if (!dailyAudio) {
+            $("audio-button").textContent = "Scripture Audio Unavailable";
+            $("audio-button").disabled = true;
         }
     }
 
     window[callback] = payload => {
         if (request !== feedRequest) return;
-        if (!displayDailyVerse(payload)) {
-            failed();
+
+        const verse = payload && (payload.votd || payload);
+
+        if (
+            !verse ||
+            !(verse.text || verse.content) ||
+            !(verse.reference || verse.display_ref)
+        ) {
+            fail();
             return;
         }
+
+        closeAudio();
+
+        const parsed = new DOMParser().parseFromString(
+            verse.text || verse.content,
+            "text/html"
+        );
+
+        currentDaily = {
+            text: parsed.body.textContent,
+            ref: verse.reference || verse.display_ref,
+            version: "NIV"
+        };
+
+        paintDaily();
+
+        dailyAudio = safeAudio(verse.audiolink);
+
+        $("audio-button").disabled = !dailyAudio;
+        $("audio-button").textContent = dailyAudio
+            ? "▶ Listen to Scripture"
+            : "Scripture Audio Unavailable";
+
+        $("feed-status").hidden = false;
+        $("feed-status").textContent =
+            verse.year && verse.month && verse.day
+                ? `Daily reading • ${verse.month}/${verse.day}/${verse.year}`
+                : "Daily reading from Bible Gateway";
+
         cleanupFeed();
     };
 
-    script.onerror = failed;
-    feedTimer = setTimeout(failed, 15000);
+    script.onerror = fail;
+    timer = setTimeout(fail, 15000);
 
     script.src =
-        "https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=" +
-        callback + "&_=" + Date.now();
+        "https://www.biblegateway.com/votd/get/" +
+        "?format=json&version=NIV&callback=" +
+        callback +
+        "&_=" +
+        Date.now();
 
     document.head.append(script);
 }
 
-// Refresh after a local date change if the page remains open.
-function checkNewDay() {
-    const today = localDateKey();
-    if (today !== lastLocalDate) {
-        lastLocalDate = today;
-        updateDailyStreak();
-        loadDailyVerse();
+function checkDay() {
+    const today = dayKey();
+
+    if (today !== lastCheckDate) {
+        lastCheckDate = today;
+
+        updateVisit();
+        loadDaily();
+        renderResume();
+
+        if (journeyMode && $("reader-dialog").open) {
+            renderJourney();
+        }
     }
 }
 
 document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) checkNewDay();
+    if (!document.hidden) checkDay();
 });
 
-setInterval(checkNewDay, 60000);
+setInterval(checkDay, 60000);
 
-updateDailyStreak();
-initRandomExperience();
-loadDailyVerse();
+/* Start the page. */
+updateVisit();
+paintDaily();
+renderResume();
+
+imageIndex = Math.floor(Math.random() * 10) + 1;
+loadScene(imageIndex, 0, ++imageRequest);
+
+musicIndex = Math.floor(Math.random() * 10) + 1;
+music.src = `music${musicIndex}.mp3`;
+
+music.play().catch(musicLabel);
+loadDaily();
 </script>
+
+<!--
+Topic Scripture: World English Bible, public domain.
+Translation information: https://ebible.org/eng-web/copr.htm
+Text source: https://api.getbible.net/v2/web.json
+Reflections and questions are supplementary content, not Scripture.
+-->
+
 </body>
 </html>
