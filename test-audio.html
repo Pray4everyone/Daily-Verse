@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Scripture — Audio Test</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#111b2b;color:#f6f1e4;font:17px/1.6 system-ui,sans-serif;padding:24px 16px}main{max-width:850px;margin:auto}h1{font:600 30px Georgia,serif;margin:8px 0}h2{font-size:19px}p{margin:10px 0}.card{background:#1c293d;border:1px solid #526079;border-radius:18px;padding:22px;margin:18px 0}.label{color:#f5d88c;font-size:13px;letter-spacing:2px;text-transform:uppercase}blockquote{margin:20px 0;font:26px/1.5 Georgia,serif}button,a{touch-action:manipulation}button{background:#f4d996;color:#192338;border:0;border-radius:9px;padding:12px 16px;font:600 15px system-ui;cursor:pointer}button:disabled{opacity:.5;cursor:wait}button:focus-visible,a:focus-visible{outline:3px solid #a4d6ff;outline-offset:4px}.buttons{display:flex;gap:10px;flex-wrap:wrap}a{color:#bfddff}iframe{display:block;width:100%;height:590px;background:white;border:0;border-radius:10px;margin-top:16px}.muted{color:#c0cada;font-size:14px}#status{border-left:3px solid #f4d996;padding-left:12px}li{margin:8px 0}[hidden]{display:none!important}@media(max-width:500px){.card{padding:16px}iframe{height:650px}}
+</style>
+</head>
+<body><main>
+<p class="label">Separate test page • Version 1</p>
+<h1>Daily Scripture Audio Test</h1>
+<p>This tests Bible Gateway’s recorded audio inside this page. Your bracelet’s main page is unchanged.</p>
+<section class="card" aria-labelledby="verse-heading">
+<h2 id="verse-heading">Daily verse</h2>
+<p id="status" role="status">Loading Bible Gateway’s daily feed…</p>
+<blockquote id="verse">Waiting for the daily verse.</blockquote>
+<p id="reference"></p><p id="feed-date" class="muted"></p>
+<div class="buttons"><button id="daily" disabled>Load daily audio</button><button id="refresh">Refresh daily feed</button></div>
+</section>
+<section class="card" aria-labelledby="player-heading">
+<h2 id="player-heading">Embedded audio</h2>
+<p id="selection">Choose “Load daily audio” or a sample below.</p>
+<div class="buttons"><button id="psalm">Test Psalm 23</button><button id="john">Test John 3</button><button id="close" disabled>Close player</button></div>
+<div id="player-host"></div>
+<p id="player-note" class="muted">The player loads only after you choose a passage. Tap its Play control if playback does not start.</p>
+<p><a id="external" hidden target="_blank" rel="noopener noreferrer">Open this same audio on Bible Gateway</a></p>
+</section>
+<section class="card"><h2>What to check</h2>
+<ol><li>Confirm that a verse, reference, and feed date appear above.</li><li>Choose <strong>Load daily audio</strong>. Confirm the player is visible and you can hear the recording without leaving this page.</li><li>Try <strong>Psalm 23</strong>, then <strong>John 3</strong>. Confirm the chapter changes and the previous recording stops.</li><li>Return to <strong>Load daily audio</strong>. Repeat on your phone, including turning the phone sideways.</li><li>Open this page again tomorrow and check the feed date, verse, and audio. The feed’s day may change at a different time from your local midnight.</li></ol>
+<p class="muted">The recording may play the surrounding chapter, rather than only the displayed verses. A blank or blocked player is a failed embed test—even if the external link works. This page cannot automatically verify playback inside Bible Gateway’s embedded page.</p>
+<p class="muted">Upload this file as <strong>test-audio.html</strong> beside your existing index.html in the GitHub Pages publishing folder. No music or background-image files are needed for this test.</p></section>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let dailyVerse=null, requestNumber=0, cleanupFeed=()=>{}, selectedMode=null;
+function safeAudioUrl(value){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='www.biblegateway.com'&&u.pathname.startsWith('/audio/')?u.href:null;}catch{return null;}}
+function decodeText(value){const doc=new DOMParser().parseFromString(String(value),'text/html');return doc.body.textContent||'';}
+function showAudio(url,label,mode){
+ const safe=safeAudioUrl(url);if(!safe){$('player-note').textContent='The feed did not supply a supported Bible Gateway audio link.';return;}
+ $('player-host').replaceChildren();
+ const frame=document.createElement('iframe');frame.title='Bible Gateway audio: '+label;frame.allow='autoplay';frame.src=safe;
+ $('player-host').append(frame);selectedMode=mode;
+ $('selection').textContent='Selected: '+label;
+ $('external').href=safe;$('external').hidden=false;$('close').disabled=false;
+ $('player-note').textContent='Tap Play inside the player. Please confirm you can hear it; loading this frame alone does not prove playback works.';
+}
+function loadFeed(){
+ cleanupFeed();const number=++requestNumber;const callback='dailyAudioTestCallback'+number;
+ $('refresh').disabled=true;$('daily').disabled=true;dailyVerse=null;
+ $('status').textContent='Loading Bible Gateway’s daily feed…';$('verse').textContent='Waiting for the daily verse.';$('reference').textContent='';$('feed-date').textContent='';
+ const script=document.createElement('script');let timer;
+ cleanupFeed=()=>{clearTimeout(timer);script.remove();delete window[callback];};
+ function fail(message){if(number!==requestNumber)return;cleanupFeed();$('refresh').disabled=false;$('status').textContent=message;}
+ window[callback]=payload=>{
+  if(number!==requestNumber)return;
+  const v=payload&&(payload.votd||payload);
+  if(!v||!(v.text||v.content)||!(v.reference||v.display_ref)){fail('The feed returned an unexpected format. Try Refresh daily feed.');return;}
+  dailyVerse={text:decodeText(v.text||v.content),reference:v.reference||v.display_ref,audio:safeAudioUrl(v.audiolink)};
+  cleanupFeed();$('refresh').disabled=false;
+  $('verse').textContent=dailyVerse.text;$('reference').textContent=dailyVerse.reference+' • '+(v.version||'NIV');
+  $('feed-date').textContent='Bible Gateway feed date: '+[v.year||'?',v.month||'?',v.day||'?'].join('-')+' • Checked '+new Date().toLocaleString();
+  $('daily').disabled=!dailyVerse.audio;
+  $('status').textContent=dailyVerse.audio?'Daily verse and matching audio link received.':'Verse received, but no supported audio link was supplied.';
+  if(selectedMode==='daily'&&dailyVerse.audio)showAudio(dailyVerse.audio,dailyVerse.reference,'daily');
+ };
+ script.onerror=()=>fail('The daily feed could not load. Check your connection, then refresh. You can still test the two sample chapters.');
+ timer=setTimeout(()=>fail('The daily feed timed out. Try Refresh daily feed, or test a sample chapter.'),15000);
+ script.src='https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback='+callback+'&_='+Date.now();document.head.append(script);
+}
+$('daily').onclick=()=>{if(dailyVerse?.audio)showAudio(dailyVerse.audio,dailyVerse.reference,'daily');};
+$('psalm').onclick=()=>showAudio('https://www.biblegateway.com/audio/mclean/niv/Ps.23','Psalm 23 — sample chapter','sample');
+$('john').onclick=()=>showAudio('https://www.biblegateway.com/audio/mclean/niv/John.3','John 3 — sample chapter','sample');
+$('refresh').onclick=loadFeed;
+$('close').onclick=()=>{$('player-host').replaceChildren();selectedMode=null;$('selection').textContent='Player closed.';$('close').disabled=true;$('external').hidden=true;};
+loadFeed();
+</script>
+</body></html>
