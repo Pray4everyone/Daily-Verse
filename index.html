@@ -717,6 +717,18 @@ dialog::backdrop {
 .bible-sheet{padding:7px 16px}.bible-page-heading{font-size:10px;margin-bottom:5px;padding-bottom:4px}.bible-page-footer{font-size:9px;margin-top:4px;padding-top:3px}.bible-bottom{padding:0 12px 4px}.bible-font-controls button{height:28px}.bible-stage{padding-bottom:5px}.page-turn{height:44px}
 }
 
+
+#bible-choice-dialog{width:min(440px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;box-sizing:border-box;}
+#bible-choice-dialog .dialog-body{padding:22px;}
+.bible-choice-heading{display:flex;align-items:center;gap:12px;justify-content:space-between;}
+.bible-choice-heading h2{font-size:1.25rem;margin:0;}
+.bible-choice-heading .close{position:static;flex-shrink:0;}
+.bible-choices{display:grid;gap:12px;margin:20px 0;}
+.bible-choices button{display:flex;flex-direction:column;gap:5px;align-items:flex-start;text-align:left;padding:16px;border:1px solid rgba(255,255,255,.3);border-radius:14px;background:rgba(255,255,255,.08);color:inherit;cursor:pointer;min-height:76px;}
+.bible-choices button:hover,.bible-choices button:focus-visible{background:rgba(255,255,255,.18);outline:2px solid #e6c58c;outline-offset:2px;}
+.bible-choices strong{font-size:1.15rem;}.bible-choices span{font-size:.9rem;}
+#bible-version-switch{display:block;max-width:100%;margin-top:5px;padding:5px 8px;border:1px solid rgba(255,255,255,.28);border-radius:8px;color:inherit;background:transparent;font:400 12px/1.2 system-ui;cursor:pointer;}
+
 </style>
 </head>
 
@@ -805,7 +817,7 @@ dialog::backdrop {
                 ⛪ Find a Church
             </a>
         </div>
-    <button id="bible-launch" class="pill glass bible-launch" type="button" onclick="BibleReader.open()" aria-haspopup="dialog" aria-controls="bible-dialog"><span aria-hidden="true">📖</span><span>Read Holy Bible</span></button>
+    <button id="bible-launch" class="pill glass bible-launch" type="button" onclick="BibleReader.open()" aria-haspopup="dialog" aria-controls="bible-choice-dialog"><span aria-hidden="true">📖</span><span>Read Holy Bible</span></button>
 </div>
 </header>
 
@@ -991,9 +1003,17 @@ dialog::backdrop {
     <div id="favorites-list" class="dialog-body"></div>
 </dialog>
 
+<dialog id="bible-choice-dialog" aria-labelledby="bible-choice-title">
+ <div class="dialog-body">
+  <div class="bible-choice-heading"><h2 id="bible-choice-title">📖 Read Holy Bible</h2><button id="bible-choice-close" class="close" type="button" aria-label="Close Bible choices">×</button></div>
+  <p>Choose your Bible translation.</p>
+  <div class="bible-choices"><button id="bible-choose-kjv" type="button"><strong>KJV</strong><span>King James Version</span></button><button id="bible-choose-web" type="button"><strong>WEB</strong><span>World English Bible</span></button></div>
+  <p class="tiny">Your reading place is saved separately for each translation on this device.</p>
+ </div>
+</dialog>
 <dialog id="bible-dialog" aria-labelledby="bible-reader-title">
   <header class="bible-top">
-    <div><h2 id="bible-reader-title">📖 Holy Bible <span class="tiny">King James Version</span></h2></div>
+    <div><h2 id="bible-reader-title">📖 Holy Bible <button id="bible-version-switch" type="button" aria-label="Change Bible translation"><span id="bible-version-label">King James Version</span> ▾</button></h2></div>
     <button id="bible-close" class="close" type="button" aria-label="Close Holy Bible">×</button>
   </header>
   <nav class="bible-controls" aria-label="Choose a Bible passage">
@@ -1020,6 +1040,7 @@ dialog::backdrop {
   </footer>
   <p id="bible-live" class="bible-live" aria-live="polite" aria-atomic="true"></p>
 </dialog>
+
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <audio id="bg-music" loop preload="none"></audio>
@@ -2369,12 +2390,14 @@ Reflections and questions are supplementary content, not Scripture.
 -->
 
 <script>
-/* KJV reader: data files are local to this website. */
-const BIBLE_BOOKS = [{"name":"Genesis","chapters":[31,25,24,26,32,22,24,22,29,32,32,20,18,24,21,16,27,33,38,18,34,24,20,67,34,35,46,22,35,43,55,32,20,31,29,43,36,30,23,23,57,38,34,34,28,34,31,22,33,26]},{"name":"Exodus","chapters":[22,25,22,31,23,30,25,32,35,29,10,51,22,31,27,36,16,27,25,26,36,31,33,18,40,37,21,43,46,38,18,35,23,35,35,38,29,31,43,38]},{"name":"Leviticus","chapters":[17,16,17,35,19,30,38,36,24,20,47,8,59,57,33,34,16,30,37,27,24,33,44,23,55,46,34]},{"name":"Numbers","chapters":[54,34,51,49,31,27,89,26,23,36,35,16,33,45,41,50,13,32,22,29,35,41,30,25,18,65,23,31,40,16,54,42,56,29,34,13]},{"name":"Deuteronomy","chapters":[46,37,29,49,33,25,26,20,29,22,32,32,18,29,23,22,20,22,21,20,23,30,25,22,19,19,26,68,29,20,30,52,29,12]},{"name":"Joshua","chapters":[18,24,17,24,15,27,26,35,27,43,23,24,33,15,63,10,18,28,51,9,45,34,16,33]},{"name":"Judges","chapters":[36,23,31,24,31,40,25,35,57,18,40,15,25,20,20,31,13,31,30,48,25]},{"name":"Ruth","chapters":[22,23,18,22]},{"name":"1 Samuel","chapters":[28,36,21,22,12,21,17,22,27,27,15,25,23,52,35,23,58,30,24,42,15,23,29,22,44,25,12,25,11,31,13]},{"name":"2 Samuel","chapters":[27,32,39,12,25,23,29,18,13,19,27,31,39,33,37,23,29,33,43,26,22,51,39,25]},{"name":"1 Kings","chapters":[53,46,28,34,18,38,51,66,28,29,43,33,34,31,34,34,24,46,21,43,29,53]},{"name":"2 Kings","chapters":[18,25,27,44,27,33,20,29,37,36,21,21,25,29,38,20,41,37,37,21,26,20,37,20,30]},{"name":"1 Chronicles","chapters":[54,55,24,43,26,81,40,40,44,14,47,40,14,17,29,43,27,17,19,8,30,19,32,31,31,32,34,21,30]},{"name":"2 Chronicles","chapters":[17,18,17,22,14,42,22,18,31,19,23,16,22,15,19,14,19,34,11,37,20,12,21,27,28,23,9,27,36,27,21,33,25,33,27,23]},{"name":"Ezra","chapters":[11,70,13,24,17,22,28,36,15,44]},{"name":"Nehemiah","chapters":[11,20,32,23,19,19,73,18,38,39,36,47,31]},{"name":"Esther","chapters":[22,23,15,17,14,14,10,17,32,3]},{"name":"Job","chapters":[22,13,26,21,27,30,21,22,35,22,20,25,28,22,35,22,16,21,29,29,34,30,17,25,6,14,23,28,25,31,40,22,33,37,16,33,24,41,30,24,34,17]},{"name":"Psalms","chapters":[6,12,8,8,12,10,17,9,20,18,7,8,6,7,5,11,15,50,14,9,13,31,6,10,22,12,14,9,11,12,24,11,22,22,28,12,40,22,13,17,13,11,5,26,17,11,9,14,20,23,19,9,6,7,23,13,11,11,17,12,8,12,11,10,13,20,7,35,36,5,24,20,28,23,10,12,20,72,13,19,16,8,18,12,13,17,7,18,52,17,16,15,5,23,11,13,12,9,9,5,8,28,22,35,45,48,43,13,31,7,10,10,9,8,18,19,2,29,176,7,8,9,4,8,5,6,5,6,8,8,3,18,3,3,21,26,9,8,24,13,10,7,12,15,21,10,20,14,9,6]},{"name":"Proverbs","chapters":[33,22,35,27,23,35,27,36,18,32,31,28,25,35,33,33,28,24,29,30,31,29,35,34,28,28,27,28,27,33,31]},{"name":"Ecclesiastes","chapters":[18,26,22,16,20,12,29,17,18,20,10,14]},{"name":"Song of Solomon","chapters":[17,17,11,16,16,13,13,14]},{"name":"Isaiah","chapters":[31,22,26,6,30,13,25,22,21,34,16,6,22,32,9,14,14,7,25,6,17,25,18,23,12,21,13,29,24,33,9,20,24,17,10,22,38,22,8,31,29,25,28,28,25,13,15,22,26,11,23,15,12,17,13,12,21,14,21,22,11,12,19,12,25,24]},{"name":"Jeremiah","chapters":[19,37,25,31,31,30,34,22,26,25,23,17,27,22,21,21,27,23,15,18,14,30,40,10,38,24,22,17,32,24,40,44,26,22,19,32,21,28,18,16,18,22,13,30,5,28,7,47,39,46,64,34]},{"name":"Lamentations","chapters":[22,22,66,22,22]},{"name":"Ezekiel","chapters":[28,10,27,17,17,14,27,18,11,22,25,28,23,23,8,63,24,32,14,49,32,31,49,27,17,21,36,26,21,26,18,32,33,31,15,38,28,23,29,49,26,20,27,31,25,24,23,35]},{"name":"Daniel","chapters":[21,49,30,37,31,28,28,27,27,21,45,13]},{"name":"Hosea","chapters":[11,23,5,19,15,11,16,14,17,15,12,14,16,9]},{"name":"Joel","chapters":[20,32,21]},{"name":"Amos","chapters":[15,16,15,13,27,14,17,14,15]},{"name":"Obadiah","chapters":[21]},{"name":"Jonah","chapters":[17,10,10,11]},{"name":"Micah","chapters":[16,13,12,13,15,16,20]},{"name":"Nahum","chapters":[15,13,19]},{"name":"Habakkuk","chapters":[17,20,19]},{"name":"Zephaniah","chapters":[18,15,20]},{"name":"Haggai","chapters":[15,23]},{"name":"Zechariah","chapters":[21,13,10,14,11,15,14,23,17,12,17,14,9,21]},{"name":"Malachi","chapters":[14,17,18,6]},{"name":"Matthew","chapters":[25,23,17,25,48,34,29,34,38,42,30,50,58,36,39,28,27,35,30,34,46,46,39,51,46,75,66,20]},{"name":"Mark","chapters":[45,28,35,41,43,56,37,38,50,52,33,44,37,72,47,20]},{"name":"Luke","chapters":[80,52,38,44,39,49,50,56,62,42,54,59,35,35,32,31,37,43,48,47,38,71,56,53]},{"name":"John","chapters":[51,25,36,54,47,71,53,59,41,42,57,50,38,31,27,33,26,40,42,31,25]},{"name":"Acts","chapters":[26,47,26,37,42,15,60,40,43,48,30,25,52,28,41,40,34,28,41,38,40,30,35,27,27,32,44,31]},{"name":"Romans","chapters":[32,29,31,25,21,23,25,39,33,21,36,21,14,23,33,27]},{"name":"1 Corinthians","chapters":[31,16,23,21,13,20,40,13,27,33,34,31,13,40,58,24]},{"name":"2 Corinthians","chapters":[24,17,18,18,21,18,16,24,15,18,33,21,14]},{"name":"Galatians","chapters":[24,21,29,31,26,18]},{"name":"Ephesians","chapters":[23,22,21,32,33,24]},{"name":"Philippians","chapters":[30,30,21,23]},{"name":"Colossians","chapters":[29,23,25,18]},{"name":"1 Thessalonians","chapters":[10,20,13,18,28]},{"name":"2 Thessalonians","chapters":[12,17,18]},{"name":"1 Timothy","chapters":[20,15,16,16,25,21]},{"name":"2 Timothy","chapters":[18,26,17,22]},{"name":"Titus","chapters":[16,15,15]},{"name":"Philemon","chapters":[25]},{"name":"Hebrews","chapters":[14,18,19,16,14,20,28,13,28,39,40,29,25]},{"name":"James","chapters":[27,26,18,17,20]},{"name":"1 Peter","chapters":[25,25,22,19,14]},{"name":"2 Peter","chapters":[21,22,18]},{"name":"1 John","chapters":[10,29,24,21,21]},{"name":"2 John","chapters":[13]},{"name":"3 John","chapters":[14]},{"name":"Jude","chapters":[25]},{"name":"Revelation","chapters":[20,29,22,11,14,17,17,13,21,11,19,17,18,20,8,21,18,24,21,15,27,21]}];
+/* Bible files are hosted on this website. */
+const BIBLE_TRANSLATIONS = {"kjv":{"label":"King James Version","books":[{"name":"Genesis","chapters":[31,25,24,26,32,22,24,22,29,32,32,20,18,24,21,16,27,33,38,18,34,24,20,67,34,35,46,22,35,43,55,32,20,31,29,43,36,30,23,23,57,38,34,34,28,34,31,22,33,26]},{"name":"Exodus","chapters":[22,25,22,31,23,30,25,32,35,29,10,51,22,31,27,36,16,27,25,26,36,31,33,18,40,37,21,43,46,38,18,35,23,35,35,38,29,31,43,38]},{"name":"Leviticus","chapters":[17,16,17,35,19,30,38,36,24,20,47,8,59,57,33,34,16,30,37,27,24,33,44,23,55,46,34]},{"name":"Numbers","chapters":[54,34,51,49,31,27,89,26,23,36,35,16,33,45,41,50,13,32,22,29,35,41,30,25,18,65,23,31,40,16,54,42,56,29,34,13]},{"name":"Deuteronomy","chapters":[46,37,29,49,33,25,26,20,29,22,32,32,18,29,23,22,20,22,21,20,23,30,25,22,19,19,26,68,29,20,30,52,29,12]},{"name":"Joshua","chapters":[18,24,17,24,15,27,26,35,27,43,23,24,33,15,63,10,18,28,51,9,45,34,16,33]},{"name":"Judges","chapters":[36,23,31,24,31,40,25,35,57,18,40,15,25,20,20,31,13,31,30,48,25]},{"name":"Ruth","chapters":[22,23,18,22]},{"name":"1 Samuel","chapters":[28,36,21,22,12,21,17,22,27,27,15,25,23,52,35,23,58,30,24,42,15,23,29,22,44,25,12,25,11,31,13]},{"name":"2 Samuel","chapters":[27,32,39,12,25,23,29,18,13,19,27,31,39,33,37,23,29,33,43,26,22,51,39,25]},{"name":"1 Kings","chapters":[53,46,28,34,18,38,51,66,28,29,43,33,34,31,34,34,24,46,21,43,29,53]},{"name":"2 Kings","chapters":[18,25,27,44,27,33,20,29,37,36,21,21,25,29,38,20,41,37,37,21,26,20,37,20,30]},{"name":"1 Chronicles","chapters":[54,55,24,43,26,81,40,40,44,14,47,40,14,17,29,43,27,17,19,8,30,19,32,31,31,32,34,21,30]},{"name":"2 Chronicles","chapters":[17,18,17,22,14,42,22,18,31,19,23,16,22,15,19,14,19,34,11,37,20,12,21,27,28,23,9,27,36,27,21,33,25,33,27,23]},{"name":"Ezra","chapters":[11,70,13,24,17,22,28,36,15,44]},{"name":"Nehemiah","chapters":[11,20,32,23,19,19,73,18,38,39,36,47,31]},{"name":"Esther","chapters":[22,23,15,17,14,14,10,17,32,3]},{"name":"Job","chapters":[22,13,26,21,27,30,21,22,35,22,20,25,28,22,35,22,16,21,29,29,34,30,17,25,6,14,23,28,25,31,40,22,33,37,16,33,24,41,30,24,34,17]},{"name":"Psalms","chapters":[6,12,8,8,12,10,17,9,20,18,7,8,6,7,5,11,15,50,14,9,13,31,6,10,22,12,14,9,11,12,24,11,22,22,28,12,40,22,13,17,13,11,5,26,17,11,9,14,20,23,19,9,6,7,23,13,11,11,17,12,8,12,11,10,13,20,7,35,36,5,24,20,28,23,10,12,20,72,13,19,16,8,18,12,13,17,7,18,52,17,16,15,5,23,11,13,12,9,9,5,8,28,22,35,45,48,43,13,31,7,10,10,9,8,18,19,2,29,176,7,8,9,4,8,5,6,5,6,8,8,3,18,3,3,21,26,9,8,24,13,10,7,12,15,21,10,20,14,9,6]},{"name":"Proverbs","chapters":[33,22,35,27,23,35,27,36,18,32,31,28,25,35,33,33,28,24,29,30,31,29,35,34,28,28,27,28,27,33,31]},{"name":"Ecclesiastes","chapters":[18,26,22,16,20,12,29,17,18,20,10,14]},{"name":"Song of Solomon","chapters":[17,17,11,16,16,13,13,14]},{"name":"Isaiah","chapters":[31,22,26,6,30,13,25,22,21,34,16,6,22,32,9,14,14,7,25,6,17,25,18,23,12,21,13,29,24,33,9,20,24,17,10,22,38,22,8,31,29,25,28,28,25,13,15,22,26,11,23,15,12,17,13,12,21,14,21,22,11,12,19,12,25,24]},{"name":"Jeremiah","chapters":[19,37,25,31,31,30,34,22,26,25,23,17,27,22,21,21,27,23,15,18,14,30,40,10,38,24,22,17,32,24,40,44,26,22,19,32,21,28,18,16,18,22,13,30,5,28,7,47,39,46,64,34]},{"name":"Lamentations","chapters":[22,22,66,22,22]},{"name":"Ezekiel","chapters":[28,10,27,17,17,14,27,18,11,22,25,28,23,23,8,63,24,32,14,49,32,31,49,27,17,21,36,26,21,26,18,32,33,31,15,38,28,23,29,49,26,20,27,31,25,24,23,35]},{"name":"Daniel","chapters":[21,49,30,37,31,28,28,27,27,21,45,13]},{"name":"Hosea","chapters":[11,23,5,19,15,11,16,14,17,15,12,14,16,9]},{"name":"Joel","chapters":[20,32,21]},{"name":"Amos","chapters":[15,16,15,13,27,14,17,14,15]},{"name":"Obadiah","chapters":[21]},{"name":"Jonah","chapters":[17,10,10,11]},{"name":"Micah","chapters":[16,13,12,13,15,16,20]},{"name":"Nahum","chapters":[15,13,19]},{"name":"Habakkuk","chapters":[17,20,19]},{"name":"Zephaniah","chapters":[18,15,20]},{"name":"Haggai","chapters":[15,23]},{"name":"Zechariah","chapters":[21,13,10,14,11,15,14,23,17,12,17,14,9,21]},{"name":"Malachi","chapters":[14,17,18,6]},{"name":"Matthew","chapters":[25,23,17,25,48,34,29,34,38,42,30,50,58,36,39,28,27,35,30,34,46,46,39,51,46,75,66,20]},{"name":"Mark","chapters":[45,28,35,41,43,56,37,38,50,52,33,44,37,72,47,20]},{"name":"Luke","chapters":[80,52,38,44,39,49,50,56,62,42,54,59,35,35,32,31,37,43,48,47,38,71,56,53]},{"name":"John","chapters":[51,25,36,54,47,71,53,59,41,42,57,50,38,31,27,33,26,40,42,31,25]},{"name":"Acts","chapters":[26,47,26,37,42,15,60,40,43,48,30,25,52,28,41,40,34,28,41,38,40,30,35,27,27,32,44,31]},{"name":"Romans","chapters":[32,29,31,25,21,23,25,39,33,21,36,21,14,23,33,27]},{"name":"1 Corinthians","chapters":[31,16,23,21,13,20,40,13,27,33,34,31,13,40,58,24]},{"name":"2 Corinthians","chapters":[24,17,18,18,21,18,16,24,15,18,33,21,14]},{"name":"Galatians","chapters":[24,21,29,31,26,18]},{"name":"Ephesians","chapters":[23,22,21,32,33,24]},{"name":"Philippians","chapters":[30,30,21,23]},{"name":"Colossians","chapters":[29,23,25,18]},{"name":"1 Thessalonians","chapters":[10,20,13,18,28]},{"name":"2 Thessalonians","chapters":[12,17,18]},{"name":"1 Timothy","chapters":[20,15,16,16,25,21]},{"name":"2 Timothy","chapters":[18,26,17,22]},{"name":"Titus","chapters":[16,15,15]},{"name":"Philemon","chapters":[25]},{"name":"Hebrews","chapters":[14,18,19,16,14,20,28,13,28,39,40,29,25]},{"name":"James","chapters":[27,26,18,17,20]},{"name":"1 Peter","chapters":[25,25,22,19,14]},{"name":"2 Peter","chapters":[21,22,18]},{"name":"1 John","chapters":[10,29,24,21,21]},{"name":"2 John","chapters":[13]},{"name":"3 John","chapters":[14]},{"name":"Jude","chapters":[25]},{"name":"Revelation","chapters":[20,29,22,11,14,17,17,13,21,11,19,17,18,20,8,21,18,24,21,15,27,21]}]},"web":{"label":"World English Bible","books":[{"name":"Genesis","chapters":[31,25,24,26,32,22,24,22,29,32,32,20,18,24,21,16,27,33,38,18,34,24,20,67,34,35,46,22,35,43,55,32,20,31,29,43,36,30,23,23,57,38,34,34,28,34,31,22,33,26]},{"name":"Exodus","chapters":[22,25,22,31,23,30,25,32,35,29,10,51,22,31,27,36,16,27,25,26,36,31,33,18,40,37,21,43,46,38,18,35,23,35,35,38,29,31,43,38]},{"name":"Leviticus","chapters":[17,16,17,35,19,30,38,36,24,20,47,8,59,57,33,34,16,30,37,27,24,33,44,23,55,46,34]},{"name":"Numbers","chapters":[54,34,51,49,31,27,89,26,23,36,35,16,33,45,41,50,13,32,22,29,35,41,30,25,18,65,23,31,40,16,54,42,56,29,34,13]},{"name":"Deuteronomy","chapters":[46,37,29,49,33,25,26,20,29,22,32,32,18,29,23,22,20,22,21,20,23,30,25,22,19,19,26,68,29,20,30,52,29,12]},{"name":"Joshua","chapters":[18,24,17,24,15,27,26,35,27,43,23,24,33,15,63,10,18,28,51,9,45,34,16,33]},{"name":"Judges","chapters":[36,23,31,24,31,40,25,35,57,18,40,15,25,20,20,31,13,31,30,48,25]},{"name":"Ruth","chapters":[22,23,18,22]},{"name":"1 Samuel","chapters":[28,36,21,22,12,21,17,22,27,27,15,25,23,52,35,23,58,30,24,42,15,23,29,22,44,25,12,25,11,31,13]},{"name":"2 Samuel","chapters":[27,32,39,12,25,23,29,18,13,19,27,31,39,33,37,23,29,33,43,26,22,51,39,25]},{"name":"1 Kings","chapters":[53,46,28,34,18,38,51,66,28,29,43,33,34,31,34,34,24,46,21,43,29,53]},{"name":"2 Kings","chapters":[18,25,27,44,27,33,20,29,37,36,21,21,25,29,38,20,41,37,37,21,26,20,37,20,30]},{"name":"1 Chronicles","chapters":[54,55,24,43,26,81,40,40,44,14,47,40,14,17,29,43,27,17,19,8,30,19,32,31,31,32,34,21,30]},{"name":"2 Chronicles","chapters":[17,18,17,22,14,42,22,18,31,19,23,16,22,15,19,14,19,34,11,37,20,12,21,27,28,23,9,27,36,27,21,33,25,33,27,23]},{"name":"Ezra","chapters":[11,70,13,24,17,22,28,36,15,44]},{"name":"Nehemiah","chapters":[11,20,32,23,19,19,73,18,38,39,36,47,31]},{"name":"Esther","chapters":[22,23,15,17,14,14,10,17,32,3]},{"name":"Job","chapters":[22,13,26,21,27,30,21,22,35,22,20,25,28,22,35,22,16,21,29,29,34,30,17,25,6,14,23,28,25,31,40,22,33,37,16,33,24,41,30,24,34,17]},{"name":"Psalms","chapters":[6,12,8,8,12,10,17,9,20,18,7,8,6,7,5,11,15,50,14,9,13,31,6,10,22,12,14,9,11,12,24,11,22,22,28,12,40,22,13,17,13,11,5,26,17,11,9,14,20,23,19,9,6,7,23,13,11,11,17,12,8,12,11,10,13,20,7,35,36,5,24,20,28,23,10,12,20,72,13,19,16,8,18,12,13,17,7,18,52,17,16,15,5,23,11,13,12,9,9,5,8,28,22,35,45,48,43,13,31,7,10,10,9,8,18,19,2,29,176,7,8,9,4,8,5,6,5,6,8,8,3,18,3,3,21,26,9,8,24,13,10,7,12,15,21,10,20,14,9,6]},{"name":"Proverbs","chapters":[33,22,35,27,23,35,27,36,18,32,31,28,25,35,33,33,28,24,29,30,31,29,35,34,28,28,27,28,27,33,31]},{"name":"Ecclesiastes","chapters":[18,26,22,16,20,12,29,17,18,20,10,14]},{"name":"Song of Solomon","chapters":[17,17,11,16,16,13,13,14]},{"name":"Isaiah","chapters":[31,22,26,6,30,13,25,22,21,34,16,6,22,32,9,14,14,7,25,6,17,25,18,23,12,21,13,29,24,33,9,20,24,17,10,22,38,22,8,31,29,25,28,28,25,13,15,22,26,11,23,15,12,17,13,12,21,14,21,22,11,12,19,12,25,24]},{"name":"Jeremiah","chapters":[19,37,25,31,31,30,34,22,26,25,23,17,27,22,21,21,27,23,15,18,14,30,40,10,38,24,22,17,32,24,40,44,26,22,19,32,21,28,18,16,18,22,13,30,5,28,7,47,39,46,64,34]},{"name":"Lamentations","chapters":[22,22,66,22,22]},{"name":"Ezekiel","chapters":[28,10,27,17,17,14,27,18,11,22,25,28,23,23,8,63,24,32,14,49,32,31,49,27,17,21,36,26,21,26,18,32,33,31,15,38,28,23,29,49,26,20,27,31,25,24,23,35]},{"name":"Daniel","chapters":[21,49,30,37,31,28,28,27,27,21,45,13]},{"name":"Hosea","chapters":[11,23,5,19,15,11,16,14,17,15,12,14,16,9]},{"name":"Joel","chapters":[20,32,21]},{"name":"Amos","chapters":[15,16,15,13,27,14,17,14,15]},{"name":"Obadiah","chapters":[21]},{"name":"Jonah","chapters":[17,10,10,11]},{"name":"Micah","chapters":[16,13,12,13,15,16,20]},{"name":"Nahum","chapters":[15,13,19]},{"name":"Habakkuk","chapters":[17,20,19]},{"name":"Zephaniah","chapters":[18,15,20]},{"name":"Haggai","chapters":[15,23]},{"name":"Zechariah","chapters":[21,13,10,14,11,15,14,23,17,12,17,14,9,21]},{"name":"Malachi","chapters":[14,17,18,6]},{"name":"Matthew","chapters":[25,23,17,25,48,34,29,34,38,42,30,50,58,36,39,28,27,35,30,34,46,46,39,51,46,75,66,20]},{"name":"Mark","chapters":[45,28,35,41,43,56,37,38,50,52,33,44,37,72,47,20]},{"name":"Luke","chapters":[80,52,38,44,39,49,50,56,62,42,54,59,35,35,32,31,37,43,48,47,38,71,56,53]},{"name":"John","chapters":[51,25,36,54,47,71,53,59,41,42,57,50,38,31,27,33,26,40,42,31,25]},{"name":"Acts","chapters":[26,47,26,37,42,15,60,40,43,48,30,25,52,28,41,40,34,28,41,38,40,30,35,27,27,32,44,31]},{"name":"Romans","chapters":[32,29,31,25,21,23,25,39,33,21,36,21,14,26,33,25]},{"name":"1 Corinthians","chapters":[31,16,23,21,13,20,40,13,27,33,34,31,13,40,58,24]},{"name":"2 Corinthians","chapters":[24,17,18,18,21,18,16,24,15,18,33,21,14]},{"name":"Galatians","chapters":[24,21,29,31,26,18]},{"name":"Ephesians","chapters":[23,22,21,32,33,24]},{"name":"Philippians","chapters":[30,30,21,23]},{"name":"Colossians","chapters":[29,23,25,18]},{"name":"1 Thessalonians","chapters":[10,20,13,18,28]},{"name":"2 Thessalonians","chapters":[12,17,18]},{"name":"1 Timothy","chapters":[20,15,16,16,25,21]},{"name":"2 Timothy","chapters":[18,26,17,22]},{"name":"Titus","chapters":[16,15,15]},{"name":"Philemon","chapters":[25]},{"name":"Hebrews","chapters":[14,18,19,16,14,20,28,13,28,39,40,29,25]},{"name":"James","chapters":[27,26,18,17,20]},{"name":"1 Peter","chapters":[25,25,22,19,14]},{"name":"2 Peter","chapters":[21,22,18]},{"name":"1 John","chapters":[10,29,24,21,21]},{"name":"2 John","chapters":[13]},{"name":"3 John","chapters":[14]},{"name":"Jude","chapters":[25]},{"name":"Revelation","chapters":[20,29,22,11,14,17,17,13,21,11,19,17,18,20,8,21,18,24,21,15,27,21]}]}};
+let BIBLE_BOOKS = BIBLE_TRANSLATIONS.kjv.books;
 const BibleReader = (() => {
     const id = name => document.getElementById('bible-' + name);
     const dialog = id('dialog');
-    const storageKey = 'holy_bible_reader_v1';
+    const storageKey = 'holy_bible_reader_v2';
+    let version='kjv';
     const cache = new Map();
     let book = 0, chapter = 1, pageIndex = 0, pages = [], chapterData = null;
     let busy = false, requestId = 0, retryTarget = null, targetVerse = null;
@@ -2382,13 +2405,18 @@ const BibleReader = (() => {
     let saved;
     try { saved = JSON.parse(get(storageKey, '{}')); } catch { saved = {}; }
     saved = saved && typeof saved === 'object' ? saved : {};
+    if (!saved.positions || typeof saved.positions !== 'object' || Array.isArray(saved.positions)) {
+        let old;try {old=JSON.parse(get('holy_bible_reader_v1','{}'));}catch {old={};}
+        saved={positions:{kjv:old||{}},fontSize:old?.fontSize||22};
+    }
     fontSize = Math.max(16, Math.min(30, Number(saved.fontSize) || 22));
     const validBook = b => Number.isInteger(b) && b >= 0 && b < BIBLE_BOOKS.length;
     const validChapter = (b,c) => validBook(b) && Number.isInteger(c) && c >= 1 && c <= BIBLE_BOOKS[b].chapters.length;
     function storedTarget() {
-        const b = Number(saved.book), c = Number(saved.chapter);
+        const position=saved.positions[version]||{};
+        const b = Number(position.book), c = Number(position.chapter);
         if (!validChapter(b,c)) return {book:0,chapter:1,verse:1,offset:0};
-        return {book:b, chapter:c, verse:Math.max(1,Math.min(BIBLE_BOOKS[b].chapters[c-1],Number(saved.verse)||1)), offset:Math.max(0,Number(saved.offset)||0)};
+        return {book:b, chapter:c, verse:Math.max(1,Math.min(BIBLE_BOOKS[b].chapters[c-1],Number(position.verse)||1)), offset:Math.max(0,Number(position.offset)||0)};
     }
     function optionList(select, entries, selected) {
         select.replaceChildren();
@@ -2418,16 +2446,17 @@ const BibleReader = (() => {
         dialog.style.setProperty('--bible-font',fontSize+'px');id('font-size').textContent=fontSize+'px';
     }
     async function loadBook(b) {
-        if(cache.has(b)) return cache.get(b);
+        const key=version+':'+b, translation=version, metadata=BIBLE_BOOKS[b];
+        if(cache.has(key)) return cache.get(key);
         const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
         try {
-            const url=new URL('bible-data/kjv/'+encodeURIComponent(BIBLE_BOOKS[b].name)+'.json',document.baseURI);
+            const url=new URL('bible-data/'+translation+'/'+encodeURIComponent(metadata.name)+'.json',document.baseURI);
             const response=await fetch(url,{signal:controller.signal});
             if(!response.ok)throw new Error('Book request failed: '+response.status);
-            const data=await response.json(), expected=BIBLE_BOOKS[b].chapters;
+            const data=await response.json(), expected=metadata.chapters;
             if(!data||typeof data!=='object'||Object.keys(data).length!==expected.length)throw new Error('Invalid book data');
-            expected.forEach((n,c)=>{const verses=data[String(c+1)];if(!verses||Object.keys(verses).length!==n)throw new Error('Incomplete chapter');for(let v=1;v<=n;v++){if(typeof verses[v]!=='string'||!verses[v].trim())throw new Error('Missing verse');}});
-            cache.set(b,data);return data;
+            expected.forEach((n,c)=>{const verses=data[String(c+1)];if(!verses||Object.keys(verses).length!==n)throw new Error('Incomplete chapter');for(let v=1;v<=n;v++){if(typeof verses[v]!=='string'||(translation==='kjv'&&!verses[v].trim()))throw new Error('Missing verse');}});
+            cache.set(key,data);return data;
         } finally {clearTimeout(timeout);}
     }
     function fragmentNode(f, highlight=false) {
@@ -2444,7 +2473,7 @@ const BibleReader = (() => {
             return measure.scrollHeight<=measure.clientHeight && measure.scrollWidth<=measure.clientWidth;
         }
         for(const [number,text] of Object.entries(data)) {
-            const words=text.trim().split(/\s+/);let start=0;
+            const words=(text.trim() || '[Reader note: This verse number has no text in this WEB source.]').split(/\s+/);let start=0;
             while(start<words.length) {
                 let f={verse:Number(number),start,end:words.length,text:words.slice(start).join(' ')};
                 if(fits([...current,f])) {current.push(f);start=words.length;continue;}
@@ -2467,7 +2496,7 @@ const BibleReader = (() => {
         if(index<0)index=newPages.findIndex(p=>p.some(f=>f.verse>=verse));return index<0?newPages.length-1:index;
     }
     function savePosition() {
-        saved={...currentAnchor(),fontSize};put(storageKey,JSON.stringify(saved));
+        saved.positions[version]=currentAnchor();saved.fontSize=fontSize;put(storageKey,JSON.stringify(saved));
     }
     function render() {
         const fragments=pages[pageIndex];if(!fragments)return;
@@ -2475,7 +2504,7 @@ const BibleReader = (() => {
         const first=fragments[0],last=fragments[fragments.length-1];
         id('page-heading').textContent=BIBLE_BOOKS[book].name+' '+chapter;
         const verses=first.verse===last.verse?String(first.verse):first.verse+'–'+last.verse;
-        id('range').textContent='KJV • '+chapter+':'+verses+(first.start?' · continued':'');
+        id('range').textContent=version.toUpperCase()+' • '+chapter+':'+verses+(first.start?' · continued':'');
         id('page-count').textContent='Page '+(pageIndex+1)+' of '+pages.length;
         id('verse').value=String(targetVerse&&fragments.some(f=>f.verse===targetVerse)?targetVerse:first.verse);
         id('live').textContent=BIBLE_BOOKS[book].name+' chapter '+chapter+', verses '+verses+', page '+(pageIndex+1)+' of '+pages.length;
@@ -2503,9 +2532,20 @@ const BibleReader = (() => {
     function open() {
         closeMenus();closeAudio();music.pause();musicLabel();
         document.querySelectorAll('dialog[open]').forEach(d=>d.close());
-        dialog.showModal();applyFont();
-        requestAnimationFrame(()=>go(pages.length?currentAnchor():storedTarget()));
+        id('choice-dialog').showModal();
     }
+    function choose(nextVersion) {
+        version=nextVersion;BIBLE_BOOKS=BIBLE_TRANSLATIONS[version].books;
+        pages=[];chapterData=null;pageIndex=0;book=0;chapter=1;targetVerse=null;
+        id('version-label').textContent=BIBLE_TRANSLATIONS[version].label;
+        optionList(id('book'),BIBLE_BOOKS.map((b,i)=>[i,b.name]),0);selectors();
+        id('choice-dialog').close();dialog.showModal();applyFont();setBusy(true);cover('Opening your Bible…');
+        requestAnimationFrame(()=>go(storedTarget()));
+    }
+    id('choose-kjv').addEventListener('click',()=>choose('kjv'));
+    id('choose-web').addEventListener('click',()=>choose('web'));
+    id('choice-close').addEventListener('click',()=>id('choice-dialog').close());
+    id('version-switch').addEventListener('click',open);
     function close() {dialog.close();}
     dialog.addEventListener('close',()=>{requestId++;busy=false;clearTimeout(resizeTimer);});
     async function turn(direction) {
