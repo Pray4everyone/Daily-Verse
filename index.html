@@ -1,637 +1,870 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Scripture</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Scripture</title>
 
-        body {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 80px 20px 40px 20px;
-            background-color: #0f172a;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #ffffff;
-            position: relative;
-            transition: background-image 0.6s ease-in-out;
-            overflow-x: hidden;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
 
-        /* Top Left Glass Streak Badge */
-        .top-left-streak {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
-            z-index: 1000;
-        }
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .streak-count-text {
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 0.8px;
-            color: #fef08a;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-            white-space: nowrap;
-            cursor: pointer;
-        }
+body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 90px 20px 40px;
+    background: #0f172a center / cover no-repeat fixed;
+    color: #fffbeb;
+    overflow-x: hidden;
+}
 
-        /* Top Right Menu Container */
-        .top-menu-container {
-            position: fixed;
-            top: 16px;
-            right: 16px;
-            z-index: 1000;
-        }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: .6; }
+button:focus-visible, a:focus-visible {
+    outline: 3px solid #fef08a;
+    outline-offset: 4px;
+}
+[hidden] { display: none !important; }
 
-        .menu-toggle-btn {
-            font-family: 'Cinzel', serif;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            letter-spacing: 0.8px;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            color: #f8fafc;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
-            transition: all 0.2s ease;
-        }
+.top-left-streak,
+.menu-toggle-btn {
+    font-family: 'Cinzel', serif;
+    padding: 10px 14px;
+    min-height: 44px;
+    background: rgba(15,23,42,.78);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.37);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .6px;
+}
 
-        .menu-toggle-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
+.top-left-streak {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    color: #fef08a;
+    z-index: 1000;
+}
 
-        /* Dropdown Content Box */
-        .dropdown-menu {
-            position: absolute;
-            top: 42px;
-            right: 0;
-            width: 230px;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            display: none;
-            flex-direction: column;
-            padding: 8px;
-            gap: 4px;
-        }
+.top-menu-container {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1000;
+}
 
-        .dropdown-menu.show {
-            display: flex;
-        }
+.menu-toggle-btn { color: #f8fafc; }
 
-        .dropdown-item {
-            font-family: 'Cinzel', serif;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.7rem;
-            letter-spacing: 0.8px;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            background: transparent;
-            color: #f8fafc;
-            text-align: left;
-            transition: background 0.2s ease;
-        }
+.dropdown-menu {
+    position: absolute;
+    top: 54px;
+    right: 0;
+    width: 240px;
+    max-height: calc(100svh - 100px);
+    overflow-y: auto;
+    padding: 8px;
+    background: rgba(15,23,42,.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0,0,0,.5);
+}
 
-        .dropdown-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-        }
+.dropdown-item {
+    font-family: 'Cinzel', serif;
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 12px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #f8fafc;
+    text-align: left;
+    text-decoration: none;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
 
-        /* Frosted Dark Glass Card Container */
-        .verse-card {
-            max-width: 820px;
-            width: 100%;
-            text-align: center;
-            padding: 48px 36px;
-            margin: auto;
-            background: rgba(15, 23, 42, 0.72);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            position: relative;
-        }
+.dropdown-item:hover { background: rgba(255,255,255,.12); }
 
-        /* Bookmark Button on Card */
-        .bookmark-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #fef08a;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
+.page-content {
+    width: 100%;
+    max-width: 820px;
+    margin: 0 auto;
+    min-height: calc(100svh - 130px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 
-        .bookmark-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.05);
-        }
+.verse-card {
+    width: 100%;
+    text-align: center;
+    padding: 56px 36px 40px;
+    background: rgba(15,23,42,.74);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.5);
+    position: relative;
+}
 
-        /* Header Accent Label */
-        .tag {
-            font-family: 'Cinzel', serif;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 0.85rem;
-            color: #fef08a;
-            font-weight: 800;
-            margin-bottom: 24px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
+.bookmark-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 50%;
+    background: rgba(255,255,255,.1);
+    color: #fef08a;
+    font-size: 1rem;
+}
 
-        /* Large Ivory Verse Text */
-        .bg-votd-text {
-            font-size: 2.5rem;
-            line-height: 1.45;
-            color: #fffbeb;
-            margin-bottom: 28px;
-            font-style: italic;
-            font-weight: 600;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-        }
+.tag {
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: .85rem;
+    color: #fef08a;
+    font-weight: 800;
+    margin-bottom: 24px;
+}
 
-        /* Large Ivory Reference Title */
-        .bg-votd-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #fef3c7;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-        }
+.verse-text {
+    font-size: 2.5rem;
+    line-height: 1.45;
+    margin-bottom: 28px;
+    font-style: italic;
+    font-weight: 600;
+    text-shadow: 0 2px 8px rgba(0,0,0,.7);
+}
 
-        /* Modals for Saved Verses & Milestones */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            padding: 20px;
-        }
+.verse-reference {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fef3c7;
+    letter-spacing: 1px;
+}
 
-        .modal-card {
-            background: rgba(15, 23, 42, 0.92);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            max-width: 500px;
-            width: 100%;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            color: #f8fafc;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
+.feed-status {
+    margin-top: 16px;
+    color: #d2d9e4;
+    font: .8rem/1.5 system-ui, sans-serif;
+}
 
-        .modal-header {
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #fef08a;
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.scripture-audio {
+    width: 100%;
+    margin-top: 20px;
+    text-align: center;
+}
 
-        .close-modal {
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
+.scripture-audio-button {
+    min-height: 48px;
+    padding: 14px 24px;
+    border: 1px solid rgba(254,240,138,.4);
+    border-radius: 30px;
+    background: rgba(15,23,42,.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: #fef3c7;
+    font-family: 'Cinzel', serif;
+    font-size: .85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+}
 
-        .badge-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
+.scripture-audio-button:hover:not(:disabled) {
+    background: rgba(40,53,75,.95);
+    border-color: #fef08a;
+}
 
-        .badge-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.85rem;
-        }
+.scripture-audio-panel {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 20px;
+    background: rgba(15,23,42,.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.18);
+    box-shadow: 0 16px 36px rgba(0,0,0,.35);
+}
 
-        .badge-item.unlocked {
-            border-color: #fef08a;
-            background: rgba(254, 240, 138, 0.08);
-            color: #fef08a;
-        }
+.scripture-audio-hint { margin-bottom: 12px; font-size: 1.1rem; }
 
-        @media (max-width: 650px) {
-            body {
-                padding-top: 110px;
-            }
-            .verse-card {
-                padding: 32px 20px;
-            }
-            .bg-votd-text {
-                font-size: 1.85rem;
-            }
-            .bg-votd-title {
-                font-size: 1.25rem;
-            }
-            .top-left-streak {
-                top: 10px;
-                left: 10px;
-                padding: 5px 10px;
-            }
-            .top-menu-container {
-                top: 10px;
-                right: 10px;
-            }
-        }
-    </style>
+.scripture-audio-frame {
+    display: block;
+    width: 100%;
+    height: 590px;
+    border: 0;
+    border-radius: 12px;
+    background: white;
+}
+
+.audio-fallback {
+    display: inline-block;
+    margin-top: 12px;
+    color: #fef3c7;
+    font-size: 1rem;
+}
+
+dialog {
+    width: calc(100% - 32px);
+    max-width: 520px;
+    max-height: 80svh;
+    margin: auto;
+    padding: 26px;
+    overflow-y: auto;
+    color: #fffbeb;
+    background: #111d31;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.6);
+}
+
+dialog::backdrop {
+    background: rgba(0,0,0,.65);
+    backdrop-filter: blur(8px);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    color: #fef08a;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+}
+
+.close-modal {
+    min-width: 44px;
+    min-height: 44px;
+    background: transparent;
+    border: 0;
+    color: white;
+    font-size: 1.3rem;
+}
+
+.saved-verse {
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,.15);
+    font-size: 1.2rem;
+    line-height: 1.5;
+}
+
+.saved-reference {
+    margin-top: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: .85rem;
+    color: #fef08a;
+}
+
+.badge-grid { display: grid; gap: 10px; }
+
+.badge-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    background: rgba(255,255,255,.05);
+}
+
+.badge-item.unlocked {
+    border-color: #fef08a;
+    background: rgba(254,240,138,.08);
+    color: #fef08a;
+}
+
+.badge-status { font: .75rem/1.4 system-ui, sans-serif; }
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 32px);
+    padding: 12px 20px;
+    border: 1px solid rgba(254,240,138,.4);
+    border-radius: 14px;
+    background: #162338;
+    color: #fffbeb;
+    box-shadow: 0 8px 30px rgba(0,0,0,.4);
+    font: .9rem/1.5 system-ui, sans-serif;
+    text-align: center;
+    z-index: 3000;
+}
+
+@media (max-width: 650px) {
+    body { padding: 90px 16px 32px; }
+    .verse-card { padding: 56px 20px 32px; }
+    .verse-text { font-size: 1.85rem; }
+    .verse-reference { font-size: 1.2rem; }
+    .tag { font-size: .72rem; letter-spacing: 1.4px; }
+    .top-left-streak { top: 10px; left: 10px; }
+    .top-menu-container { top: 10px; right: 10px; }
+    .scripture-audio-panel { padding: 10px; }
+    .scripture-audio-frame { height: 650px; }
+}
+</style>
 </head>
+
 <body>
 
-    <!-- Top Left Glass Streak Badge -->
-    <div class="top-left-streak" onclick="openMilestones()">
-        <span id="streak-display" class="streak-count-text">🔥 1 Day Streak</span>
-    </div>
+<button class="top-left-streak" onclick="openMilestones()"
+        aria-label="View streak milestones">
+    <span id="streak-display">🔥 1 Day Streak</span>
+</button>
 
-    <!-- Top Right Compact Dropdown Menu -->
-    <div class="top-menu-container">
-        <button class="menu-toggle-btn" onclick="toggleMenu()">
-            ☰ Menu
+<div class="top-menu-container">
+    <button id="menu-toggle" class="menu-toggle-btn"
+            onclick="toggleMenu()" aria-expanded="false"
+            aria-controls="dropdown-menu">
+        ☰ Menu
+    </button>
+
+    <div id="dropdown-menu" class="dropdown-menu" hidden>
+        <button id="music-btn" class="dropdown-item" onclick="toggleMusic()">
+            ▶ Play Music
         </button>
-        <div id="dropdown-menu" class="dropdown-menu">
-            <a id="audio-link" href="https://www.biblegateway.com/audio/mclean/niv/Prov.3" target="_blank" class="dropdown-item">
-                🔊 Scripture Audio
-            </a>
-            <button id="music-btn" class="dropdown-item" onclick="toggleMusic()">
-                ⏸ Pause Music
-            </button>
-            <button class="dropdown-item" onclick="nextTrack()">
-                ⏭ Next Track
-            </button>
-            <button class="dropdown-item" onclick="changeSceneRandom()">
-                🔀 Shuffle Scene
-            </button>
-            <button class="dropdown-item" onclick="saveCurrentVerse()">
-                ⭐ Save to Favorites
-            </button>
-            <button class="dropdown-item" onclick="shareCurrentVerse()">
-                🔗 Share Verse
-            </button>
-            <button class="dropdown-item" onclick="openSavedVerses()">
-                📖 View Favorites
-            </button>
-            <button class="dropdown-item" onclick="openMilestones()">
-                🏆 Streak Badges
-            </button>
-            <a href="https://localchurches.org/" target="_blank" rel="noopener noreferrer" class="dropdown-item">
-                ⛪ Find A Church
-            </a>
-        </div>
+        <button class="dropdown-item" onclick="nextTrack()">⏭ Next Track</button>
+        <button class="dropdown-item" onclick="changeSceneRandom()">🔀 Shuffle Scene</button>
+        <button class="dropdown-item" onclick="saveCurrentVerse()">⭐ Save to Favorites</button>
+        <button class="dropdown-item" onclick="shareCurrentVerse()">🔗 Share Verse</button>
+        <button class="dropdown-item" onclick="openSavedVerses()">📖 View Favorites</button>
+        <button class="dropdown-item" onclick="openMilestones()">🏆 Streak Badges</button>
+        <a href="https://localchurches.org/" target="_blank"
+           rel="noopener noreferrer" class="dropdown-item">⛪ Find A Church</a>
     </div>
+</div>
 
-    <!-- Main Scripture Card -->
-    <main class="verse-card">
-        <button class="bookmark-btn" onclick="saveCurrentVerse()" title="Save to Favorites">⭐</button>
+<main class="page-content">
+    <section class="verse-card" aria-label="Daily Scripture">
+        <button class="bookmark-btn" onclick="saveCurrentVerse()"
+                aria-label="Save verse to favorites" title="Save to Favorites">⭐</button>
+
         <div class="tag">✦ Scripture for Your Path ✦</div>
 
-        <div id="votd-box">
-            <div class="bg-votd-text" id="verse-text">"Trust in the LORD with all your heart and lean not on your own understanding."</div>
-            <div class="bg-votd-title" id="verse-ref">— Proverbs 3:5</div>
+        <div id="verse-text" class="verse-text">
+            Trust in the LORD with all your heart and lean not on your own understanding.
         </div>
-    </main>
+        <div id="verse-ref" class="verse-reference">— Proverbs 3:5</div>
+        <p id="feed-status" class="feed-status" role="status">
+            Loading today’s Scripture…
+        </p>
+    </section>
 
-    <!-- Saved Verses Modal -->
-    <div id="saved-modal" class="modal-overlay" onclick="closeModals(event)">
-        <div class="modal-card">
-            <div class="modal-header">
-                <span>📖 Favorite Verses</span>
-                <button class="close-modal" onclick="closeModals()">✕</button>
-            </div>
-            <div id="saved-verses-list" style="font-size: 0.95rem; line-height: 1.5; color: #fffbeb;">
-                <p style="opacity: 0.7;">No saved verses yet. Click the star icon or menu option to save daily verses here!</p>
-            </div>
+    <section class="scripture-audio" aria-label="Listen to Scripture">
+        <button id="scripture-audio-button" class="scripture-audio-button"
+                onclick="toggleScriptureAudio()" aria-expanded="false"
+                aria-controls="scripture-audio-panel" disabled>
+            Loading Scripture Audio…
+        </button>
+
+        <div id="scripture-audio-panel" class="scripture-audio-panel" hidden>
+            <p class="scripture-audio-hint">
+                Press Play below to listen to Scripture.
+            </p>
+            <div id="scripture-player-container"></div>
+            <a id="audio-fallback" class="audio-fallback" target="_blank"
+               rel="noopener noreferrer">
+                Player not working? Listen on Bible Gateway
+            </a>
         </div>
+    </section>
+</main>
+
+<dialog id="saved-modal" aria-labelledby="saved-title">
+    <div class="modal-header">
+        <h2 id="saved-title" style="font-size:inherit">📖 Favorite Verses</h2>
+        <button class="close-modal"
+                onclick="document.getElementById('saved-modal').close()"
+                aria-label="Close favorites">✕</button>
     </div>
+    <div id="saved-verses-list"></div>
+</dialog>
 
-    <!-- Milestone Badges Modal -->
-    <div id="milestone-modal" class="modal-overlay" onclick="closeModals(event)">
-        <div class="modal-card">
-            <div class="modal-header">
-                <span>🏆 Streak Milestones</span>
-                <button class="close-modal" onclick="closeModals()">✕</button>
-            </div>
-            <div class="badge-grid" id="badge-container">
-                <!-- Populated via JS -->
-            </div>
-        </div>
+<dialog id="milestone-modal" aria-labelledby="milestone-title">
+    <div class="modal-header">
+        <h2 id="milestone-title" style="font-size:inherit">🏆 Streak Milestones</h2>
+        <button class="close-modal"
+                onclick="document.getElementById('milestone-modal').close()"
+                aria-label="Close milestones">✕</button>
     </div>
+    <div id="badge-container" class="badge-grid"></div>
+</dialog>
 
-    <audio id="bg-music" loop preload="auto"></audio>
+<div id="toast" class="toast" role="status" hidden></div>
+<audio id="bg-music" loop preload="none"></audio>
 
-    <script>
-        var TOTAL_ITEMS = 10;
-        var currentMusicIndex = 1;
-        var currentImageIndex = 1;
-        var music = document.getElementById("bg-music");
-        var musicBtn = document.getElementById("music-btn");
-        var currentStreakCount = 1;
+<script>
+"use strict";
 
-        // Toggle Dropdown Menu
-        function toggleMenu() {
-            document.getElementById("dropdown-menu").classList.toggle("show");
+const TOTAL_ITEMS = 10;
+const $ = id => document.getElementById(id);
+const music = $("bg-music");
+const musicBtn = $("music-btn");
+
+let currentMusicIndex = 1;
+let currentImageIndex = 1;
+let currentStreakCount = 1;
+let dailyScriptureAudioUrl = "";
+let toastTimer;
+let feedTimer;
+let feedRequest = 0;
+let cleanupFeed = () => {};
+let lastLocalDate = localDateKey();
+
+function notify(message) {
+    clearTimeout(toastTimer);
+    $("toast").textContent = message;
+    $("toast").hidden = false;
+    toastTimer = setTimeout(() => $("toast").hidden = true, 4500);
+}
+
+function readStorage(key, fallback = null) {
+    try {
+        return localStorage.getItem(key) ?? fallback;
+    } catch {
+        return fallback;
+    }
+}
+
+function writeStorage(key, value) {
+    try {
+        localStorage.setItem(key, value);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function toggleMenu() {
+    const menu = $("dropdown-menu");
+    menu.hidden = !menu.hidden;
+    $("menu-toggle").setAttribute("aria-expanded", String(!menu.hidden));
+}
+
+function closeMenu() {
+    $("dropdown-menu").hidden = true;
+    $("menu-toggle").setAttribute("aria-expanded", "false");
+}
+
+document.addEventListener("click", event => {
+    if (!event.target.closest(".top-menu-container")) closeMenu();
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        closeMenu();
+        closeScriptureAudio();
+    }
+});
+
+function localDateKey() {
+    const date = new Date();
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+
+function dateNumber(key) {
+    if (!key) return NaN;
+    const parts = key.split("-").map(Number);
+    if (parts.length !== 3 || parts.some(n => !Number.isFinite(n))) return NaN;
+    return Date.UTC(parts[0], parts[1] - 1, parts[2]) / 86400000;
+}
+
+function updateDailyStreak() {
+    const today = localDateKey();
+    const previous = readStorage("last_verse_visit_date");
+    let streak = parseInt(readStorage("verse_streak_count", "0"), 10);
+    if (!Number.isFinite(streak) || streak < 1) streak = 1;
+
+    const difference = dateNumber(today) - dateNumber(previous);
+
+    if (!previous) {
+        streak = 1;
+    } else if (difference === 1) {
+        streak += 1;
+    } else if (difference > 1 || !Number.isFinite(difference)) {
+        streak = 1;
+    }
+
+    writeStorage("last_verse_visit_date", today);
+    writeStorage("verse_streak_count", String(streak));
+    currentStreakCount = streak;
+
+    $("streak-display").textContent =
+        `🔥 ${streak} ${streak === 1 ? "Day" : "Days"} Streak`;
+}
+
+function tryLoadingImage(index, extensionIndex) {
+    const extensions = [".jpg", ".jpeg", ".png"];
+    if (extensionIndex >= extensions.length) return;
+
+    const url = `background${index}${extensions[extensionIndex]}`;
+    const image = new Image();
+
+    image.onload = () => {
+        if (index !== currentImageIndex) return;
+        document.body.style.backgroundImage =
+            `linear-gradient(rgba(15,23,42,.35),rgba(15,23,42,.35)),url("${url}")`;
+    };
+
+    image.onerror = () => {
+        if (index === currentImageIndex) {
+            tryLoadingImage(index, extensionIndex + 1);
         }
+    };
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.menu-toggle-btn') && !event.target.closest('.dropdown-menu')) {
-                var dropdowns = document.getElementsByClassName("dropdown-menu");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
+    image.src = url;
+}
 
-        // --- STREAK COUNTER LOGIC ---
-        function updateDailyStreak() {
-            var today = new Date();
-            var todayStr = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+function changeSceneRandom() {
+    let next;
+    do {
+        next = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
+    } while (next === currentImageIndex && TOTAL_ITEMS > 1);
 
-            var lastVisitStr = localStorage.getItem("last_verse_visit_date");
-            var currentStreak = parseInt(localStorage.getItem("verse_streak_count") || "0", 10);
+    currentImageIndex = next;
+    tryLoadingImage(next, 0);
+    closeMenu();
+}
 
-            if (!lastVisitStr) {
-                currentStreak = 1;
-            } else if (lastVisitStr === todayStr) {
-                if (currentStreak === 0) currentStreak = 1;
-            } else {
-                var lastVisitDate = new Date(lastVisitStr);
-                var todayDate = new Date(todayStr);
-                
-                var timeDiff = todayDate.getTime() - lastVisitDate.getTime();
-                var dayDiff = Math.round(timeDiff / (1000 * 3600 * 24));
+function updateMusicButton() {
+    musicBtn.textContent = music.paused ? "▶ Play Music" : "⏸ Pause Music";
+}
 
-                if (dayDiff === 1) {
-                    currentStreak += 1;
-                } else if (dayDiff > 1) {
-                    currentStreak = 1;
-                }
-            }
+music.addEventListener("play", updateMusicButton);
+music.addEventListener("pause", updateMusicButton);
+music.addEventListener("error", () => {
+    musicBtn.textContent = "▶ Play Music";
+});
 
-            localStorage.setItem("last_verse_visit_date", todayStr);
-            localStorage.setItem("verse_streak_count", currentStreak.toString());
-            currentStreakCount = currentStreak;
+async function playMusic() {
+    closeScriptureAudio();
+    try {
+        await music.play();
+    } catch {
+        notify("Music could not play. Check your connection and music files.");
+    }
+    updateMusicButton();
+}
 
-            document.getElementById("streak-display").innerText = "🔥 " + currentStreak + (currentStreak === 1 ? " Day Streak" : " Days Streak");
-        }
+function toggleMusic() {
+    if (music.paused) playMusic();
+    else music.pause();
+}
 
-        // --- RANDOM EXPERIENCE ON LOAD ---
-        function initRandomExperience() {
-            currentMusicIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
-            currentImageIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
+function nextTrack() {
+    currentMusicIndex = (currentMusicIndex % TOTAL_ITEMS) + 1;
+    music.src = `music${currentMusicIndex}.mp3`;
+    playMusic();
+}
 
-            tryLoadingImage(currentImageIndex, 0);
+function initRandomExperience() {
+    currentImageIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
+    currentMusicIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
 
-            music.src = "music" + currentMusicIndex + ".mp3";
-            music.load();
+    tryLoadingImage(currentImageIndex, 0);
+    music.src = `music${currentMusicIndex}.mp3`;
 
-            var playPromise = music.play();
-            if (playPromise !== undefined) {
-                playPromise.then(function() {
-                    musicBtn.innerHTML = "⏸ Pause Music";
-                }).catch(function(e) {
-                    musicBtn.innerHTML = "▶ Play Music";
-                });
-            }
-        }
+    // Browsers may require the visitor to tap Play Music first.
+    music.play().catch(updateMusicButton);
+}
 
-        // Independent Image Shuffler
-        function changeSceneRandom() {
-            var newImageIndex;
-            do {
-                newImageIndex = Math.floor(Math.random() * TOTAL_ITEMS) + 1;
-            } while (newImageIndex === currentImageIndex && TOTAL_ITEMS > 1);
+function getFavorites() {
+    try {
+        const saved = JSON.parse(readStorage("favorite_verses", "[]"));
+        return Array.isArray(saved)
+            ? saved.filter(v => v && typeof v.text === "string" &&
+                typeof v.ref === "string")
+            : [];
+    } catch {
+        return [];
+    }
+}
 
-            currentImageIndex = newImageIndex;
-            tryLoadingImage(currentImageIndex, 0);
-        }
+function saveCurrentVerse() {
+    const text = $("verse-text").textContent.trim();
+    const ref = $("verse-ref").textContent.trim();
+    const saved = getFavorites();
 
-        function tryLoadingImage(index, extIndex) {
-            var extensions = ['.jpg', '.jpeg', '.png'];
-            if (extIndex >= extensions.length) return;
+    if (saved.some(v => v.ref === ref)) {
+        notify("This verse is already in your favorites.");
+        return;
+    }
 
-            var bgUrl = "background" + index + extensions[extIndex];
-            var img = new Image();
+    saved.push({ text, ref });
 
-            img.onload = function() {
-                document.body.style.backgroundImage = 
-                    "linear-gradient(rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.35)), url('" + bgUrl + "')";
-            };
+    notify(writeStorage("favorite_verses", JSON.stringify(saved))
+        ? "Verse saved to your favorites!"
+        : "Your browser could not save this verse. Please check its storage settings.");
+}
 
-            img.onerror = function() {
-                tryLoadingImage(index, extIndex + 1);
-            };
+function openSavedVerses() {
+    closeMenu();
+    const container = $("saved-verses-list");
+    container.replaceChildren();
+    const saved = getFavorites();
 
-            img.src = bgUrl;
-        }
+    if (!saved.length) {
+        container.textContent = "No saved verses yet. Tap the star to save a verse.";
+    }
 
-        function toggleMusic() {
-            if (music.paused) {
-                music.play().then(function() {
-                    musicBtn.innerHTML = "⏸ Pause Music";
-                }).catch(function(e) {
-                    alert("Please ensure 'music" + currentMusicIndex + ".mp3' is uploaded to your GitHub repository.");
-                });
-            } else {
-                music.pause();
-                musicBtn.innerHTML = "▶ Play Music";
-            }
-        }
+    saved.forEach(item => {
+        const entry = document.createElement("div");
+        entry.className = "saved-verse";
 
-        // Independent Music Track Advancer
-        function nextTrack() {
-            currentMusicIndex = (currentMusicIndex % TOTAL_ITEMS) + 1;
-            music.src = "music" + currentMusicIndex + ".mp3";
-            music.load();
-            music.play().then(function() {
-                musicBtn.innerHTML = "⏸ Pause Music";
-            }).catch(function(e) {
-                musicBtn.innerHTML = "▶ Play Music";
+        const text = document.createElement("p");
+        text.textContent = item.text;
+        text.style.fontStyle = "italic";
+
+        const reference = document.createElement("p");
+        reference.className = "saved-reference";
+        reference.textContent = item.ref;
+
+        entry.append(text, reference);
+        container.append(entry);
+    });
+
+    $("saved-modal").showModal();
+}
+
+async function shareCurrentVerse() {
+    closeMenu();
+
+    const text = `${$("verse-text").textContent.trim()} ${
+        $("verse-ref").textContent.trim()
+    } (Shared via Daily Scripture)`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: "Daily Scripture",
+                text,
+                url: window.location.href
             });
+            return;
+        } catch (error) {
+            if (error.name === "AbortError") return;
         }
+    }
 
-        // --- SHARE & COPY VERSE ---
-        function shareCurrentVerse() {
-            var text = document.getElementById("verse-text").innerText;
-            var ref = document.getElementById("verse-ref").innerText;
-            var shareText = text + " " + ref + " (Shared via Daily Scripture)";
+    try {
+        await navigator.clipboard.writeText(text);
+        notify("Verse copied! Paste it into a message to share.");
+    } catch {
+        window.prompt("Copy this verse to share:", text);
+    }
+}
 
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Daily Scripture',
-                    text: shareText,
-                    url: window.location.href
-                }).catch(function(err) {
-                    console.log("Share canceled or failed", err);
-                });
-            } else {
-                navigator.clipboard.writeText(shareText).then(function() {
-                    alert("Verse copied to clipboard! You can now paste and share it anywhere.");
-                }).catch(function() {
-                    alert("Unable to copy text automatically.");
-                });
-            }
+function openMilestones() {
+    closeMenu();
+
+    const milestones = [
+        [1, "🌱 First Step", "Started your daily scripture journey."],
+        [3, "🌿 Faithful 3", "Maintained a 3-day reading streak."],
+        [7, "🌳 Devoted Week", "Completed a full 7-day streak!"],
+        [14, "✨ Two Week Pillar", "14 days walking in the Word."],
+        [30, "👑 Monthly Disciple", "30 days of daily Scripture."],
+        [90, "🕊️ Apostle", "3 months of dedicated daily devotion."],
+        [180, "⛪ Deacon", "6 months serving steadfastly in faith."],
+        [365, "⭐ Anointed", "A full year of continuous devotion."]
+    ];
+
+    const container = $("badge-container");
+    container.replaceChildren();
+
+    milestones.forEach(([days, title, description]) => {
+        const unlocked = currentStreakCount >= days;
+        const item = document.createElement("div");
+        item.className = "badge-item" + (unlocked ? " unlocked" : "");
+
+        const details = document.createElement("div");
+        const heading = document.createElement("strong");
+        heading.textContent = title;
+        const desc = document.createElement("small");
+        desc.textContent = description;
+        desc.style.display = "block";
+        details.append(heading, desc);
+
+        const status = document.createElement("span");
+        status.className = "badge-status";
+        status.textContent = unlocked
+            ? "Unlocked ✓"
+            : `${days - currentStreakCount} days left`;
+
+        item.append(details, status);
+        container.append(item);
+    });
+
+    $("milestone-modal").showModal();
+}
+
+function validAudioUrl(value) {
+    try {
+        const url = new URL(value);
+        return url.protocol === "https:" &&
+            url.hostname === "www.biblegateway.com" &&
+            url.pathname.startsWith("/audio/")
+            ? url.href
+            : "";
+    } catch {
+        return "";
+    }
+}
+
+function closeScriptureAudio() {
+    $("scripture-player-container").replaceChildren();
+    $("scripture-audio-panel").hidden = true;
+
+    const button = $("scripture-audio-button");
+    button.setAttribute("aria-expanded", "false");
+
+    if (dailyScriptureAudioUrl) {
+        button.textContent = "▶ Listen to Scripture";
+    }
+}
+
+function toggleScriptureAudio() {
+    const panel = $("scripture-audio-panel");
+
+    if (!panel.hidden) {
+        closeScriptureAudio();
+        return;
+    }
+
+    if (!dailyScriptureAudioUrl) return;
+
+    music.pause();
+    updateMusicButton();
+
+    const frame = document.createElement("iframe");
+    frame.className = "scripture-audio-frame";
+    frame.title = "Bible Gateway Scripture Audio";
+    frame.allow = "autoplay";
+    frame.src = dailyScriptureAudioUrl;
+
+    $("scripture-player-container").replaceChildren(frame);
+    $("audio-fallback").href = dailyScriptureAudioUrl;
+    panel.hidden = false;
+
+    $("scripture-audio-button").setAttribute("aria-expanded", "true");
+    $("scripture-audio-button").textContent = "✕ Close Scripture Audio";
+}
+
+function displayDailyVerse(payload) {
+    const verse = payload && (payload.votd || payload);
+    if (!verse) return false;
+
+    const text = verse.text || verse.content;
+    const reference = verse.reference || verse.display_ref;
+    if (!text || !reference) return false;
+
+    const parsed = new DOMParser().parseFromString(text, "text/html");
+
+    closeScriptureAudio();
+    $("verse-text").textContent = parsed.body.textContent;
+    $("verse-ref").textContent = "— " + reference;
+
+    dailyScriptureAudioUrl = validAudioUrl(verse.audiolink);
+
+    const button = $("scripture-audio-button");
+    button.disabled = !dailyScriptureAudioUrl;
+    button.textContent = dailyScriptureAudioUrl
+        ? "▶ Listen to Scripture"
+        : "Scripture Audio Unavailable";
+
+    $("feed-status").hidden = true;
+    return true;
+}
+
+function loadDailyVerse() {
+    cleanupFeed();
+    const request = ++feedRequest;
+    const callback = "scriptureFeedCallback" + request;
+    const script = document.createElement("script");
+
+    cleanupFeed = () => {
+        clearTimeout(feedTimer);
+        script.remove();
+        delete window[callback];
+    };
+
+    function failed() {
+        if (request !== feedRequest) return;
+        cleanupFeed();
+
+        $("feed-status").hidden = false;
+        $("feed-status").textContent =
+            "Today’s update could not load. Showing the available verse; refresh to try again.";
+
+        if (!dailyScriptureAudioUrl) {
+            $("scripture-audio-button").textContent =
+                "Scripture Audio Unavailable";
+            $("scripture-audio-button").disabled = true;
         }
+    }
 
-        // --- FAVORITE VERSES & BOOKMARKS ---
-        function saveCurrentVerse() {
-            var text = document.getElementById("verse-text").innerText;
-            var ref = document.getElementById("verse-ref").innerText;
-            var saved = JSON.parse(localStorage.getItem("favorite_verses") || "[]");
-
-            var exists = saved.some(function(v) { return v.ref === ref; });
-            if (!exists) {
-                saved.push({ text: text, ref: ref });
-                localStorage.setItem("favorite_verses", JSON.stringify(saved));
-                alert("Verse saved to your favorites!");
-            } else {
-                alert("This verse is already in your favorites.");
-            }
+    window[callback] = payload => {
+        if (request !== feedRequest) return;
+        if (!displayDailyVerse(payload)) {
+            failed();
+            return;
         }
+        cleanupFeed();
+    };
 
-        function openSavedVerses() {
-            var saved = JSON.parse(localStorage.getItem("favorite_verses") || "[]");
-            var container = document.getElementById("saved-verses-list");
-            
-            if (saved.length === 0) {
-                container.innerHTML = '<p style="opacity: 0.7;">No saved verses yet. Click the star icon or menu option to save daily verses here!</p>';
-            } else {
-                var html = "";
-                saved.forEach(function(item) {
-                    html += '<div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);"><p style="font-style: italic; margin-bottom: 6px;">"' + item.text + '"</p><p style="font-family: Cinzel, serif; color: #fef08a; font-size: 0.85rem;">' + item.ref + '</p></div>';
-                });
-                container.innerHTML = html;
-            }
-            document.getElementById("saved-modal").style.display = "flex";
-        }
+    script.onerror = failed;
+    feedTimer = setTimeout(failed, 15000);
 
-        // --- MILESTONE BADGES ---
-        function openMilestones() {
-            var milestones = [
-                { days: 1, title: "🌱 First Step", desc: "Started your daily scripture journey." },
-                { days: 3, title: "🌿 Faithful 3", desc: "Maintained a 3-day reading streak." },
-                { days: 7, title: "🌳 Devoted Week", desc: "Completed a full 7-day streak!" },
-                { days: 14, title: "✨ Two Week Pillar", desc: "14 days walking in the Word." },
-                { days: 30, title: "👑 Monthly Disciple", desc: "An incredible 30-day streak milestone." },
-                { days: 90, title: "🕊️ Apostle", desc: "3 months of dedicated daily devotion." },
-                { days: 180, title: "⛪ Deacon", desc: "6 months serving steadfastly in faith." },
-                { days: 365, title: "⭐ Anointed", desc: "A full 365-day year of continuous devotion." }
-            ];
+    script.src =
+        "https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=" +
+        callback + "&_=" + Date.now();
 
-            var container = document.getElementById("badge-container");
-            var html = "";
+    document.head.append(script);
+}
 
-            milestones.forEach(function(m) {
-                var unlocked = currentStreakCount >= m.days;
-                var cls = unlocked ? "badge-item unlocked" : "badge-item";
-                var status = unlocked ? "Unlocked ✓" : "Locked (" + (m.days - currentStreakCount) + " days left)";
-                html += '<div class="' + cls + '"><div><strong>' + m.title + '</strong><br><small style="opacity:0.8;">' + m.desc + '</small></div><div style="font-size:0.75rem; font-weight:bold;">' + status + '</div></div>';
-            });
-
-            container.innerHTML = html;
-            document.getElementById("milestone-modal").style.display = "flex";
-        }
-
-        function closeModals(e) {
-            if (!e || e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-modal')) {
-                document.getElementById("saved-modal").style.display = "none";
-                document.getElementById("milestone-modal").style.display = "none";
-            }
-        }
-
+// Refresh after a local date change if the page remains open.
+function checkNewDay() {
+    const today = localDateKey();
+    if (today !== lastLocalDate) {
+        lastLocalDate = today;
         updateDailyStreak();
-        initRandomExperience();
+        loadDailyVerse();
+    }
+}
 
-        function votdCallback(votd) {
-            var verseText = votd.text || votd.content;
-            var verseRef = votd.reference || votd.display_ref;
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) checkNewDay();
+});
 
-            if (verseText && verseRef) {
-                document.getElementById('verse-text').innerText = verseText;
-                document.getElementById('verse-ref').innerText = "— " + verseRef;
+setInterval(checkNewDay, 60000);
 
-                var cleanRef = encodeURIComponent(verseRef);
-                document.getElementById('audio-link').href = "https://www.biblegateway.com/passage/?search=" + cleanRef + "&version=NIV";
-            }
-        }
-    </script>
-    <script src="https://www.biblegateway.com/votd/get/?format=json&version=NIV&callback=votdCallback"></script>
-
+updateDailyStreak();
+initRandomExperience();
+loadDailyVerse();
+</script>
 </body>
 </html>
