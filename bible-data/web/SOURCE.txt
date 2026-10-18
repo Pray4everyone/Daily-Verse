@@ -1,0 +1,5 @@
+World English Bible
+Source: https://github.com/TehShrike/world-english-bible
+Commit: 68669ba3be9719ae4d1135b19d9e0b6587b7c356
+Public-domain Bible text. Verse text segments joined in source order; whitespace normalized.
+This edition preserves the supplied repository text.
