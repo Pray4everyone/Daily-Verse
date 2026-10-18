@@ -1,0 +1,7 @@
+King James Version data
+Source: https://github.com/renniemaharaj/kjv-bible
+Pinned commit: 88723a44bb3e3f229a34f9cf11ce1b7acf971eee
+All 66 book files are unchanged and verified against the source SHA-512 manifest.
+The source README states that the repository is available under the MIT License. No separate LICENSE file was present in this snapshot. Original README retained alongside these files.
+No source utility code is used in the reader.
+KJV text is in the public domain in many jurisdictions; see the original source for provenance.
