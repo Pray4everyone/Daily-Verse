@@ -768,6 +768,27 @@ dialog::backdrop {
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
+/* First-visit guided tour. All layers live in a modal so controls behind it cannot activate. */
+#site-tour{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;overflow:hidden;background:transparent;box-shadow:none;touch-action:none;color:#fff7e7}
+#site-tour::backdrop{background:transparent;backdrop-filter:none}
+#tour-spotlight{position:absolute;pointer-events:none;border:2px solid #efcc83;border-radius:16px;box-shadow:0 0 0 150vmax rgba(3,9,18,.78),0 0 20px #e8c88770;box-sizing:border-box}
+#tour-card{position:absolute;display:flex;flex-direction:column;width:min(350px,calc(100% - 24px));max-width:calc(100% - 24px);min-height:0;border:1px solid #b99c64;border-radius:17px;background:#19263b;box-shadow:0 12px 36px #0008;font:14px/1.55 system-ui,sans-serif;touch-action:pan-y;isolation:isolate}
+.tour-copy{padding:18px 18px 8px;overflow-y:auto;overscroll-behavior:contain;min-height:0}
+.tour-progress{color:#e8c887;font:600 10px/1.4 system-ui,sans-serif;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 7px}
+#tour-title{font:600 19px/1.3 'Cinzel',Georgia,serif;margin:0 0 9px;color:#f5dca7;outline:none;overflow-wrap:anywhere}
+#tour-description{color:#edf0f5;margin:0;font:14px/1.6 system-ui,sans-serif}
+.tour-navigation{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px 14px;flex-shrink:0}
+.tour-step-buttons{display:flex;gap:7px}
+.tour-navigation button{min-height:42px;padding:9px 12px;border-radius:9px;border:1px solid #e8c88750;background:transparent;color:#f5e6c9;font:600 12px/1.4 system-ui,sans-serif;white-space:nowrap}
+#tour-next{background:#e8c887;color:#172135;border-color:#e8c887}
+#tour-skip{border-color:transparent;padding-left:4px;padding-right:4px;color:#ccd3de;font-weight:400}
+#tour-back:disabled{visibility:hidden}
+#tour-pointer{position:absolute;width:12px;height:12px;background:#19263b;transform:rotate(45deg);pointer-events:none;z-index:-1}
+#tour-card[data-side="below"] #tour-pointer{top:-7px;border-left:1px solid #b99c64;border-top:1px solid #b99c64}
+#tour-card[data-side="above"] #tour-pointer{bottom:-7px;border-right:1px solid #b99c64;border-bottom:1px solid #b99c64}
+@media(max-height:420px){.tour-copy{padding:12px 14px 6px}#tour-title{font-size:16px;margin-bottom:5px}#tour-description{font-size:13px;line-height:1.5}.tour-navigation{padding:6px 12px 10px}.tour-progress{margin-bottom:4px}}
+@media(prefers-reduced-motion:no-preference){#tour-card.tour-enter{animation:scripture-reveal 160ms ease-out both}}
+
 </style>
 </head>
 
@@ -836,6 +857,7 @@ dialog::backdrop {
         </button>
 
         <div id="main-menu" class="drop glass" hidden>
+            <button id="tour-replay" class="menu-item" type="button" onclick="SiteTour.start()">✦ Replay Tour</button>
             <button id="music-btn" class="menu-item" onclick="toggleMusic()">
                 ▶ Play Music
             </button>
@@ -1085,6 +1107,22 @@ dialog::backdrop {
   <p id="bible-live" class="bible-live" aria-live="polite" aria-atomic="true"></p>
 </dialog>
 
+
+<dialog id="site-tour" aria-labelledby="tour-title" aria-describedby="tour-description">
+  <div id="tour-spotlight" aria-hidden="true"></div>
+  <section id="tour-card" aria-label="Website tour">
+    <span id="tour-pointer" aria-hidden="true"></span>
+    <div class="tour-copy">
+      <p id="tour-progress" class="tour-progress"></p>
+      <h2 id="tour-title" tabindex="-1"></h2>
+      <p id="tour-description"></p>
+    </div>
+    <nav class="tour-navigation" aria-label="Tour controls">
+      <button id="tour-skip" type="button">Skip tour</button>
+      <div class="tour-step-buttons"><button id="tour-back" type="button">Back</button><button id="tour-next" type="button">Next</button></div>
+    </nav>
+  </section>
+</dialog>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <audio id="bg-music" loop preload="none"></audio>
@@ -1471,6 +1509,7 @@ function notify(text) {
     $("toast").textContent = text;
 
     document.querySelectorAll("dialog[open]").forEach(dialog => {
+        if(dialog.id === "site-tour") return;
         if(dialog.id === "bible-dialog") { document.getElementById("bible-live").textContent = text; return; }
         let status = dialog.querySelector(".local-toast");
 
@@ -2710,6 +2749,119 @@ const BibleReader = (() => {
 
     selectors();applyFont();buttons();
     return {open,close,openPassage,resume};
+})();
+
+</script>
+<script>
+/* The tutorial is personal to this browser. It never sends visitor data. */
+const SiteTour=(()=>{
+    const key='daily_scripture_tour_seen_v1';
+    const dialog=document.getElementById('site-tour');
+    const card=document.getElementById('tour-card');
+    const spot=document.getElementById('tour-spotlight');
+    const title=document.getElementById('tour-title');
+    const description=document.getElementById('tour-description');
+    const progress=document.getElementById('tour-progress');
+    const next=document.getElementById('tour-next');
+    const back=document.getElementById('tour-back');
+    const steps=[
+        {target:'#main-toggle',title:'Your Menu',text:'Play music, switch tracks, change your background, revisit favorite verses, and see your earned badges. You can replay this tour here anytime.'},
+        {target:'#streak-button',title:'Your Daily Streak',text:'Visit each day to build your streak. Tap here to see your progress, your next milestone, and the badges you have earned.'},
+        {target:'#grow-toggle',title:'Grow Your Faith',text:'Find verses for what’s on your heart—such as peace, hope, or strength—and explore seven-day scripture journeys.'},
+        {target:'#bible-launch',title:'Read Holy Bible',text:'Choose KJV or WEB, select a book and passage, then swipe or use the arrows to turn pages. Tap a verse to highlight or save it.'},
+        {target:'#audio-button',title:'Listen to Scripture',text:'Open the audio player beneath today’s verse, then press Play to listen. Audio becomes available when the daily scripture finishes loading.'},
+        {target:'.verse-card .bookmark',title:'Keep a Favorite',text:'Tap the star to save today’s verse. Find it again in Menu → View Favorites. Your saved verses and highlights stay in this browser on this device.'}
+    ];
+    let index=0,active=false,frame=0,originalScroll=0,originalOverflow='',returnFocus=null;
+    const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+    function viewport(){
+        const v=window.visualViewport;
+        return {left:v?.offsetLeft||0,top:v?.offsetTop||0,width:v?.width||innerWidth,height:v?.height||innerHeight};
+    }
+    function target(){return document.querySelector(steps[index].target);}
+    function position(allowScroll=true){
+        if(!active)return;
+        const element=target();if(!element){finish();return;}
+        const vp=viewport(),pad=12,gap=16,margin=5;
+        let r=element.getBoundingClientRect();
+        // Fixed header buttons already have a reserved position. Other targets may need scrolling.
+        if(allowScroll&&!element.closest('.site-header')){
+            const header=document.querySelector('.site-header').getBoundingClientRect();
+            const above=r.top-vp.top-pad,below=vp.top+vp.height-r.bottom-pad;
+            const hidden=r.top<Math.max(header.bottom,vp.top)+8||r.bottom>vp.top+vp.height-12;
+            if(hidden||Math.max(above,below)<250){
+                const desiredBottom=vp.top+vp.height-24;
+                window.scrollTo({top:Math.max(0,scrollY+r.bottom-desiredBottom),behavior:'instant'});
+                r=element.getBoundingClientRect();
+            }
+        }
+        spot.style.left=(r.left-margin)+'px';spot.style.top=(r.top-margin)+'px';
+        spot.style.width=(r.width+margin*2)+'px';spot.style.height=(r.height+margin*2)+'px';
+        const spaceAbove=r.top-margin-gap-(vp.top+pad);
+        const spaceBelow=vp.top+vp.height-pad-(r.bottom+margin+gap);
+        const side=spaceBelow>=230||spaceBelow>=spaceAbove?'below':'above';
+        const available=Math.max(70,side==='below'?spaceBelow:spaceAbove);
+        card.style.width=Math.min(350,vp.width-pad*2)+'px';
+        card.style.maxHeight=available+'px';
+        card.dataset.side=side;
+        const width=card.offsetWidth,height=card.offsetHeight;
+        const left=clamp(r.left+r.width/2-width/2,vp.left+pad,vp.left+vp.width-width-pad);
+        const top=side==='below'?r.bottom+margin+gap:r.top-margin-gap-height;
+        card.style.left=left+'px';card.style.top=clamp(top,vp.top+pad,vp.top+vp.height-height-pad)+'px';
+        document.getElementById('tour-pointer').style.left=clamp(r.left+r.width/2-left-6,18,width-30)+'px';
+    }
+    function schedule(){if(active&&!frame)frame=requestAnimationFrame(()=>{frame=0;position();});}
+    function showStep(){
+        const step=steps[index];title.textContent=step.title;description.textContent=step.text;
+        progress.textContent='Quick tour · '+(index+1)+' of '+steps.length;
+        back.disabled=index===0;next.textContent=index===steps.length-1?'Finish':'Next';
+        card.classList.remove('tour-enter');card.querySelector('.tour-copy').scrollTop=0;
+        position();void card.offsetWidth;card.classList.add('tour-enter');
+        title.focus({preventScroll:true});
+    }
+    function start(){
+        if(active)return;
+        returnFocus=document.activeElement?.closest('#main-menu')?document.getElementById('main-toggle'):document.activeElement;
+        originalScroll=scrollY;originalOverflow=document.body.style.overflow;
+        closeMenus();document.querySelectorAll('dialog[open]').forEach(d=>d.close());
+        document.body.style.overflow='hidden';active=true;index=0;dialog.showModal();showStep();
+    }
+    function cleanup(){
+        if(!active)return;active=false;cancelAnimationFrame(frame);frame=0;
+        document.body.style.overflow=originalOverflow;
+        window.scrollTo({top:originalScroll,behavior:'instant'});
+        if(returnFocus?.isConnected&&returnFocus!==document.body)returnFocus.focus({preventScroll:true});
+        else document.getElementById('main-toggle').focus({preventScroll:true});
+    }
+    function finish(){
+        if(!active)return;
+        // Remember Skip and Escape too. Replay remains available through Menu.
+        put(key,'seen');dialog.close();cleanup();
+    }
+    next.addEventListener('click',()=>{if(index===steps.length-1)finish();else{index++;showStep();}});
+    back.addEventListener('click',()=>{if(index>0){index--;showStep();}});
+    document.getElementById('tour-skip').addEventListener('click',finish);
+    dialog.addEventListener('cancel',e=>{e.preventDefault();finish();});
+    dialog.addEventListener('close',cleanup);
+    dialog.addEventListener('keydown',e=>{
+        if(e.key!=='Tab')return;
+        const controls=[...card.querySelectorAll('button:not(:disabled)')];
+        const first=controls[0],last=controls[controls.length-1],focused=document.activeElement;
+        if(e.shiftKey&&(focused===first||focused===title)){e.preventDefault();last.focus();}
+        else if(!e.shiftKey&&focused===last){e.preventDefault();first.focus();}
+    });
+    dialog.addEventListener('wheel',e=>{if(!e.target.closest('.tour-copy'))e.preventDefault();},{passive:false});
+    window.addEventListener('resize',schedule);window.addEventListener('scroll',schedule,{passive:true});
+    window.visualViewport?.addEventListener('resize',schedule);window.visualViewport?.addEventListener('scroll',schedule);
+    const observer=new ResizeObserver(schedule);
+    observer.observe(document.querySelector('.page'));observer.observe(document.querySelector('.site-header'));
+    steps.forEach(step=>{const node=document.querySelector(step.target);if(node)observer.observe(node);});
+    document.fonts?.ready.then(schedule);
+    // Do not wait on the external verse/audio service to introduce the site's controls.
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        if(get(key)!=='seen'&&!document.querySelector('dialog[open]'))start();
+    }));
+    return {start};
 })();
 
 </script>
