@@ -854,6 +854,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 }
 @media(max-width:360px){.site-header .pill{font-size:10px;padding-left:9px;padding-right:9px}.site-header .grow-toggle{padding-left:6px;padding-right:6px}.verse-card{padding-left:20px;padding-right:20px}.verse{font-size:24px}.tag{letter-spacing:1px}}
 
+#prayer-another{margin-top:16px;width:100%;min-height:44px}
 </style>
 </head>
 
@@ -998,16 +999,16 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 <dialog id="prayer-dialog" aria-labelledby="prayer-title">
  <header class="dialog-head"><h2 id="prayer-title">Listen to a Prayer</h2><button id="prayer-close" class="close" type="button" aria-label="Close prayer player">×</button></header>
  <div class="dialog-body">
-  <p class="prayer-intro">Take a quiet moment. Choose a prayer for what’s on your heart.</p>
+  <p class="prayer-intro">Choose what’s on your heart. We’ll choose a prayer for you.</p>
   <p id="prayer-status" class="tiny" role="status" aria-live="polite"></p>
   <button id="prayer-retry" class="secondary" type="button" hidden>Try Again</button>
   <div id="prayer-controls" hidden>
    <label class="prayer-label" for="prayer-category">Prayer topic</label><select id="prayer-category"></select>
-   <div id="prayer-recording-wrap" hidden><label class="prayer-label" for="prayer-recording">Choose a recording</label><select id="prayer-recording"></select></div>
    <section id="prayer-now" class="prayer-now" hidden aria-labelledby="prayer-track-title">
     <p class="eyebrow">A moment of prayer</p><h3 id="prayer-track-title"></h3>
-    <audio id="prayer-audio" controls preload="metadata" aria-label="Prayer audio player"></audio>
+    <audio id="prayer-audio" controls controlsList="nodownload" preload="metadata" aria-label="Prayer audio player"></audio>
     <p class="tiny">Press Play when you’re ready. Closing this window pauses the prayer.</p>
+    <button id="prayer-another" class="secondary" type="button" hidden>↻ Another Prayer</button>
     <p class="tiny prayer-credit">AI-generated prayer narration.</p>
    </section>
   </div>
@@ -2966,7 +2967,9 @@ const SiteTour=(()=>{
 <script>
 const PrayerPlayer=(()=>{
  const dialog=document.getElementById('prayer-dialog'),audio=document.getElementById('prayer-audio');
- const category=document.getElementById('prayer-category'),recording=document.getElementById('prayer-recording');
+ const category=document.getElementById('prayer-category');
+ const another=document.getElementById('prayer-another');
+ const bags=new Map(),lastPlayed=new Map();let currentTrack=null,selectionToken=0;
  const status=document.getElementById('prayer-status'),controls=document.getElementById('prayer-controls');
  let catalog=null,pending=null,request=0,requestedCategory='',fromScripture=false;
  const topicMap={peace:'stress-anxiety',worry:'stress-anxiety',healing:'healing',guidance:'guidance-decisions'};
@@ -2992,17 +2995,28 @@ const PrayerPlayer=(()=>{
   return pending;
  }
  function selectedCategory(){return catalog?.find(c=>c.id===category.value);}
- function selectRecording(){
-  clear();status.textContent='';document.getElementById('prayer-retry').hidden=true;
-  const track=selectedCategory()?.tracks.find(t=>t.id===recording.value);if(!track)return;
-  document.getElementById('prayer-track-title').textContent=track.title;
-  audio.setAttribute('aria-label',track.title+' audio player');audio.src=new URL('prayers/'+track.file,document.baseURI).href;
-  document.getElementById('prayer-now').hidden=false;audio.load();
+ function pickPrayer(c){
+  let bag=bags.get(c.id);
+  if(!bag?.length){
+   bag=c.tracks.slice();
+   for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}
+   if(bag.length>1&&bag[bag.length-1].id===lastPlayed.get(c.id)){[bag[0],bag[bag.length-1]]=[bag[bag.length-1],bag[0]];}
+   bags.set(c.id,bag);
+  }
+  const track=bag.pop();lastPlayed.set(c.id,track.id);return track;
+ }
+ function loadPrayer(track,play=false){
+  const token=++selectionToken;clear();status.textContent='';document.getElementById('prayer-retry').hidden=true;
+  const c=selectedCategory();currentTrack=track;if(!c||!track)return;
+  document.getElementById('prayer-track-title').textContent=c.label+' Prayer';
+  audio.setAttribute('aria-label',c.label+' prayer audio player');audio.src=new URL('prayers/'+track.file,document.baseURI).href;
+  document.getElementById('prayer-now').hidden=false;another.hidden=c.tracks.length<2;audio.load();
+  if(play)audio.play().catch(()=>{if(token===selectionToken&&dialog.open)status.textContent='Press Play to listen to this prayer.';});
  }
  function selectCategory(){
-  const c=selectedCategory();recording.replaceChildren();document.getElementById('prayer-recording-wrap').hidden=!c;
-  if(!c){clear();status.textContent='Choose a topic to see its prayers.';return;}
-  c.tracks.forEach(t=>recording.append(option(t.id,t.title)));selectRecording();
+  const c=selectedCategory();
+  if(!c){selectionToken++;currentTrack=null;clear();status.textContent='Choose a topic for a prayer.';return;}
+  loadPrayer(pickPrayer(c));
  }
  async function showCatalog(){
   const token=++request;controls.hidden=true;document.getElementById('prayer-retry').hidden=true;status.textContent='Opening the prayer collection…';
@@ -3017,15 +3031,16 @@ const PrayerPlayer=(()=>{
   clear();closeMenus();document.getElementById('prayer-back').hidden=!fromScripture;
   showDialog('prayer-dialog');dialog.scrollTop=0;showCatalog();
  }
- category.addEventListener('change',selectCategory);recording.addEventListener('change',selectRecording);
+ category.addEventListener('change',selectCategory);
+ another.addEventListener('click',()=>{const c=selectedCategory();if(c&&c.tracks.length>1)loadPrayer(pickPrayer(c),!audio.paused);});
  audio.addEventListener('play',()=>{music.pause();musicLabel();closeAudio();status.textContent='';});
  audio.addEventListener('error',()=>{if(!audio.getAttribute('src')||!dialog.open)return;status.textContent='This prayer could not play. Check your connection and try again.';document.getElementById('prayer-retry').hidden=false;});
  audio.addEventListener('loadedmetadata',()=>{if(dialog.open){status.textContent='';document.getElementById('prayer-retry').hidden=true;}});
- document.getElementById('prayer-retry').addEventListener('click',()=>{if(catalog&&!controls.hidden&&selectedCategory())selectRecording();else showCatalog();});
+ document.getElementById('prayer-retry').addEventListener('click',()=>{if(catalog&&!controls.hidden&&selectedCategory()&&currentTrack)loadPrayer(currentTrack);else showCatalog();});
  document.getElementById('prayer-close').addEventListener('click',()=>{pause();dialog.close();});
  dialog.addEventListener('cancel',pause);
  document.getElementById('prayer-back').addEventListener('click',()=>{pause();showDialog('reader-dialog');});
- dialog.addEventListener('close',()=>{request++;pause();});
+ dialog.addEventListener('close',()=>{request++;selectionToken++;pause();});
  music.addEventListener('play',pause);
  return {open,pause};
 })();
