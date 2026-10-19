@@ -808,6 +808,52 @@ dialog::backdrop {
 #prayer-back{margin-top:20px}
 @media(max-width:360px){#prayer-dialog .dialog-body{padding:16px}.prayer-now{padding:12px}#prayer-dialog .dialog-head{padding:12px 16px}#prayer-dialog .dialog-head h2{font-size:16px}}
 
+/* Quiet navy, warm gold, and clearer type. Existing controls retain their positions. */
+:root{--ink:#fff9ed;--gold:#e8c887;--soft:#c4cbd5;--line:rgba(225,206,166,.20);--glass:rgba(17,30,47,.93);--gold-line:rgba(232,200,135,.38)}
+body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15%,#24364b 0%,#101c2c 56%,#0a1320 100%);font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+.site-header{max-width:1060px;margin:0 auto;padding-left:20px;padding-right:20px}
+.site-header .pill{min-height:46px;border-radius:15px;border-color:rgba(232,200,135,.28);background:rgba(17,30,47,.94);box-shadow:0 4px 16px #0002;font:600 12px/1.4 system-ui,sans-serif;letter-spacing:0;padding:10px 14px}
+.site-header .grow-toggle{padding:7px 12px 7px 9px}
+.site-header .pill:hover{background:#26374c;border-color:#d9b975}
+.page{max-width:760px}
+.verse-card{padding:60px 52px 36px;border-radius:24px;background:linear-gradient(145deg,rgba(31,47,65,.96),rgba(17,29,46,.97));border:1px solid rgba(232,200,135,.38);box-shadow:0 18px 48px #0004,inset 0 1px 0 #fff2;backdrop-filter:blur(12px)}
+.tag{font:600 11px/1.6 'Cinzel',Georgia,serif;letter-spacing:2.1px;color:#e8c887;margin-bottom:27px}
+.verse{font:400 clamp(25px,3.4vw,34px)/1.6 Georgia,'Times New Roman',serif;color:#fff9ed;text-shadow:none;margin-bottom:25px;text-wrap:pretty}
+.reference{font:600 clamp(15px,2vw,18px)/1.6 'Cinzel',Georgia,serif;letter-spacing:.3px;color:#e8c887}
+.reference::before{content:'';display:block;width:38px;height:1px;background:#d7b77b8c;margin:0 auto 19px}
+#daily-version{margin-top:12px!important;font-size:11px;color:#bdc6d2}
+.feed-status{font-size:11px;margin-top:8px;color:#bdc6d2}
+.bookmark{top:13px;right:13px;width:42px;height:42px;background:#ffffff08;border-color:#ffffff38;color:#fff}
+.bookmark:hover{background:#ffffff16}.bookmark.is-saved{color:#e8c887;background:#e8c88720;border-color:#e8c88780}
+.audio-section{margin-top:22px}
+.audio-button{min-height:48px;padding:13px 24px;border-radius:14px;background:rgba(25,40,59,.97);border-color:rgba(232,200,135,.48);box-shadow:0 5px 18px #0002;font:600 13px/1.5 system-ui,sans-serif;letter-spacing:.15px}
+.primary,.secondary{border-radius:11px;font-family:system-ui,sans-serif}
+.secondary{background:#ffffff06;border-color:rgba(225,206,166,.28)}
+.primary:hover{background:#f2dca9}
+.site-footer{margin-top:24px;color:#b8c4d2;font:12px/1.7 system-ui,sans-serif;letter-spacing:.2px}
+.drop{padding:9px;background:#142337;border-color:#c6ab704f;box-shadow:0 14px 36px #0006;border-radius:17px}
+.drop-label{font-size:10px;letter-spacing:1.3px;color:#d5be91;padding:12px 11px 7px}
+.menu-item{font-size:13px;min-height:44px;border-radius:9px;padding:11px}
+.menu-item:hover{background:#e8c88712}
+.menu-divider{border-top-color:#e8c88728;margin:9px 5px}
+.prayer-menu-link{color:#f3d99f;background:#e8c88710;border-color:#e8c8874a}
+.resume-card{border-color:#e8c88736;box-shadow:0 6px 20px #0002;border-radius:16px}
+#prayer-dialog,.dialog-head{background:#17263a}
+#prayer-dialog{box-shadow:0 20px 60px #0007}
+.prayer-now{background:linear-gradient(145deg,#e8c88713,#e8c88706);border-color:#e8c88745}
+.prayer-intro{color:#f0e5d0}
+#prayer-status:empty{display:none}
+@media(max-width:600px){
+ .site-header{padding-left:10px;padding-right:10px}
+ .site-header .pill{font-size:11px;padding:9px 11px;min-height:44px;border-radius:13px}
+ .site-header .grow-toggle{padding:7px;gap:5px}
+ .verse-card{padding:57px 24px 29px;border-radius:20px}
+ .verse{font-size:26px;line-height:1.58}
+ .tag{font-size:10px;letter-spacing:1.25px;margin-bottom:23px}
+ .reference{font-size:15px}.audio-button{font-size:12px;padding:13px 20px}
+}
+@media(max-width:360px){.site-header .pill{font-size:10px;padding-left:9px;padding-right:9px}.site-header .grow-toggle{padding-left:6px;padding-right:6px}.verse-card{padding-left:20px;padding-right:20px}.verse{font-size:24px}.tag{letter-spacing:1px}}
+
 </style>
 </head>
 
@@ -858,9 +904,10 @@ dialog::backdrop {
             <div id="grow-menu" class="drop glass" hidden>
                 <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()">▶ Listen to a Prayer</button>
                 <hr class="menu-divider">
-                <p class="drop-label">What’s on your heart?</p>
+                <p class="drop-label">Scripture by Topic</p>
                 <div id="topic-menu"></div>
                 <hr class="menu-divider">
+                <p class="drop-label">Seven-Day Journeys</p>
                 <button class="menu-item" onclick="openJourneys()">
                     📖 7-Day Scripture Journeys
                 </button>
@@ -2297,7 +2344,7 @@ function loadScene(index, extensionIndex, request) {
     image.onload = () => {
         if (request === imageRequest) {
             document.body.style.backgroundImage =
-                `linear-gradient(#0f172a59,#0f172a59),url('${path}')`;
+                `linear-gradient(180deg,rgba(10,20,34,.64),rgba(10,20,34,.82)),url('${path}')`;
         }
     };
 
