@@ -885,6 +885,23 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 @media(max-width:360px){.prayer-category-button{padding:10px 8px;font-size:12px;gap:7px}.prayer-now{padding:20px 12px}#grow-menu{width:calc(100vw - 40px)}}
 @media(prefers-reduced-motion:no-preference){.prayer-category-button{transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}}
 
+
+/* Cumulative streak overview, kept inside the streak dialog. */
+#faith-overview{margin:24px 0;padding:22px 0;border-top:1px solid var(--gold-line);border-bottom:1px solid var(--gold-line)}
+#faith-overview h3{margin-bottom:14px;color:var(--gold)}
+.faith-overview{margin:14px 0;padding:18px;border:1px solid var(--gold-line);border-radius:16px;background:var(--gold-wash)}
+.faith-overview h4{font:500 21px/1.4 Georgia,serif;color:var(--ink);margin:0 0 8px}
+.faith-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
+.faith-metric{padding:14px 10px;background:#102035;border-radius:12px;min-width:0}
+.faith-metric strong{display:block;font:500 22px/1.4 Georgia,serif;color:var(--gold);overflow-wrap:anywhere}
+.faith-metric span{display:block;font:12px/1.5 system-ui,sans-serif;margin-top:5px;color:var(--soft)}
+#faith-overview summary{cursor:pointer;padding:12px 0;min-height:44px;font:600 13px/1.5 system-ui,sans-serif;color:var(--ink)}
+#faith-overview summary:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.faith-explored ul{padding-left:20px;font:13px/1.7 system-ui,sans-serif;overflow-wrap:anywhere}
+.faith-snapshot{border-top:1px solid var(--line);margin-top:8px}
+.faith-storage-warning{font:13px/1.5 system-ui,sans-serif;color:var(--gold);border:1px solid var(--gold-line);padding:12px}
+@media(max-width:360px){.faith-overview{padding:12px}.faith-metric{padding:12px 8px}.faith-metric strong{font-size:20px}}
+
 </style>
 </head>
 
@@ -1161,6 +1178,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
             did not record cannot be reconstructed.
         </p>
 
+        <section id="faith-overview" aria-label="Your streak activity overview"></section>
         <div id="badge-list" class="badges"></div>
 
         <h3 style="margin-top:24px">Journey completion badges</h3>
@@ -1942,6 +1960,7 @@ function anotherVerse() {
 
 function paintReading(verse) {
     selectedVerse = { ...verse, version: "WEB" };
+    window.FaithJourney?.record("passages",verse.ref,verse.ref);
 
     $("reader-text").textContent = verse.text;
     $("reader-ref").textContent = verse.ref;
@@ -2115,6 +2134,7 @@ function completeJourneyDay() {
     }
 
     journey.completed++;
+    window.FaithJourney?.record("readings",selectedTopic.id+":"+journey.completed,selectedTopic.name+" • Day "+journey.completed);
     journey.last = dayKey();
 
     persist();
@@ -2208,6 +2228,7 @@ function openBadges() {
         box.append(row);
     });
 
+    window.FaithJourney?.render();
     showDialog("badges-dialog");
 }
 
@@ -2249,6 +2270,7 @@ function saveVerse(verse) {
     });
 
     if (put("favorite_verses", JSON.stringify(list))) {
+        window.FaithJourney?.record("verses",(verse.version||"NIV")+":"+normalizeRef(verse.ref),normalizeRef(verse.ref));
         notify("Verse saved to your favorites.");
     }
 }
@@ -2580,6 +2602,7 @@ function loadDaily() {
 }
 
 function checkDay() {
+    if(document.hidden || (window.FaithJourney && !window.FaithJourney.isEngaged())) return;
     const today = dayKey();
 
     if (today !== lastCheckDate) {
@@ -2757,6 +2780,7 @@ const BibleReader = (() => {
             const v=Math.max(1,Math.min(BIBLE_BOOKS[book].chapters[chapter-1],Number(target.verse)||1));
             pageIndex=edge==='last'?pages.length-1:findPage(pages,v,Math.max(0,Number(target.offset)||0));
             targetVerse=highlight?v:null;selectors(v);setBusy(false);render();
+            window.FaithJourney?.record('chapters',book+':'+chapter,BIBLE_BOOKS[book].name+' '+chapter);
         } catch(error) {
             if(token!==requestId||!dialog.open)return;
             setBusy(false);selectors(currentAnchor().verse);
@@ -2866,6 +2890,7 @@ const BibleReader = (() => {
         const record=verseRecord(selectedVerse),list=favorites(),removing=isSaved(record);
         const next=removing?list.filter(x=>!(normalizeRef(x.ref)===record.ref&&(x.version||'NIV')===record.version)):[...list,record];
         const persisted=put('favorite_verses',JSON.stringify(next));
+        if(persisted&&!removing)window.FaithJourney?.record('verses',record.version+':'+normalizeRef(record.ref),normalizeRef(record.ref));
         updateVerseActions();decorateVerses();
         id('action-status').textContent=persisted?(removing?'Verse removed from favorites.':'Verse saved to Favorite Verses.'):'This change could not be saved permanently in this browser.';
     });
@@ -3052,6 +3077,7 @@ const PrayerPlayer=(()=>{
  function loadPrayer(track,play=false){
   const token=++selectionToken;clear();status.textContent='';document.getElementById('prayer-retry').hidden=true;
   const c=selectedCategory();currentTrack=track;if(!c||!track)return;
+  window.FaithJourney?.prayerSelected(c.id+':'+track.id,c.label);
   document.getElementById('prayer-track-title').textContent=c.label+' Prayer';
   document.getElementById('prayer-category-icon').replaceChildren(faithIcon(categoryIcons[c.id]||'headphones'));duration.textContent='Loading recording length…';
   audio.setAttribute('aria-label',c.label+' prayer audio player');audio.src=new URL('prayers/'+track.file,document.baseURI).href;
@@ -3079,6 +3105,8 @@ const PrayerPlayer=(()=>{
  }
  category.addEventListener('change',selectCategory);
  another.addEventListener('click',()=>{const c=selectedCategory();if(c&&c.tracks.length>1)loadPrayer(pickPrayer(c),!audio.paused);});
+ audio.addEventListener('ended',()=>window.FaithJourney?.prayerEnded());
+ audio.addEventListener('timeupdate',()=>window.FaithJourney?.prayerProgress(audio));
  audio.addEventListener('play',()=>{music.pause();musicLabel();closeAudio();status.textContent='';});
  audio.addEventListener('error',()=>{if(!audio.getAttribute('src')||!dialog.open)return;duration.textContent='Recording length unavailable';status.textContent='This prayer could not play. Check your connection and try again.';document.getElementById('prayer-retry').hidden=false;});
  audio.addEventListener('durationchange',updateDuration);
@@ -3092,6 +3120,55 @@ const PrayerPlayer=(()=>{
  return {open,pause};
 })();
 
+</script>
+<script>
+/* Private, device-local engagement. No analytics requests or text entry. */
+const FaithJourney=(()=>{
+ const key='faith_journey_activity_v1',levels=[7,14,30,90,180,365];
+ let fallback=null,storageOK=true,lastTick=Date.now(),lastInput=Date.now(),focused=document.hasFocus(),prayerSeconds=0,prayerId='',prayerLabel='',prayerPosition=0,prayerClock=Date.now();
+ let lastVisitDay=dayKey();
+ const fresh=()=>({version:1,started:dayKey(),current:null,earned:[]});
+ function read(){try{const raw=localStorage.getItem(key);if(raw){const x=JSON.parse(raw);if(x.version===1&&Array.isArray(x.earned))return x;}}catch{storageOK=false;}return fallback||fresh();}
+ function write(d){fallback=d;try{localStorage.setItem(key,JSON.stringify(d));storageOK=true;}catch{storageOK=false;}}
+ const stamp=n=>new Date(n*86400000).toISOString().slice(0,10);
+ function blank(start,day,days){return {start,last:day,days,trackedFrom:day,seconds:0,chapters:{},verses:{},prayers:{},readings:{},passages:{}};}
+ function sync(d){const today=dayKey();if(!d.current){const days=Math.max(1,Number(state.current)||1);d.current=blank(stamp(dayNumber(today)-days+1),today,days);}else{const gap=dayNumber(today)-dayNumber(d.current.last);if(gap===1){d.current.days++;d.current.last=today;}else if(gap>1){d.current=blank(today,today,1);}}return d.current;}
+ function milestone(n){return levels.includes(n)||(n>365&&n%365===0);}
+ function snapshot(d){const c=d.current;if(!milestone(c.days))return;const id=c.start+':'+c.days;const item={id,days:c.days,date:c.last,data:JSON.parse(JSON.stringify(c))};const i=d.earned.findIndex(x=>x.id===id);if(i<0)d.earned.push(item);else d.earned[i]=item;}
+ function mutate(fn){const d=read(),c=sync(d);fn(c);snapshot(d);write(d);return d;}
+ function visit(){return mutate(()=>{});}
+ function record(kind,id,label){if(document.hidden||!id)return;mutate(c=>{if(c[kind]&&!Object.prototype.hasOwnProperty.call(c[kind],id))c[kind][id]=String(label||id);});}
+ function active(){return !document.hidden&&focused;}
+ function prayerPlaying(){const a=document.getElementById('prayer-audio');return a&&!a.paused&&!a.ended&&!a.seeking&&a.readyState>=2;}
+ function tick(){const now=Date.now(),elapsed=(now-lastTick)/1000;lastTick=now;if(!active()||elapsed<=0||elapsed>10)return;const playing=prayerPlaying();if(now-lastInput>120000&&!playing)return;
+  mutate(c=>{c.seconds+=elapsed;});
+ }
+ function input(){const now=Date.now();if(now-lastInput>120000)lastTick=now;lastInput=now;if(active()&&lastVisitDay!==dayKey()){lastVisitDay=dayKey();visit();if(typeof checkDay==='function')checkDay();}}
+ function prayerSelected(id,label){prayerSeconds=0;prayerId=id;prayerLabel=label;prayerPosition=0;prayerClock=Date.now();}
+ function prayerProgress(a){const pos=a.currentTime,now=Date.now(),delta=pos-prayerPosition,wall=(now-prayerClock)/1000;prayerPosition=pos;prayerClock=now;if(active()&&!a.seeking&&!a.paused&&delta>0&&delta<=3&&wall>=0&&wall<=5){prayerSeconds+=Math.min(delta,wall);if(prayerSeconds>=10)record('prayers',dayKey()+':'+prayerId,prayerLabel);}}
+ function prayerEnded(){if(active()&&prayerId&&prayerSeconds>=3)record('prayers',dayKey()+':'+prayerId,prayerLabel);}
+ function time(seconds){const minutes=Math.floor(seconds/60);return minutes<1?'Less than 1 min':minutes<60?minutes+' min':Math.floor(minutes/60)+' hr '+minutes%60+' min';}
+ function card(c,heading){const box=element('section','faith-overview');box.append(element('h4','',heading));box.append(element('p','tiny',c.start+' – '+c.last+' • '+c.days+' consecutive days'));
+  if(c.trackedFrom>c.start)box.append(element('p','tiny','Activity tracking began '+c.trackedFrom+'. Earlier activity is not included.'));
+  const grid=element('div','faith-metrics');for(const [value,label] of [[time(c.seconds),'Estimated active time'],[Object.keys(c.chapters).length,'Different chapters opened'],[Object.keys(c.verses).length,'Different verses saved'],[Object.keys(c.prayers).length,'Prayer listens'],[Object.keys(c.readings).length,'Journey readings completed'],[Object.keys(c.passages).length,'Different topic passages opened']]){const item=element('div','faith-metric');item.append(element('strong','',String(value)),element('span','',label));grid.append(item);}box.append(grid);
+  const labels=[...new Set([...Object.values(c.chapters),...Object.values(c.passages),...Object.values(c.readings)])];if(labels.length){const detail=element('details','faith-explored');detail.append(element('summary','','Scripture you explored'));const list=element('ul');labels.forEach(x=>list.append(element('li','',x)));detail.append(list);box.append(detail);}
+  const prayers=[...new Set(Object.values(c.prayers))];if(prayers.length)box.append(element('p','tiny','Prayer topics: '+prayers.join(' • ')));return box;
+ }
+ function render(){tick();const d=visit(),c=d.current,root=document.getElementById('faith-overview');root.replaceChildren();root.append(element('h3','','Your Faith Journey'));
+  if(c.days<7)root.append(element('p','tiny','Your first activity overview unlocks at 7 consecutive days. '+(7-c.days)+' more '+(7-c.days===1?'day':'days')+' to go.'));
+  else{const unlocked=[...levels,...(c.days>365?[Math.floor(c.days/365)*365]:[])].filter(x=>x<=c.days).pop();root.append(card(c,unlocked+'-day milestone unlocked'));root.append(element('p','tiny','These totals grow from the start of this streak. Your next milestone includes everything counted so far.'));}
+  if(d.earned.length){const archive=element('details','faith-earned');archive.append(element('summary','','Earned milestone summaries ('+d.earned.length+')'));for(const item of [...d.earned].reverse()){const entry=element('details','faith-snapshot');entry.append(element('summary','',item.days+' days • '+item.date));entry.addEventListener('toggle',()=>{if(entry.open&&entry.children.length===1)entry.append(card(item.data,item.days+'-day overview'));});archive.append(entry);}root.append(archive);}
+  root.append(element('p','tiny','Private to this browser and device. Chapters and saved verses count once per streak; a prayer counts once per recording per day after 10 seconds of listening (or finishing a shorter prayer). Active time pauses when you leave the page or after two quiet minutes, unless a prayer is playing. Clearing browser data removes this history.'));
+  if(!storageOK)root.append(element('p','faith-storage-warning','Your browser could not save this activity. It may be lost when this page closes.'));
+ }
+ for(const event of ['pointerdown','keydown','scroll','touchstart'])document.addEventListener(event,input,{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){tick();focused=false;}else{focused=document.hasFocus();lastTick=Date.now();lastInput=Date.now();if(focused)visit();}});
+ window.addEventListener('blur',()=>{tick();focused=false;});window.addEventListener('focus',()=>{focused=true;lastTick=Date.now();lastInput=Date.now();visit();});
+ window.addEventListener('pagehide',tick);setInterval(tick,5000);
+ visit();return {record,render,prayerSelected,prayerEnded,prayerProgress,isEngaged:()=>active()&&(Date.now()-lastInput<=120000||prayerPlaying())};
+})();
+
+window.FaithJourney=FaithJourney;
 </script>
 </body>
 </html>
