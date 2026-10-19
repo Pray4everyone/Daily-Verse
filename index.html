@@ -729,6 +729,45 @@ dialog::backdrop {
 .bible-choices strong{font-size:1.15rem;}.bible-choices span{font-size:.9rem;}
 #bible-version-switch{display:block;max-width:100%;margin-top:5px;padding:5px 8px;border:1px solid rgba(255,255,255,.28);border-radius:8px;color:inherit;background:transparent;font:400 12px/1.2 system-ui;cursor:pointer;}
 
+/* Warm gold details; layout and banner positions stay intact. */
+:root{--gold:#e8c887;--gold-line:rgba(232,200,135,.42);--gold-wash:rgba(232,200,135,.10)}
+.verse-card{border-color:var(--gold-line);box-shadow:0 16px 48px #0005,inset 0 1px 0 #f5dcaa30}
+.audio-button,.bookmark,.bible-launch{border-color:var(--gold-line)}
+.audio-button:hover,.bookmark:hover,.bible-launch:hover{background:#263044;border-color:var(--gold)}
+.primary{background:#e8c887;border-color:#e8c887;color:#172135}
+.secondary:hover{border-color:var(--gold-line)}
+.bible-controls select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.bible-top-actions{display:flex;align-items:center;gap:4px;flex:none}
+#bible-saved{border:1px solid var(--gold-line);background:var(--gold-wash);color:var(--gold);border-radius:9px;padding:8px 10px;min-height:38px;font:600 12px/1.3 system-ui,sans-serif}
+#bible-actions-dialog{width:min(530px,calc(100vw - 24px));border-color:var(--gold-line)}
+#bible-actions-dialog .dialog-head{gap:8px}
+#bible-action-title{font-size:16px;overflow-wrap:anywhere}
+#bible-action-text{font:22px/1.65 Georgia,serif;color:#fff7e7;margin-bottom:20px}
+.bible-verse-actions{display:flex;flex-wrap:wrap;gap:10px}
+.bible-verse-actions button{flex:1 1 170px}
+.bible-verse-actions button[aria-pressed=true]{background:#e8c887;color:#172135;border-color:#e8c887}
+#bible-action-status{min-height:1.6em;margin-top:12px;color:var(--gold);font:13px/1.6 system-ui,sans-serif}
+.bible-action-help{margin-top:14px}
+#bible-text .bible-fragment{cursor:pointer;border-radius:3px;position:relative}
+#bible-text .bible-fragment.is-highlighted{background:#e7c36180;box-shadow:0 0 0 2px #e7c36180}
+#bible-text .bible-fragment.is-saved{box-shadow:inset 3px 0 0 #97702c}
+#bible-text .bible-fragment.is-highlighted.is-saved{box-shadow:inset 3px 0 0 #97702c,0 0 0 2px #e7c36180}
+#bible-text .bible-fragment:focus-visible{outline:2px solid #866329;outline-offset:-2px}
+@media(hover:hover){#bible-text .bible-fragment:hover{background-color:#e7c36140}#bible-text .bible-fragment.is-highlighted:hover{background-color:#e7c36199}}
+.favorite-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.favorite-actions .secondary{min-height:44px}
+.favorites-return{margin-bottom:18px}
+@media(max-width:360px){.bible-top{gap:4px}.bible-top h2{font-size:14px}#bible-version-switch{font-size:10px;padding:5px}#bible-saved{font-size:11px;padding:6px}.bible-top .close{width:32px}.bible-bottom-hint{max-width:150px}}
+@media(max-height:450px){#bible-saved{min-height:30px;padding:5px 8px}}
+@media(prefers-reduced-motion:no-preference){
+ button,a,select{transition:background-color 160ms ease,border-color 160ms ease,box-shadow 160ms ease,color 160ms ease}
+ dialog[open]{animation:scripture-reveal 180ms ease-out both}
+ .drop:not([hidden]),.audio-panel:not([hidden]){animation:scripture-reveal 180ms ease-out both}
+ #bible-text .bible-fragment{transition:background-color 160ms ease,box-shadow 160ms ease}
+ @keyframes scripture-reveal{from{opacity:0}to{opacity:1}}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
 </style>
 </head>
 
@@ -1003,6 +1042,11 @@ dialog::backdrop {
     <div id="favorites-list" class="dialog-body"></div>
 </dialog>
 
+<dialog id="bible-actions-dialog" aria-labelledby="bible-action-title">
+<header class="dialog-head"><h2 id="bible-action-title">Verse actions</h2><button id="bible-actions-close" class="close" type="button" aria-label="Close verse actions">×</button></header>
+<div class="dialog-body"><p id="bible-action-text"></p><div class="bible-verse-actions"><button id="bible-highlight" class="secondary" type="button" aria-pressed="false">Highlight verse</button><button id="bible-save" class="secondary" type="button" aria-pressed="false">Save verse</button></div><p id="bible-action-status" role="status" aria-live="polite"></p><p class="tiny bible-action-help">Highlights and favorites stay in this browser on this device. Clearing browser data can remove them.</p></div>
+</dialog>
+
 <dialog id="bible-choice-dialog" aria-labelledby="bible-choice-title">
  <div class="dialog-body">
   <div class="bible-choice-heading"><h2 id="bible-choice-title">📖 Read Holy Bible</h2><button id="bible-choice-close" class="close" type="button" aria-label="Close Bible choices">×</button></div>
@@ -1014,7 +1058,7 @@ dialog::backdrop {
 <dialog id="bible-dialog" aria-labelledby="bible-reader-title">
   <header class="bible-top">
     <div><h2 id="bible-reader-title">📖 Holy Bible <button id="bible-version-switch" type="button" aria-label="Change Bible translation"><span id="bible-version-label">King James Version</span> ▾</button></h2></div>
-    <button id="bible-close" class="close" type="button" aria-label="Close Holy Bible">×</button>
+    <div class="bible-top-actions"><button id="bible-saved" type="button" aria-label="Open saved favorite verses">Saved</button><button id="bible-close" class="close" type="button" aria-label="Close Holy Bible">×</button></div>
   </header>
   <nav class="bible-controls" aria-label="Choose a Bible passage">
     <label>Book<select id="bible-book" aria-label="Bible book"></select></label>
@@ -1036,7 +1080,7 @@ dialog::backdrop {
   </div>
   <footer class="bible-bottom">
     <div class="bible-font-controls"><button id="bible-smaller" type="button" aria-label="Smaller Bible text">A−</button><span id="bible-font-size" class="tiny"></span><button id="bible-larger" type="button" aria-label="Larger Bible text">A+</button></div>
-    <p class="bible-bottom-hint">Swipe or use the arrows to turn pages.<br>Your place is saved on this device.</p>
+    <p class="bible-bottom-hint">Tap a verse to highlight or save.<br>Swipe or use arrows to turn pages.</p>
   </footer>
   <p id="bible-live" class="bible-live" aria-live="polite" aria-atomic="true"></p>
 </dialog>
@@ -2044,11 +2088,15 @@ function saveVerse(verse) {
     }
 }
 
-function openFavorites() {
+function openFavorites(fromBible = false) {
     const box = $("favorites-list");
     box.replaceChildren();
 
     const list = favorites();
+    if(fromBible){
+        const back=element("button","secondary favorites-return","← Back to Bible");
+        back.onclick=()=>BibleReader.resume();box.append(back);
+    }
 
     if (!list.length) {
         box.append(element(
@@ -2074,7 +2122,16 @@ function openFavorites() {
         button.style.marginTop = "12px";
         button.onclick = () => shareVerse(verse);
 
-        row.append(button);
+        const actions=element("div","favorite-actions");button.style.marginTop="0";actions.append(button);
+        if(verse.bible){
+            const read=element("button","secondary","Read in Bible");read.onclick=()=>BibleReader.openPassage(verse);actions.prepend(read);
+            const remove=element("button","secondary","Remove");remove.setAttribute("aria-label","Remove "+verse.ref+" "+verse.version+" from favorites");
+            remove.onclick=()=>{
+                const remaining=favorites().filter(x=>!(normalizeRef(x.ref)===normalizeRef(verse.ref)&&(x.version||"NIV")===(verse.version||"NIV")));
+                if(put("favorite_verses",JSON.stringify(remaining))){openFavorites(fromBible);notify("Verse removed from favorites.");}
+            };actions.append(remove);
+        }
+        row.append(actions);
         box.append(row);
     });
 
@@ -2509,6 +2566,7 @@ const BibleReader = (() => {
         id('verse').value=String(targetVerse&&fragments.some(f=>f.verse===targetVerse)?targetVerse:first.verse);
         id('live').textContent=BIBLE_BOOKS[book].name+' chapter '+chapter+', verses '+verses+', page '+(pageIndex+1)+' of '+pages.length;
         id('cover').hidden=true;buttons();savePosition();
+        decorateVerses();
         lastSize=id('paper-area').clientWidth+'x'+id('paper-area').clientHeight;
     }
     async function go(target,edge='anchor',highlight=false) {
@@ -2534,13 +2592,13 @@ const BibleReader = (() => {
         document.querySelectorAll('dialog[open]').forEach(d=>d.close());
         id('choice-dialog').showModal();
     }
-    function choose(nextVersion) {
+    function choose(nextVersion, passage=null, highlight=false) {
         version=nextVersion;BIBLE_BOOKS=BIBLE_TRANSLATIONS[version].books;
         pages=[];chapterData=null;pageIndex=0;book=0;chapter=1;targetVerse=null;
         id('version-label').textContent=BIBLE_TRANSLATIONS[version].label;
         optionList(id('book'),BIBLE_BOOKS.map((b,i)=>[i,b.name]),0);selectors();
         id('choice-dialog').close();dialog.showModal();applyFont();setBusy(true);cover('Opening your Bible…');
-        requestAnimationFrame(()=>go(storedTarget()));
+        requestAnimationFrame(()=>go(passage||storedTarget(),'anchor',highlight));
     }
     id('choose-kjv').addEventListener('click',()=>choose('kjv'));
     id('choose-web').addEventListener('click',()=>choose('web'));
@@ -2575,12 +2633,83 @@ const BibleReader = (() => {
     id('retry').addEventListener('click',()=>{if(retryTarget)go(retryTarget.target,retryTarget.edge,retryTarget.highlight);});
     dialog.addEventListener('keydown',e=>{if(e.target.matches('select,button,input,textarea'))return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();turn(e.key==='ArrowRight'?1:-1);}});
     id('text').addEventListener('touchstart',e=>{if(e.touches.length!==1){swiping=null;return;}const t=e.touches[0];swiping={x:t.clientX,y:t.clientY,time:Date.now()};},{passive:true});
-    id('text').addEventListener('touchend',e=>{if(!swiping)return;const t=e.changedTouches[0],dx=t.clientX-swiping.x,dy=t.clientY-swiping.y,elapsed=Date.now()-swiping.time;swiping=null;if(elapsed<700&&Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5&&!window.getSelection()?.toString())turn(dx<0?1:-1);},{passive:true});
+    id('text').addEventListener('touchend',e=>{if(!swiping)return;const t=e.changedTouches[0],dx=t.clientX-swiping.x,dy=t.clientY-swiping.y,elapsed=Date.now()-swiping.time;swiping=null;if(elapsed<700&&Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5&&!window.getSelection()?.toString()){suppressVerseClickUntil=Date.now()+500;turn(dx<0?1:-1);}},{passive:true});
     id('text').addEventListener('touchcancel',()=>swiping=null,{passive:true});
     const observer=new ResizeObserver(()=>{const size=id('paper-area').clientWidth+'x'+id('paper-area').clientHeight;if(!dialog.open||size===lastSize)return;clearTimeout(resizeTimer);resizeTimer=setTimeout(repaginate,160);});observer.observe(id('paper-area'));
     document.fonts?.ready.then(()=>{if(dialog.open)repaginate();});
+    const highlightKey='holy_bible_highlights_v1';
+    let selectedVerse=null, suppressVerseClickUntil=0;
+    function highlightMap(){const map=readJSON(highlightKey,{});return map&&typeof map==='object'&&!Array.isArray(map)?map:{};}
+    function verseKey(v){return [version,book,chapter,v].join(':');}
+    function verseRecord(v){return {text:chapterData?.[v]||'',ref:BIBLE_BOOKS[book].name+' '+chapter+':'+v,version:version.toUpperCase(),bible:{version,book,chapter,verse:v}};}
+    function isSaved(record){return favorites().some(x=>normalizeRef(x.ref)===record.ref&&(x.version||'NIV')===record.version);}
+    function decorateVerses(){
+        const marks=highlightMap();
+        id('text').querySelectorAll('.bible-fragment').forEach(node=>{
+            const v=Number(node.dataset.verse),record=verseRecord(v),highlighted=marks[verseKey(v)]===true,saved=isSaved(record);
+            node.classList.toggle('is-highlighted',highlighted);node.classList.toggle('is-saved',saved);
+            node.tabIndex=0;node.setAttribute('role','button');node.setAttribute('aria-haspopup','dialog');
+            node.setAttribute('aria-label',record.ref+(highlighted?', highlighted':'')+(saved?', saved':'')+'. '+node.lastChild.textContent+' Open verse actions.');
+        });
+    }
+    function updateVerseActions(){
+        if(selectedVerse===null)return;
+        const record=verseRecord(selectedVerse),highlighted=highlightMap()[verseKey(selectedVerse)]===true,saved=isSaved(record);
+        id('action-title').textContent=record.ref+' · '+record.version;
+        id('action-text').textContent=record.text||'This verse number has no text in this WEB source.';
+        id('highlight').textContent=highlighted?'Remove highlight':'Highlight verse';
+        id('highlight').setAttribute('aria-pressed',String(highlighted));
+        id('save').textContent=saved?'Remove from favorites':'Save verse';
+        id('save').setAttribute('aria-pressed',String(saved));
+        id('highlight').disabled=id('save').disabled=!record.text;
+    }
+    function openVerseActions(v){
+        if(busy||!chapterData||!Object.hasOwn(chapterData,String(v)))return;
+        selectedVerse=v;updateVerseActions();id('action-status').textContent='';id('actions-dialog').showModal();id('actions-close').focus({preventScroll:true});id('actions-dialog').scrollTop=0;
+    }
+    id('text').addEventListener('click',e=>{
+        const node=e.target.closest('.bible-fragment');
+        if(!node||Date.now()<suppressVerseClickUntil||window.getSelection()?.toString())return;
+        openVerseActions(Number(node.dataset.verse));
+    });
+    id('text').addEventListener('keydown',e=>{
+        const node=e.target.closest('.bible-fragment');
+        if(node&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();openVerseActions(Number(node.dataset.verse));}
+    });
+    id('highlight').addEventListener('click',()=>{
+        if(selectedVerse===null)return;
+        const marks=highlightMap(),key=verseKey(selectedVerse),removing=marks[key]===true;
+        if(removing)delete marks[key];else marks[key]=true;
+        const persisted=put(highlightKey,JSON.stringify(marks));
+        updateVerseActions();decorateVerses();
+        id('action-status').textContent=persisted?(removing?'Highlight removed.':'Verse highlighted in gold.'):'This change could not be saved permanently in this browser.';
+    });
+    id('save').addEventListener('click',()=>{
+        if(selectedVerse===null)return;
+        const record=verseRecord(selectedVerse),list=favorites(),removing=isSaved(record);
+        const next=removing?list.filter(x=>!(normalizeRef(x.ref)===record.ref&&(x.version||'NIV')===record.version)):[...list,record];
+        const persisted=put('favorite_verses',JSON.stringify(next));
+        updateVerseActions();decorateVerses();
+        id('action-status').textContent=persisted?(removing?'Verse removed from favorites.':'Verse saved to Favorite Verses.'):'This change could not be saved permanently in this browser.';
+    });
+    id('actions-close').addEventListener('click',()=>id('actions-dialog').close());
+    id('saved').addEventListener('click',()=>openFavorites(true));
+    function openPassage(record){
+        const p=record?.bible;
+        if(!p||!BIBLE_TRANSLATIONS[p.version])return;
+        const meta=BIBLE_TRANSLATIONS[p.version].books[p.book];
+        if(!meta||!Number.isInteger(p.chapter)||p.chapter<1||p.chapter>meta.chapters.length||!Number.isInteger(p.verse)||p.verse<1||p.verse>meta.chapters[p.chapter-1])return;
+        closeMenus();closeAudio();music.pause();musicLabel();
+        document.querySelectorAll('dialog[open]').forEach(d=>d.close());
+        choose(p.version,{book:p.book,chapter:p.chapter,verse:p.verse,offset:0},true);
+    }
+    function resume(){
+        document.querySelectorAll('dialog[open]').forEach(d=>d.close());
+        choose(version);
+    }
+
     selectors();applyFont();buttons();
-    return {open,close};
+    return {open,close,openPassage,resume};
 })();
 
 </script>
