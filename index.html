@@ -855,6 +855,36 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 @media(max-width:360px){.site-header .pill{font-size:10px;padding-left:9px;padding-right:9px}.site-header .grow-toggle{padding-left:6px;padding-right:6px}.verse-card{padding-left:20px;padding-right:20px}.verse{font-size:24px}.tag{letter-spacing:1px}}
 
 #prayer-another{margin-top:16px;width:100%;min-height:44px}
+
+/* Faith navigation and prayer collection — October 2026. */
+.faith-icon{width:19px;height:19px;flex:0 0 19px;display:inline-block;vertical-align:-4px;color:var(--gold);pointer-events:none}
+#streak-display{display:inline-flex;align-items:center;gap:5px}
+#streak-display .faith-icon{width:15px;height:18px;flex-basis:15px}
+.menu-item{display:flex;align-items:center;gap:10px;color:var(--ink)}
+.menu-item .faith-icon{flex-shrink:0}
+.menu-item small{display:block;font:11px/1.55 system-ui,sans-serif;color:var(--soft);margin-top:4px}
+#grow-menu{padding:16px 12px;width:min(340px,calc(100vw - 40px));scroll-padding:16px}
+.faith-section+.faith-section{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.faith-section .drop-label{margin:0 8px 10px;padding:0;color:var(--gold);font:600 10px/1.6 system-ui,sans-serif;letter-spacing:1.4px;text-transform:uppercase}
+#topic-menu .menu-item{min-height:44px;padding:10px;border-radius:10px;font-size:13px}
+.faith-section .prayer-menu-link{padding:12px 10px;border-radius:12px}
+#prayer-categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.prayer-category-button{display:flex;align-items:center;gap:9px;min-height:58px;padding:12px;text-align:left;font:500 13px/1.4 system-ui,sans-serif;color:var(--ink);border:1px solid var(--line);border-radius:12px;background:#152338;overflow-wrap:anywhere}
+.prayer-category-button:hover{background:#24364a;border-color:var(--gold-line)}
+.prayer-category-button[aria-pressed="true"]{background:#302e29;border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.prayer-category-button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.prayer-now{text-align:center;padding:25px 20px;background:linear-gradient(145deg,#243347,#142136);border-color:var(--gold-line)}
+.prayer-category-icon{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 16px;border:1px solid var(--gold-line);border-radius:50%;background:var(--gold-wash)}
+.prayer-category-icon .faith-icon{width:27px;height:27px}
+.prayer-now .eyebrow{font:600 10px/1.5 system-ui,sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:var(--gold);margin:0 0 9px}
+#prayer-track-title{font:400 clamp(23px,5vw,30px)/1.3 Georgia,serif;color:var(--ink);margin:0 0 10px}
+.prayer-duration{font:12px/1.5 system-ui,sans-serif;color:var(--soft);margin:0 0 20px;min-height:18px}
+#prayer-audio{margin-top:4px}
+#prayer-dialog select[hidden]{display:none}
+.journey-choice>.faith-icon{margin-right:8px}
+@media(max-width:360px){.prayer-category-button{padding:10px 8px;font-size:12px;gap:7px}.prayer-now{padding:20px 12px}#grow-menu{width:calc(100vw - 40px)}}
+@media(prefers-reduced-motion:no-preference){.prayer-category-button{transition:background .18s ease,border-color .18s ease,box-shadow .18s ease}}
+
 </style>
 </head>
 
@@ -866,7 +896,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
                 class="pill glass"
                 onclick="openBadges()"
                 aria-label="View streaks and earned badges">
-            <span id="streak-display">🔥 1 Day Streak</span>
+            <span id="streak-display"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M13 2c1 6-4 7-3 11-3-1-3-3-3-3-6 8 0 12 5 12s11-6 1-20z"/></svg> 1 Day Streak</span>
         </button>
 
         <div class="grow-wrap">
@@ -903,15 +933,18 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
             </button>
 
             <div id="grow-menu" class="drop glass" hidden>
-                <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()">▶ Listen to a Prayer</button>
-                <hr class="menu-divider">
-                <p class="drop-label">Scripture by Topic</p>
-                <div id="topic-menu"></div>
-                <hr class="menu-divider">
-                <p class="drop-label">Seven-Day Journeys</p>
-                <button class="menu-item" onclick="openJourneys()">
-                    📖 7-Day Scripture Journeys
-                </button>
+                <section class="faith-section" aria-labelledby="prayer-section-label">
+                  <p id="prayer-section-label" class="drop-label">Listen to a Prayer</p>
+                  <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3 M4 12h3v8H4z M17 12h3v8h-3z"/></svg><span>Find a Prayer<small>A quiet moment for what’s on your heart</small></span></button>
+                </section>
+                <section class="faith-section" aria-labelledby="topic-section-label">
+                  <p id="topic-section-label" class="drop-label">Scripture by Topic</p>
+                  <div id="topic-menu"></div>
+                </section>
+                <section class="faith-section" aria-labelledby="journey-section-label">
+                  <p id="journey-section-label" class="drop-label">Seven-Day Journeys</p>
+                  <button class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3"/></svg><span>Explore Journeys<small>Grow with one reading each day</small></span></button>
+                </section>
             </div>
         </div>
     </div>
@@ -922,29 +955,29 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
                 onclick="toggleDropdown('main')"
                 aria-expanded="false"
                 aria-controls="main-menu">
-            ☰ Menu
+            <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16 M4 12h16 M4 18h16"/></svg> Menu
         </button>
 
         <div id="main-menu" class="drop glass" hidden>
-            <button id="tour-replay" class="menu-item" type="button" onclick="SiteTour.start()">✦ Replay Tour</button>
+            <button id="tour-replay" class="menu-item" type="button" onclick="SiteTour.start()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg> Replay Tour</button>
             <button id="music-btn" class="menu-item" onclick="toggleMusic()">
                 ▶ Play Music
             </button>
-            <button class="menu-item" onclick="nextTrack()">⏭ Next Track</button>
-            <button class="menu-item" onclick="changeScene()">🔀 Shuffle Scene</button>
+            <button class="menu-item" onclick="nextTrack()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 4 11 8-11 8z M19 4v16"/></svg> Next Track</button>
+            <button class="menu-item" onclick="changeScene()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6h3c5 0 7 12 12 12h3 M18 15l3 3-3 3 M3 18h3c2 0 3-2 4-4 M14 9c1-2 2-3 4-3h3 M18 3l3 3-3 3"/></svg> Shuffle Scene</button>
             <button class="menu-item" onclick="shareVerse(currentDaily)">
-                🔗 Share Daily Verse
+                <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 10l8-5 M8 14l8 5 M8 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 20a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/></svg> Share Daily Verse
             </button>
-            <button class="menu-item" onclick="openFavorites()">📖 View Favorites</button>
-            <button class="menu-item" onclick="openBadges()">🏆 Streaks & Earned Badges</button>
+            <button class="menu-item" onclick="openFavorites()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15"/></svg> View Favorites</button>
+            <button class="menu-item" onclick="openBadges()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0 M8 12l-2 9 6-3 6 3-2-9"/></svg> Streaks & Earned Badges</button>
             <a class="menu-item"
                href="https://localchurches.org/"
                target="_blank"
                rel="noopener noreferrer">
-                ⛪ Find a Church
+                <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7"/></svg> Find a Church
             </a>
         </div>
-    <button id="bible-launch" class="pill glass bible-launch" type="button" onclick="BibleReader.open()" aria-haspopup="dialog" aria-controls="bible-choice-dialog"><span aria-hidden="true">📖</span><span>Read Holy Bible</span></button>
+    <button id="bible-launch" class="pill glass bible-launch" type="button" onclick="BibleReader.open()" aria-haspopup="dialog" aria-controls="bible-choice-dialog"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15"/></svg><span>Read Holy Bible</span></button>
 </div>
 </header>
 
@@ -1003,9 +1036,9 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
   <p id="prayer-status" class="tiny" role="status" aria-live="polite"></p>
   <button id="prayer-retry" class="secondary" type="button" hidden>Try Again</button>
   <div id="prayer-controls" hidden>
-   <label class="prayer-label" for="prayer-category">Prayer topic</label><select id="prayer-category"></select>
+   <p id="prayer-topics-label" class="prayer-label">Prayer topic</p><select id="prayer-category" hidden aria-label="Prayer topic"></select><div id="prayer-categories" class="prayer-categories" role="group" aria-labelledby="prayer-topics-label"></div>
    <section id="prayer-now" class="prayer-now" hidden aria-labelledby="prayer-track-title">
-    <p class="eyebrow">A moment of prayer</p><h3 id="prayer-track-title"></h3>
+    <div id="prayer-category-icon" class="prayer-category-icon"></div><p class="eyebrow">Selected for you</p><h3 id="prayer-track-title"></h3><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
     <audio id="prayer-audio" controls controlsList="nodownload" preload="metadata" aria-label="Prayer audio player"></audio>
     <p class="tiny">Press Play when you’re ready. Closing this window pauses the prayer.</p>
     <button id="prayer-another" class="secondary" type="button" hidden>↻ Another Prayer</button>
@@ -1775,8 +1808,7 @@ function updateVisit(today = dayKey()) {
 
     persist();
 
-    $("streak-display").textContent =
-        `🔥 ${state.current} ${state.current === 1 ? "Day" : "Days"} Streak`;
+    $("streak-display").replaceChildren(faithIcon("flame"),document.createTextNode(` ${state.current} ${state.current === 1 ? "Day" : "Days"} Streak`));
 }
 
 /* Only one dropdown can be open at a time. */
@@ -1818,12 +1850,18 @@ function element(tag, className, text) {
     return node;
 }
 
+
+const FAITH_ICON_PATHS = {"book": "M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15", "headphones": "M4 14v-3a8 8 0 0 1 16 0v3 M4 12h3v8H4z M17 12h3v8h-3z", "sun": "M12 3v2 M12 19v2 M3 12h2 M19 12h2 M5.6 5.6 1.4 1.4 M17 17l1.4 1.4 M5.6 18.4 1.4-1.4 M17 7l1.4-1.4 M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0", "moon": "M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11z", "heart": "M12 21 3.5 12.5C-2 6 6 0 12 7c6-7 14-1 8.5 5.5z", "leaf": "M20 3C7 3 3 8 5 15s14 7 15-12z M4 21 16 9", "compass": "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M16 8l-3 5-5 3 3-5z", "path": "M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3", "flame": "M13 2c1 6-4 7-3 11-3-1-3-3-3-3-6 8 0 12 5 12s11-6 1-20z", "shuffle": "M3 6h3c5 0 7 12 12 12h3 M18 15l3 3-3 3 M3 18h3c2 0 3-2 4-4 M14 9c1-2 2-3 4-3h3 M18 3l3 3-3 3", "share": "M8 10l8-5 M8 14l8 5 M8 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 20a3 3 0 1 1-6 0 3 3 0 0 1 6 0", "award": "M17 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0 M8 12l-2 9 6-3 6 3-2-9", "church": "M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7", "play": "m8 4 12 8-12 8z", "menu": "M4 6h16 M4 12h16 M4 18h16", "next": "m5 4 11 8-11 8z M19 4v16", "spark": "m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"};
+function faithIcon(name){const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('class','faith-icon');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.65');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');const path=document.createElementNS(ns,'path');path.setAttribute('d',FAITH_ICON_PATHS[name]||FAITH_ICON_PATHS.book);svg.append(path);return svg;}
+function topicIcon(id){return ({peace:'leaf',worry:'leaf',healing:'heart',love:'heart',grief:'heart',loneliness:'heart',guidance:'compass',gratitude:'sun',hope:'sun',faith:'spark',strength:'flame',patience:'path',forgiveness:'leaf',prayer:'headphones'})[id]||'book';}
+
 TOPICS.forEach(topic => {
     const button = element(
         "button",
         "menu-item",
-        `${topic.icon} ${topic.name}`
+        topic.name
     );
+    button.prepend(faithIcon(topicIcon(topic.id)));
 
     button.onclick = () => openTopic(topic.id);
     $("topic-menu").append(button);
@@ -1939,8 +1977,9 @@ function renderJourneyList() {
         const button = element(
             "button",
             "secondary journey-choice",
-            `${topic.icon} ${topic.name}`
+            topic.name
         );
+        button.prepend(faithIcon(topicIcon(topic.id)));
 
         button.append(element(
             "span",
@@ -2097,7 +2136,7 @@ function renderResume() {
     $("resume-card").hidden = !journey;
     if (!journey) return;
 
-    $("resume-title").textContent = `${topic.icon} ${topic.name}`;
+    $("resume-title").replaceChildren(faithIcon(topicIcon(topic.id)),document.createTextNode(" "+topic.name));
 
     $("resume-detail").textContent =
         journey.completed === 7
@@ -2969,6 +3008,11 @@ const PrayerPlayer=(()=>{
  const dialog=document.getElementById('prayer-dialog'),audio=document.getElementById('prayer-audio');
  const category=document.getElementById('prayer-category');
  const another=document.getElementById('prayer-another');
+ const categoryButtons=document.getElementById('prayer-categories'),duration=document.getElementById('prayer-duration');
+ const categoryIcons={morning:'sun',evening:'moon',healing:'heart','stress-anxiety':'leaf','guidance-decisions':'compass'};
+ function renderCategories(){if(categoryButtons.children.length===catalog.length){Array.from(categoryButtons.children).forEach((b,i)=>b.setAttribute('aria-pressed',String(catalog[i].id===category.value)));return;}categoryButtons.replaceChildren(...catalog.map(c=>{const b=document.createElement('button');b.type='button';b.className='prayer-category-button';b.setAttribute('aria-pressed',String(c.id===category.value));b.append(faithIcon(categoryIcons[c.id]||'headphones'),document.createTextNode(c.label));b.addEventListener('click',()=>{if(category.value===c.id)return;category.value=c.id;selectCategory();});return b;}));}
+ function updateDuration(){const seconds=audio.duration;if(Number.isFinite(seconds)&&seconds>0){const total=Math.round(seconds);duration.textContent=Math.floor(total/60)+':'+String(total%60).padStart(2,'0')+' • Recording length';}else duration.textContent='Recording length unavailable';}
+
  const bags=new Map(),lastPlayed=new Map();let currentTrack=null,selectionToken=0;
  const status=document.getElementById('prayer-status'),controls=document.getElementById('prayer-controls');
  let catalog=null,pending=null,request=0,requestedCategory='',fromScripture=false;
@@ -3009,11 +3053,13 @@ const PrayerPlayer=(()=>{
   const token=++selectionToken;clear();status.textContent='';document.getElementById('prayer-retry').hidden=true;
   const c=selectedCategory();currentTrack=track;if(!c||!track)return;
   document.getElementById('prayer-track-title').textContent=c.label+' Prayer';
+  document.getElementById('prayer-category-icon').replaceChildren(faithIcon(categoryIcons[c.id]||'headphones'));duration.textContent='Loading recording length…';
   audio.setAttribute('aria-label',c.label+' prayer audio player');audio.src=new URL('prayers/'+track.file,document.baseURI).href;
   document.getElementById('prayer-now').hidden=false;another.hidden=c.tracks.length<2;audio.load();
   if(play)audio.play().catch(()=>{if(token===selectionToken&&dialog.open)status.textContent='Press Play to listen to this prayer.';});
  }
  function selectCategory(){
+  renderCategories();
   const c=selectedCategory();
   if(!c){selectionToken++;currentTrack=null;clear();status.textContent='Choose a topic for a prayer.';return;}
   loadPrayer(pickPrayer(c));
@@ -3034,8 +3080,9 @@ const PrayerPlayer=(()=>{
  category.addEventListener('change',selectCategory);
  another.addEventListener('click',()=>{const c=selectedCategory();if(c&&c.tracks.length>1)loadPrayer(pickPrayer(c),!audio.paused);});
  audio.addEventListener('play',()=>{music.pause();musicLabel();closeAudio();status.textContent='';});
- audio.addEventListener('error',()=>{if(!audio.getAttribute('src')||!dialog.open)return;status.textContent='This prayer could not play. Check your connection and try again.';document.getElementById('prayer-retry').hidden=false;});
- audio.addEventListener('loadedmetadata',()=>{if(dialog.open){status.textContent='';document.getElementById('prayer-retry').hidden=true;}});
+ audio.addEventListener('error',()=>{if(!audio.getAttribute('src')||!dialog.open)return;duration.textContent='Recording length unavailable';status.textContent='This prayer could not play. Check your connection and try again.';document.getElementById('prayer-retry').hidden=false;});
+ audio.addEventListener('durationchange',updateDuration);
+ audio.addEventListener('loadedmetadata',()=>{updateDuration();if(dialog.open){status.textContent='';document.getElementById('prayer-retry').hidden=true;}});
  document.getElementById('prayer-retry').addEventListener('click',()=>{if(catalog&&!controls.hidden&&selectedCategory()&&currentTrack)loadPrayer(currentTrack);else showCatalog();});
  document.getElementById('prayer-close').addEventListener('click',()=>{pause();dialog.close();});
  dialog.addEventListener('cancel',pause);
