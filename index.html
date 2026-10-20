@@ -920,6 +920,15 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 .extended-reading{font:21px/1.7 Georgia,serif;padding:20px;background:#f5eddb;color:#263244;border-radius:14px;margin:18px 0}.extended-reading p+p{margin-top:13px}.extended-reading sup{font:11px system-ui,sans-serif;color:#6a5937}
 @media(max-width:360px){.extended-reading{padding:14px;font-size:19px}.extra-actions{flex-direction:column}.explore-reading{font-size:22px}}
 
+
+/* Clear daily action and scroll affordances. */
+#complete-button{margin-top:10px;width:100%;min-height:48px;white-space:normal}
+#reader-dialog #journey-status{margin:12px 0 6px}
+#reader-dialog #topic-prayer{margin-top:24px}
+.window-scroll-cue{position:fixed;z-index:8;transform:translateX(-50%);border:1px solid var(--gold-line);border-radius:24px;padding:7px 15px;min-height:36px;color:var(--ink);background:#142034f5;box-shadow:0 2px 12px #0005;font:600 12px/1.4 system-ui,sans-serif;max-width:calc(100vw - 40px);cursor:pointer}
+.window-scroll-cue[hidden]{display:none}
+.window-scroll-cue:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
 </style>
 </head>
 
@@ -970,15 +979,15 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
             <div id="grow-menu" class="drop glass" hidden>
                 <section class="faith-section" aria-labelledby="prayer-section-label">
                   <p id="prayer-section-label" class="drop-label">Listen to a Prayer</p>
-                  <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3 M4 12h3v8H4z M17 12h3v8h-3z"/></svg><span>Find a Prayer<small>A quiet moment for what’s on your heart</small></span></button>
+                  <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3 M4 12h3v8H4z M17 12h3v8h-3z"/></svg><span>Find a Prayer</span></button>
+                </section>
+                <section class="faith-section" aria-labelledby="journey-section-label">
+                  <p id="journey-section-label" class="drop-label">Scripture Journeys</p>
+                  <button class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3"/></svg><span>Explore Journeys</span></button>
                 </section>
                 <section class="faith-section" aria-labelledby="topic-section-label">
                   <p id="topic-section-label" class="drop-label">Scripture by Topic</p>
                   <div id="topic-menu"></div>
-                </section>
-                <section class="faith-section" aria-labelledby="journey-section-label">
-                  <p id="journey-section-label" class="drop-label">Scripture Journeys</p>
-                  <button class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3"/></svg><span>Explore Journeys<small>Grow with one reading each day</small></span></button>
                 </section>
             </div>
         </div>
@@ -1021,7 +1030,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
     <section class="verse-card glass" aria-label="Daily Scripture">
         <button id="daily-save" class="bookmark" type="button" onclick="saveVerse(currentDaily)" aria-label="Save daily verse to favorites" aria-pressed="false" title="Save daily verse to favorites"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.2 3.05 6.18 6.82 1-4.93 4.8 1.16 6.8L12 17.77l-6.1 3.21 1.17-6.8-4.94-4.8 6.82-1z"/></svg></button>
 
-        <h1 class="tag">✦ Scripture for Your Path ✦</h1>
+        <h1 class="tag">Daily Scripture</h1>
         <blockquote id="verse-text" class="verse"></blockquote>
         <p id="verse-ref" class="reference"></p>
         <p id="daily-version" class="tiny" style="margin-top:10px"></p>
@@ -1061,21 +1070,18 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
         <button class="secondary" onclick="resumeJourney()">Continue Journey →</button>
     </div>
 
-    <footer class="site-footer tiny">
-        A moment in the Word. A little room to grow.
-    </footer>
 </main>
 
 <dialog id="prayer-dialog" aria-labelledby="prayer-title">
  <header class="dialog-head"><h2 id="prayer-title">Listen to a Prayer</h2><button id="prayer-close" class="close" type="button" aria-label="Close prayer player">×</button></header>
  <div class="dialog-body">
-  <p class="prayer-intro">Choose what’s on your heart. We’ll choose a prayer for you.</p>
+  <p class="prayer-intro">Choose a category to hear a randomly selected prayer.</p>
   <p id="prayer-status" class="tiny" role="status" aria-live="polite"></p>
   <button id="prayer-retry" class="secondary" type="button" hidden>Try Again</button>
   <div id="prayer-controls" hidden>
    <p id="prayer-topics-label" class="prayer-label">Prayer topic</p><select id="prayer-category" hidden aria-label="Prayer topic"></select><div id="prayer-categories" class="prayer-categories" role="group" aria-labelledby="prayer-topics-label"></div>
    <section id="prayer-now" class="prayer-now" hidden aria-labelledby="prayer-track-title">
-    <div id="prayer-category-icon" class="prayer-category-icon"></div><p class="eyebrow">Selected for you</p><h3 id="prayer-track-title"></h3><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
+    <div id="prayer-category-icon" class="prayer-category-icon"></div><h3 id="prayer-track-title"></h3><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
     <audio id="prayer-audio" controls controlsList="nodownload" preload="metadata" aria-label="Prayer audio player"></audio>
     <p class="tiny">Press Play when you’re ready. Closing this window pauses the prayer.</p>
     <button id="prayer-another" class="secondary" type="button" hidden>↻ Another Prayer</button>
@@ -1102,7 +1108,13 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
         <p id="reader-ref" class="reading-ref"></p>
         <p class="tiny">World English Bible (WEB) • Public domain</p>
 
-        <button id="topic-prayer" class="secondary" type="button" onclick="PrayerPlayer.open(selectedTopic.id,true)">▶ Listen to a Prayer</button>
+        <p id="journey-status" class="journey-status" role="status" hidden></p>
+        <button id="complete-button"
+                class="primary"
+                onclick="completeJourneyDay()"
+                hidden>
+            Complete Today’s Reading ✓
+        </button>
 
         <div id="reflection" class="reflection" hidden>
             <p class="eyebrow">Reflection • not Scripture</p>
@@ -1122,16 +1134,10 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
                rel="noopener noreferrer">Read Full Chapter ↗</a>
         </div>
 
-        <p id="journey-status" class="journey-status" role="status" hidden></p>
-        <button id="complete-button"
-                class="primary"
-                onclick="completeJourneyDay()"
-                hidden>
-            Complete Today’s Reading ✓
-        </button>
+        <button id="topic-prayer" class="secondary" type="button" onclick="PrayerPlayer.open(selectedTopic.id,true)">▶ Listen to a Prayer</button>
 
         <section id="journey-invite" class="journey-invite">
-            <h3>Take this a little further</h3>
+            <h3>Seven-day Scripture Journey</h3>
             <p>
                 Seven readings, a reflection, and a question each day.
                 Missed days never erase your progress.
@@ -1155,13 +1161,13 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 
     <div class="dialog-body">
         <p>
-            Choose what is on your heart. Complete one reading per journey
+            Choose a topic. Complete one reading per journey
             each day, revisit earlier readings anytime, and earn a lasting
             badge when you finish.
         </p>
         <h3 class="journey-section-heading">Seven-day journeys</h3>
         <div id="journey-list" class="topic-list"></div>
-        <h3 class="journey-section-heading">Go deeper with your streak</h3>
+        <h3 class="journey-section-heading">Streak-Unlocked Journeys</h3>
         <p class="tiny">Earn access through consecutive visits. Once unlocked, these journeys stay available.</p>
         <div id="extended-journeys" class="topic-list"></div>
         <p class="tiny storage-note">
@@ -3221,7 +3227,7 @@ window.FaithJourney=FaithJourney;
 </script>
 
 <dialog id="explore-dialog" aria-labelledby="explore-title">
- <header class="dialog-head"><h2 id="explore-title">A moment in Scripture</h2><button class="close" type="button" onclick="closeDialog('explore-dialog')" aria-label="Close extra Scripture">×</button></header>
+ <header class="dialog-head"><h2 id="explore-title">Explore Scripture</h2><button class="close" type="button" onclick="closeDialog('explore-dialog')" aria-label="Close extra Scripture">×</button></header>
  <div class="dialog-body"><p class="tiny">An extra reading from the World English Bible. Daily Scripture audio belongs to the daily passage on the homepage.</p><blockquote id="explore-text" class="explore-reading"></blockquote><p id="explore-reference" class="reference" aria-live="polite"></p><div class="extra-actions"><button id="explore-save" type="button" class="secondary">Save Verse</button><button id="explore-next" type="button" class="secondary">Another Verse →</button></div></div>
 </dialog>
 <dialog id="extended-dialog" aria-labelledby="extended-title">
@@ -3264,6 +3270,27 @@ const ExtraJourneys=(()=>{
  function badges(){for(const plan of plans){if(item(plan).done===plan.readings.length){const row=element('div','badge earned');row.append(element('strong','',plan.name),element('span','badge-status',plan.readings.length+'-day journey ✓'));$('journey-badges').append(row);}}}
  $('extended-complete').addEventListener('click',complete);$('extended-retry').addEventListener('click',paint);$('extended-dialog').addEventListener('close',()=>{request++;ready=false;});
  return {list,open,badges};
+})();
+
+</script>
+<script>
+
+/* Show a scroll cue only when a standard dialog has more content below. */
+(()=>{
+ const windows=[...document.querySelectorAll('dialog')].filter(d=>!['site-tour','bible-dialog'].includes(d.id));
+ let frame=0;
+ const hints=new Map();
+ function refresh(){frame=0;for(const [d,b] of hints){const r=d.getBoundingClientRect();const more=d.open&&r.height>100&&d.scrollHeight-d.clientHeight-d.scrollTop>16;
+  b.hidden=!more;if(more){const v=window.visualViewport;const bottom=Math.min(r.bottom,(v?.offsetTop||0)+(v?.height||innerHeight));b.style.left=(r.left+r.width/2)+'px';b.style.top=(bottom-46)+'px';}
+ }}
+ function schedule(){if(!frame)frame=requestAnimationFrame(refresh);}
+ for(const d of windows){const b=document.createElement('button');b.type='button';b.className='window-scroll-cue';b.textContent='More below ↓';b.setAttribute('aria-label','Scroll down to see more content');b.hidden=true;d.append(b);hints.set(d,b);
+  b.addEventListener('click',()=>{d.scrollBy({top:Math.max(100,d.clientHeight*.65),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});schedule();});
+  d.addEventListener('scroll',schedule,{passive:true});d.addEventListener('close',schedule);
+  const observer=new MutationObserver(records=>{if(records.some(r=>!b.contains(r.target)&&r.target!==b))schedule();});observer.observe(d,{attributes:true,attributeFilter:['open','hidden'],childList:true,subtree:true,characterData:true});
+  const resize=new ResizeObserver(schedule);resize.observe(d);for(const child of d.children){if(child!==b)resize.observe(child);}
+ }
+ window.addEventListener('resize',schedule);window.visualViewport?.addEventListener('resize',schedule);window.visualViewport?.addEventListener('scroll',schedule);document.fonts?.ready.then(schedule);schedule();
 })();
 
 </script>
