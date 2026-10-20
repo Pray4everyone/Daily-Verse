@@ -902,6 +902,24 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 .faith-storage-warning{font:13px/1.5 system-ui,sans-serif;color:var(--gold);border:1px solid var(--gold-line);padding:12px}
 @media(max-width:360px){.faith-overview{padding:12px}.faith-metric{padding:12px 8px}.faith-metric strong{font-size:20px}}
 
+
+.explore-launch{text-align:center;margin:20px 0 28px}.explore-launch button{font-size:12px;min-height:44px}
+.music-volume-control{padding:12px 10px;border-bottom:1px solid var(--line);margin-bottom:5px}
+.music-volume-control label{display:flex;justify-content:space-between;gap:8px;font:12px/1.5 system-ui,sans-serif;color:var(--gold)}
+.music-volume-control input{width:100%;min-height:36px;accent-color:var(--gold);margin:6px 0;cursor:pointer}.music-volume-control .tiny{font-size:10px}
+.bible-choices .bible-resume-choice{border-color:var(--gold-line);background:var(--gold-wash)}
+.journey-section-heading{margin:24px 0 12px;color:var(--gold)}
+#extended-journeys button:disabled{opacity:.65;cursor:default}
+#extended-dialog,#explore-dialog{width:min(680px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
+#extended-dialog .dialog-head h2,#explore-dialog .dialog-head h2{font-size:18px;min-width:0;overflow-wrap:anywhere}
+.extra-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.extra-actions button{min-height:44px;white-space:normal}
+.explore-reading{font:24px/1.65 Georgia,serif;margin:24px 0;color:var(--ink)}
+#extended-days{display:grid;grid-template-columns:repeat(auto-fit,minmax(44px,1fr));gap:6px;margin:16px 0}
+#extended-days button{padding:8px 4px;min-height:44px;font-size:12px}
+#extended-days button[aria-current="true"]{border-color:var(--gold);background:var(--gold-wash)}
+.extended-reading{font:21px/1.7 Georgia,serif;padding:20px;background:#f5eddb;color:#263244;border-radius:14px;margin:18px 0}.extended-reading p+p{margin-top:13px}.extended-reading sup{font:11px system-ui,sans-serif;color:#6a5937}
+@media(max-width:360px){.extended-reading{padding:14px;font-size:19px}.extra-actions{flex-direction:column}.explore-reading{font-size:22px}}
+
 </style>
 </head>
 
@@ -959,7 +977,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
                   <div id="topic-menu"></div>
                 </section>
                 <section class="faith-section" aria-labelledby="journey-section-label">
-                  <p id="journey-section-label" class="drop-label">Seven-Day Journeys</p>
+                  <p id="journey-section-label" class="drop-label">Scripture Journeys</p>
                   <button class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3"/></svg><span>Explore Journeys<small>Grow with one reading each day</small></span></button>
                 </section>
             </div>
@@ -980,6 +998,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
             <button id="music-btn" class="menu-item" onclick="toggleMusic()">
                 ▶ Play Music
             </button>
+            <div class="music-volume-control"><label for="music-volume">Music volume <output id="music-volume-value" for="music-volume">100%</output></label><input id="music-volume" type="range" min="0" max="100" step="1" value="100"><p class="tiny">Your music preference is saved on this device. Some phones use their device volume controls.</p></div>
             <button class="menu-item" onclick="nextTrack()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 4 11 8-11 8z M19 4v16"/></svg> Next Track</button>
             <button class="menu-item" onclick="changeScene()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6h3c5 0 7 12 12 12h3 M18 15l3 3-3 3 M3 18h3c2 0 3-2 4-4 M14 9c1-2 2-3 4-3h3 M18 3l3 3-3 3"/></svg> Shuffle Scene</button>
             <button class="menu-item" onclick="shareVerse(currentDaily)">
@@ -1033,6 +1052,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
         </div>
     </section>
 
+    <div class="explore-launch"><button class="secondary" type="button" onclick="VerseExplorer.open()">Explore Another Verse →</button></div>
     <div id="resume-card" class="resume-card glass" hidden>
         <div>
             <strong id="resume-title"></strong>
@@ -1127,7 +1147,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 
 <dialog id="journeys-dialog" aria-labelledby="journeys-title">
     <header class="dialog-head">
-        <h2 id="journeys-title">📖 Seven Days in Scripture</h2>
+        <h2 id="journeys-title">Your Scripture Journeys</h2>
         <button class="close"
                 onclick="closeDialog('journeys-dialog')"
                 aria-label="Close journeys">×</button>
@@ -1139,7 +1159,11 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
             each day, revisit earlier readings anytime, and earn a lasting
             badge when you finish.
         </p>
+        <h3 class="journey-section-heading">Seven-day journeys</h3>
         <div id="journey-list" class="topic-list"></div>
+        <h3 class="journey-section-heading">Go deeper with your streak</h3>
+        <p class="tiny">Earn access through consecutive visits. Once unlocked, these journeys stay available.</p>
+        <div id="extended-journeys" class="topic-list"></div>
         <p class="tiny storage-note">
             Progress is saved in this browser on this device.
             Clearing its data removes saved progress.
@@ -1210,6 +1234,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
  <div class="dialog-body">
   <div class="bible-choice-heading"><h2 id="bible-choice-title">📖 Read Holy Bible</h2><button id="bible-choice-close" class="close" type="button" aria-label="Close Bible choices">×</button></div>
   <p>Choose your Bible translation.</p>
+  <div id="bible-continue" class="bible-choices" aria-label="Continue reading"></div>
   <div class="bible-choices"><button id="bible-choose-kjv" type="button"><strong>KJV</strong><span>King James Version</span></button><button id="bible-choose-web" type="button"><strong>WEB</strong><span>World English Bible</span></button></div>
   <p class="tiny">Your reading place is saved separately for each translation on this device.</p>
  </div>
@@ -1983,7 +2008,9 @@ function paintReading(verse) {
 }
 
 function openJourneys() {
+    updateVisit();
     renderJourneyList();
+    ExtraJourneys.list();
     showDialog("journeys-dialog");
 }
 
@@ -2230,6 +2257,7 @@ function openBadges() {
         box.append(row);
     });
 
+    ExtraJourneys.badges();
     window.FaithJourney?.render();
     showDialog("badges-dialog");
 }
@@ -2358,6 +2386,14 @@ async function shareVerse(verse) {
 
 /* Explicit playlist: music1.mp3 in the repository is an invalid two-byte file. */
 const music=$("bg-music");
+const musicPreferenceKey='scripture_music_preferences_v1';
+const rawMusicPreferences=readJSON(musicPreferenceKey,{});
+const musicPreferences={enabled:typeof rawMusicPreferences?.enabled==='boolean'?rawMusicPreferences.enabled:true,volume:typeof rawMusicPreferences?.volume==='number'&&Number.isFinite(rawMusicPreferences.volume)?Math.max(0,Math.min(1,rawMusicPreferences.volume)):1};
+function saveMusicPreferences(){put(musicPreferenceKey,JSON.stringify(musicPreferences));}
+music.volume=musicPreferences.volume;
+$('music-volume').value=String(Math.round(musicPreferences.volume*100));
+$('music-volume-value').textContent=$('music-volume').value+'%';
+$('music-volume').addEventListener('input',event=>{musicPreferences.volume=Number(event.target.value)/100;music.volume=musicPreferences.volume;$('music-volume-value').textContent=event.target.value+'%';saveMusicPreferences();});
 const MUSIC_FILES=['music.mp3',...Array.from({length:9},(_,i)=>`music${i+2}.mp3`)];
 let musicIndex=Math.floor(Math.random()*MUSIC_FILES.length),musicRequest=0,musicLoading=false,musicWanted=false;
 let imageIndex=0,imageRequest=0;
@@ -2365,7 +2401,7 @@ function musicLabel(){ $('music-btn').textContent=musicLoading?'♪ Loading Musi
 music.addEventListener('play',musicLabel);music.addEventListener('pause',musicLabel);
 async function startMusic(index,userInitiated=true){
  const request=++musicRequest;musicWanted=true;musicLoading=true;musicLabel();
- if(userInitiated){PrayerPlayer.pause();closeAudio();}
+ if(userInitiated){musicPreferences.enabled=true;saveMusicPreferences();PrayerPlayer.pause();closeAudio();}
  for(let attempt=0;attempt<MUSIC_FILES.length;attempt++){
   if(request!==musicRequest||!musicWanted)return;
   musicIndex=(index+attempt)%MUSIC_FILES.length;
@@ -2386,7 +2422,7 @@ async function startMusic(index,userInitiated=true){
  if(request===musicRequest){musicWanted=false;musicLoading=false;music.pause();musicLabel();if(userInitiated)notify('Music is unavailable right now. Check your connection, then tap Play Music to try again.');}
 }
 function playMusic(){return startMusic(musicIndex);}
-function toggleMusic(){if(musicLoading||!music.paused){musicRequest++;musicWanted=false;musicLoading=false;music.pause();musicLabel();}else playMusic();}
+function toggleMusic(){if(musicLoading||!music.paused){musicPreferences.enabled=false;saveMusicPreferences();musicRequest++;musicWanted=false;musicLoading=false;music.pause();musicLabel();}else playMusic();}
 function nextTrack(){return startMusic((musicIndex+1)%MUSIC_FILES.length);}
 music.addEventListener('error',()=>{if(musicWanted&&!musicLoading)startMusic((musicIndex+1)%MUSIC_FILES.length);});
 // Another player taking over also cancels a music load still in flight.
@@ -2609,7 +2645,7 @@ renderResume();
 
 imageIndex = Math.floor(Math.random() * SCENES.length);
 loadScene(imageIndex, 0, ++imageRequest);
-startMusic(musicIndex,false);
+if(musicPreferences.enabled)startMusic(musicIndex,false);else musicLabel();
 loadDaily();
 </script>
 
@@ -2727,7 +2763,7 @@ const BibleReader = (() => {
         if(index<0)index=newPages.findIndex(p=>p.some(f=>f.verse>=verse));return index<0?newPages.length-1:index;
     }
     function savePosition() {
-        saved.positions[version]=currentAnchor();saved.fontSize=fontSize;put(storageKey,JSON.stringify(saved));
+        saved.positions[version]=currentAnchor();saved.lastVersion=version;saved.fontSize=fontSize;put(storageKey,JSON.stringify(saved));
     }
     function render() {
         const fragments=pages[pageIndex];if(!fragments)return;
@@ -2765,6 +2801,11 @@ const BibleReader = (() => {
     function open() {
         closeMenus();closeAudio();stopBackgroundMusic();musicLabel();
         document.querySelectorAll('dialog[open]').forEach(d=>d.close());
+        const shortcuts=document.getElementById('bible-continue');shortcuts.replaceChildren();
+        const order=saved.lastVersion==='web'?['web','kjv']:['kjv','web'];
+        for(const code of order){const pos=saved.positions[code],meta=pos&&BIBLE_TRANSLATIONS[code].books[pos.book];if(!meta||!Number.isInteger(pos.chapter)||pos.chapter<1||pos.chapter>meta.chapters.length)continue;
+            const b=element('button','bible-resume-choice');b.type='button';b.append(element('strong','','Continue '+meta.name+' '+pos.chapter),element('span','',code.toUpperCase()+' • Return to your saved place'));b.onclick=()=>choose(code);shortcuts.append(b);
+        }
         id('choice-dialog').showModal();
     }
     function choose(nextVersion, passage=null, highlight=false) {
@@ -3143,6 +3184,54 @@ const FaithJourney=(()=>{
 })();
 
 window.FaithJourney=FaithJourney;
+</script>
+
+<dialog id="explore-dialog" aria-labelledby="explore-title">
+ <header class="dialog-head"><h2 id="explore-title">A moment in Scripture</h2><button class="close" type="button" onclick="closeDialog('explore-dialog')" aria-label="Close extra Scripture">×</button></header>
+ <div class="dialog-body"><p class="tiny">An extra reading from the World English Bible. Daily Scripture audio belongs to the daily passage on the homepage.</p><blockquote id="explore-text" class="explore-reading"></blockquote><p id="explore-reference" class="reference" aria-live="polite"></p><div class="extra-actions"><button id="explore-save" type="button" class="secondary">Save Verse</button><button id="explore-next" type="button" class="secondary">Another Verse →</button></div></div>
+</dialog>
+<dialog id="extended-dialog" aria-labelledby="extended-title">
+ <header class="dialog-head"><h2 id="extended-title">Your Scripture Journey</h2><button class="close" type="button" onclick="closeDialog('extended-dialog')" aria-label="Close journey">×</button></header>
+ <div class="dialog-body"><p id="extended-progress" class="tiny"></p><div id="extended-days" aria-label="Journey days"></div><div id="extended-text" class="extended-reading"></div><p id="extended-status" class="tiny" role="status"></p><div class="extra-actions"><button id="extended-retry" type="button" class="secondary" hidden>Try Again</button><button id="extended-complete" type="button" class="secondary" disabled>Mark today’s reading complete</button><button type="button" class="secondary" onclick="openJourneys()">All Journeys</button></div></div>
+</dialog>
+
+<script>
+/* Extra Scripture is separate from the daily passage and its audio. */
+const VerseExplorer=(()=>{
+ let bag=[],current=null,last='';
+ function next(){if(!bag.length){bag=Object.keys(PASSAGES);for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}if(bag.length>1&&bag.at(-1)===last)[bag[0],bag[bag.length-1]]=[bag.at(-1),bag[0]];}
+  const ref=bag.pop();last=ref;current={ref,text:PASSAGES[ref],version:'WEB'};$('explore-text').textContent=current.text;$('explore-reference').textContent=ref+' • World English Bible';$('explore-text').scrollTop=0;window.FaithJourney?.record('passages',ref,ref);}
+ function open(){closeAudio();showDialog('explore-dialog');next();}
+ $('explore-next').addEventListener('click',next);$('explore-save').addEventListener('click',()=>saveVerse(current));
+ return {open};
+})();
+
+/* Permanent streak unlocks, with one completion per journey per local day. */
+const ExtraJourneys=(()=>{
+ const plans=[
+  {id:'psalms14',name:'Walking Through the Psalms',unlock:14,readings:[1,8,16,19,23,27,34,46,51,63,91,100,121,139].map(c=>['Psalms',c])},
+  {id:'jesus30',name:'Walking with Jesus',unlock:30,readings:[...Array.from({length:15},(_,i)=>['Matthew',i+5]),['Mark',4],['Mark',5],['Mark',10],['Luke',10],['Luke',11],['Luke',15],['Luke',18],['John',3],['John',4],['John',10],['John',13],['John',14],['John',15],['John',20],['John',21]]}
+ ];
+ const key='extended_scripture_journeys_v1',cache=new Map();let selected=null,view=0,request=0,ready=false;
+ function progress(){const d=readJSON(key,{});return d&&typeof d==='object'&&!Array.isArray(d)?d:{};}
+ function item(plan){const raw=progress()[plan.id]||{};return {done:Math.max(0,Math.min(plan.readings.length,Math.floor(Number(raw.done)||0))),last:typeof raw.last==='string'?raw.last:''};}
+ function unlocked(plan){return Number(state.longest)>=plan.unlock;}
+ function available(p,plan){return p.done>=plan.readings.length?plan.readings.length-1:p.last===dayKey()?Math.max(0,p.done-1):p.done;}
+ function list(){const root=$('extended-journeys');root.replaceChildren();for(const plan of plans){const p=item(plan),b=element('button','secondary journey-choice',plan.name);b.type='button';b.disabled=!unlocked(plan);b.append(element('span','tiny',!unlocked(plan)?'Unlocks with a '+plan.unlock+'-day streak':p.done===plan.readings.length?'Completed • Revisit all '+p.done+' readings':plan.readings.length+' days • '+p.done+' complete'));b.onclick=()=>open(plan.id);root.append(b);}}
+ function open(id){const plan=plans.find(x=>x.id===id);if(!plan||!unlocked(plan))return;selected=plan;view=available(item(plan),plan);showDialog('extended-dialog');paint();}
+ async function paint(){const token=++request;ready=false;const plan=selected,p=item(plan);view=Math.min(view,available(p,plan));const [book,chapter]=plan.readings[view];$('extended-title').textContent=plan.name;$('extended-progress').textContent='Day '+(view+1)+' of '+plan.readings.length+' • '+book+' '+chapter+' • WEB';$('extended-text').replaceChildren();$('extended-status').textContent='Opening your reading…';$('extended-complete').disabled=true;$('extended-retry').hidden=true;
+  const days=$('extended-days');days.replaceChildren();plan.readings.forEach((_,i)=>{const b=element('button','secondary',String(i+1)+(i<p.done?' ✓':''));b.type='button';b.disabled=i>available(p,plan);b.setAttribute('aria-label','Day '+(i+1)+(i<p.done?', completed':''));b.setAttribute('aria-current',String(i===view));b.onclick=()=>{view=i;paint();};days.append(b);});
+  let timer;try{let data=cache.get(book);if(!data){const controller=new AbortController();timer=setTimeout(()=>controller.abort(),15000);const response=await fetch(new URL('bible-data/web/'+encodeURIComponent(book)+'.json',document.baseURI),{signal:controller.signal});if(!response.ok)throw Error('unavailable');data=await response.json();cache.set(book,data);}if(token!==request||!$('extended-dialog').open)return;const entries=Object.entries(data[String(chapter)]||{});if(!entries.length||entries.some(([n,t])=>!/^\d+$/.test(n)||typeof t!=='string'))throw Error('invalid chapter');
+   const root=$('extended-text');for(const [n,text] of entries){const p=element('p','',text||'[No text for this verse number in this WEB source.]');p.prepend(element('sup','',n+' '));root.append(p);}root.scrollTop=0;ready=true;controls();window.FaithJourney?.record('chapters',BIBLE_TRANSLATIONS.web.books.findIndex(b=>b.name===book)+':'+chapter,book+' '+chapter);
+  }catch{cache.delete(book);if(token===request&&$('extended-dialog').open){$('extended-status').textContent='This reading could not load. Please check your connection and try again.';$('extended-retry').hidden=false;}}finally{clearTimeout(timer);}
+ }
+ function controls(){const p=item(selected),total=selected.readings.length;const can=ready&&view===p.done&&p.done<total&&p.last!==dayKey();$('extended-complete').disabled=!can;$('extended-complete').textContent=p.done===total?'Journey completed':'Mark today’s reading complete';$('extended-status').textContent=p.done===total?'You completed this journey. Every reading remains available to revisit.':p.last===dayKey()?p.done+' of '+total+' complete. Your next reading opens tomorrow.':p.done+' of '+total+' complete. Missed days do not erase your progress.';}
+ function complete(){if(!selected||!ready)return;const p=item(selected);if(view!==p.done||p.done>=selected.readings.length||p.last===dayKey()||!unlocked(selected))return;const data=progress(),before=JSON.stringify(data);data[selected.id]={done:p.done+1,last:dayKey()};if(!put(key,JSON.stringify(data))){memory[key]=before;$('extended-status').textContent='This browser could not save your progress. Please try again.';return;}window.FaithJourney?.record('readings',selected.id+':'+(p.done+1),selected.name+' • Day '+(p.done+1));paint();}
+ function badges(){for(const plan of plans){if(item(plan).done===plan.readings.length){const row=element('div','badge earned');row.append(element('strong','',plan.name),element('span','badge-status',plan.readings.length+'-day journey ✓'));$('journey-badges').append(row);}}}
+ $('extended-complete').addEventListener('click',complete);$('extended-retry').addEventListener('click',paint);$('extended-dialog').addEventListener('close',()=>{request++;ready=false;});
+ return {list,open,badges};
+})();
+
 </script>
 </body>
 </html>
