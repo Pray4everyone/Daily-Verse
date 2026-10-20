@@ -994,7 +994,6 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
         </button>
 
         <div id="main-menu" class="drop glass" hidden>
-            <button id="tour-replay" class="menu-item" type="button" onclick="SiteTour.start()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg> Replay Tour</button>
             <button id="music-btn" class="menu-item" onclick="toggleMusic()">
                 ▶ Play Music
             </button>
@@ -1005,13 +1004,14 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
                 <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 10l8-5 M8 14l8 5 M8 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 20a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/></svg> Share Daily Verse
             </button>
             <button class="menu-item" onclick="openFavorites()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15"/></svg> View Favorites</button>
-            <button class="menu-item" onclick="openBadges()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0 M8 12l-2 9 6-3 6 3-2-9"/></svg> Streaks & Earned Badges</button>
             <a class="menu-item"
                href="https://localchurches.org/"
                target="_blank"
                rel="noopener noreferrer">
                 <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7"/></svg> Find a Church
             </a>
+            <hr class="menu-divider">
+            <button id="tour-replay" class="menu-item" type="button" onclick="SiteTour.start()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg> Replay Tour</button>
         </div>
     <button id="bible-launch" class="pill glass bible-launch" type="button" onclick="BibleReader.open()" aria-haspopup="dialog" aria-controls="bible-choice-dialog"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15"/></svg><span>Read Holy Bible</span></button>
 </div>
@@ -1052,7 +1052,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
         </div>
     </section>
 
-    <div class="explore-launch"><button class="secondary" type="button" onclick="VerseExplorer.open()">Explore Another Verse →</button></div>
+    <div class="explore-launch"><button id="explore-verse-button" class="secondary" type="button" onclick="VerseExplorer.open()">Explore Another Verse →</button></div>
     <div id="resume-card" class="resume-card glass" hidden>
         <div>
             <strong id="resume-title"></strong>
@@ -2943,13 +2943,47 @@ const SiteTour=(()=>{
     const next=document.getElementById('tour-next');
     const back=document.getElementById('tour-back');
     const steps=[
-        {target:'#main-toggle',title:'Your Menu',text:'Play music, switch tracks, change your background, revisit favorite verses, and see your earned badges. You can replay this tour here anytime.'},
-        {target:'#streak-button',title:'Your Daily Streak',text:'Visit each day to build your streak. Tap here to see your progress, your next milestone, and the badges you have earned.'},
-        {target:'#grow-toggle',title:'Grow Your Faith',text:'Find verses for what’s on your heart, explore seven-day scripture journeys, or choose Listen to a Prayer for recorded prayers by topic.'},
-        {target:'#bible-launch',title:'Read Holy Bible',text:'Choose KJV or WEB, select a book and passage, then swipe or use the arrows to turn pages. Tap a verse to highlight or save it.'},
-        {target:'#audio-button',title:'Listen to Scripture',text:'Open the audio player beneath today’s verse, then press Play to listen. Audio becomes available when the daily scripture finishes loading.'},
-        {target:'.verse-card .bookmark',title:'Keep a Favorite',text:'Tap the white star to save today’s verse; it turns gold when saved. Find it in Menu → View Favorites. Favorites stay in this browser on this device.'}
-    ];
+        {
+                "target": "#main-toggle",
+                "title": "Your Menu",
+                "text": "Play music, adjust its volume, switch tracks, shuffle photo backgrounds, and revisit favorites. Music preferences are saved on this device. The menu stays open for quick changes; tap Menu again or outside to close it. Replay Tour is at the bottom."
+        },
+        {
+                "target": "#streak-button",
+                "title": "Your Streak & Milestones",
+                "text": "Tap your streak for badges and progress. After seven consecutive days, your activity overview unlocks. Totals grow through the same streak, including earlier days. Earned milestone summaries and badges remain when a streak ends."
+        },
+        {
+                "target": "#grow-toggle",
+                "title": "Scripture & Personal Prayer",
+                "text": "Choose Scripture by Topic for what’s on your heart, or Listen to a Prayer. Pick a prayer category and a recording is chosen for you. Its length appears above the player; Another Prayer appears when that category has more recordings."
+        },
+        {
+                "target": "#grow-toggle",
+                "title": "Journeys That Grow with You",
+                "text": "Open Scripture Journeys for seven-day readings. A 14-day streak unlocks Walking Through the Psalms; a 30-day streak unlocks Walking with Jesus. Earned access stays available. Complete one reading per journey each day, and revisit earlier readings anytime."
+        },
+        {
+                "target": "#bible-launch",
+                "title": "Read & Continue Your Bible",
+                "text": "Choose KJV or WEB, or tap Continue to return to a saved reading place. Use the arrows or swipe to turn pages. Tap a verse to highlight or save it. Each translation keeps its own reading position on this device."
+        },
+        {
+                "target": ".verse-card .bookmark",
+                "title": "Keep a Favorite",
+                "text": "Tap the white star to save today’s verse; it turns gold when saved. Find saved passages in Menu → View Favorites. Favorites and progress stay in this browser on this device; clearing browser data removes them."
+        },
+        {
+                "target": "#audio-button",
+                "title": "Listen to Today’s Scripture",
+                "text": "This player belongs to the daily passage shown above it. Open it, then press Play. Audio becomes available when the daily feed loads; it does not change to match extra verses you explore."
+        },
+        {
+                "target": "#explore-verse-button",
+                "title": "Explore Another Verse",
+                "text": "Want another reading? Open a separate WEB passage here, then tap Another Verse to explore more or Save Verse to keep one. Today’s homepage passage stays in place. You can replay this tour from the bottom of Menu anytime."
+        }
+];
     let index=0,active=false,frame=0,originalScroll=0,originalOverflow='',returnFocus=null;
     const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
     function viewport(){
