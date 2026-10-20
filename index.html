@@ -1830,8 +1830,8 @@ function updateVisit(today = dayKey()) {
 }
 
 /* Only one dropdown can be open at a time. */
-function closeMenus() {
-    ["grow", "main"].forEach(id => {
+function closeMenus(keepMain = false) {
+    (keepMain ? ["grow"] : ["grow", "main"]).forEach(id => {
         $(id + "-menu").hidden = true;
         $(id + "-toggle").setAttribute("aria-expanded", "false");
     });
@@ -1846,7 +1846,7 @@ function toggleDropdown(id) {
 }
 
 function showDialog(id) {
-    closeMenus();
+    closeMenus(true);
 
     document.querySelectorAll("dialog[open]").forEach(dialog => {
         if (dialog.id !== id) dialog.close();
@@ -1886,12 +1886,14 @@ TOPICS.forEach(topic => {
 });
 
 document.addEventListener("click", event => {
-    if (
-        !event.target.closest(".header-left") &&
-        !event.target.closest(".header-right")
-    ) {
-        closeMenus();
-    }
+    // Menu actions remain open; toggles and outside clicks control dismissal.
+    if(event.target.closest('dialog')) return;
+    ["grow", "main"].forEach(id => {
+        if(!event.target.closest('#'+id+'-menu') && !event.target.closest('#'+id+'-toggle')) {
+            $(id+'-menu').hidden=true;
+            $(id+'-toggle').setAttribute('aria-expanded','false');
+        }
+    });
 });
 
 document.addEventListener("keydown", event => {
@@ -2390,22 +2392,20 @@ music.addEventListener('error',()=>{if(musicWanted&&!musicLoading)startMusic((mu
 // Another player taking over also cancels a music load still in flight.
 function stopBackgroundMusic(){musicRequest++;musicWanted=false;musicLoading=false;music.pause();musicLabel();}
 
-const EXTRA_SCENES=[{"name": "Morning Mountains", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1600\" height=\"1200\" viewBox=\"0 0 1600 1200\"><defs><linearGradient id=\"sky\" x2=\"0\" y2=\"1\"><stop stop-color=\"#24384f\"/><stop offset=\"1\" stop-color=\"#d8b47f\"/></linearGradient></defs><path fill=\"url(#sky)\" d=\"M0 0h1600v1200H0z\"/><circle cx=\"1110\" cy=\"350\" r=\"105\" fill=\"#f8ddb1\"/><path d=\"M0 780 340 330 650 760 1010 430 1600 880v320H0\" fill=\"#667b87\"/><path d=\"m230 480 110-150 113 162-113-50z\" fill=\"#e6e0d1\"/><path d=\"M0 960 450 650 780 920 1230 650 1600 930v270H0\" fill=\"#354e60\"/><path d=\"M0 1100q430-230 800-80t800-70v250H0\" fill=\"#1d3548\"/></svg>"}, {"name": "Quiet Waters", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1600\" height=\"1200\" viewBox=\"0 0 1600 1200\"><defs><linearGradient id=\"sky\" x2=\"0\" y2=\"1\"><stop stop-color=\"#263b54\"/><stop offset=\"1\" stop-color=\"#b69c85\"/></linearGradient></defs><path fill=\"url(#sky)\" d=\"M0 0h1600v1200H0z\"/><circle cx=\"1110\" cy=\"350\" r=\"85\" fill=\"#e8d2a3\"/><path d=\"M0 720 310 520 600 740 980 500 1600 750v450H0\" fill=\"#425f6d\"/><path d=\"M0 800h1600v400H0\" fill=\"#36596a\"/><g stroke=\"#bca98b\" opacity=\".45\" fill=\"none\" stroke-width=\"5\"><path d=\"M900 850h400M830 920h480M920 990h320M790 1080h570\"/></g><path d=\"M0 1200V880q190 40 420 320M1600 1200V900q-180 60-340 300\" fill=\"#193b43\"/></svg>"}, {"name": "Desert Stillness", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1600\" height=\"1200\" viewBox=\"0 0 1600 1200\"><defs><linearGradient id=\"sky\" x2=\"0\" y2=\"1\"><stop stop-color=\"#403b51\"/><stop offset=\"1\" stop-color=\"#d7b28a\"/></linearGradient></defs><path fill=\"url(#sky)\" d=\"M0 0h1600v1200H0z\"/><circle cx=\"1120\" cy=\"360\" r=\"95\" fill=\"#efc897\"/><path d=\"M0 790Q430 580 850 820T1600 700v500H0\" fill=\"#ba977e\"/><path d=\"M0 970Q620 610 1080 920T1600 850v350H0\" fill=\"#8e746a\"/><path d=\"M0 1070Q650 900 1000 1070T1600 980v220H0\" fill=\"#594f56\"/></svg>"}, {"name": "Starlit Hills", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1600\" height=\"1200\" viewBox=\"0 0 1600 1200\"><defs><linearGradient id=\"sky\" x2=\"0\" y2=\"1\"><stop stop-color=\"#101d38\"/><stop offset=\"1\" stop-color=\"#596279\"/></linearGradient></defs><path fill=\"url(#sky)\" d=\"M0 0h1600v1200H0z\"/><g fill=\"#eeddbb\" opacity=\".85\"><circle cx=\"70\" cy=\"40\" r=\"1\"/><circle cx=\"243\" cy=\"137\" r=\"2\"/><circle cx=\"416\" cy=\"234\" r=\"3\"/><circle cx=\"589\" cy=\"331\" r=\"1\"/><circle cx=\"762\" cy=\"428\" r=\"2\"/><circle cx=\"935\" cy=\"525\" r=\"3\"/><circle cx=\"1108\" cy=\"622\" r=\"1\"/><circle cx=\"1281\" cy=\"69\" r=\"2\"/><circle cx=\"1454\" cy=\"166\" r=\"3\"/><circle cx=\"27\" cy=\"263\" r=\"1\"/><circle cx=\"200\" cy=\"360\" r=\"2\"/><circle cx=\"373\" cy=\"457\" r=\"3\"/><circle cx=\"546\" cy=\"554\" r=\"1\"/><circle cx=\"719\" cy=\"1\" r=\"2\"/><circle cx=\"892\" cy=\"98\" r=\"3\"/><circle cx=\"1065\" cy=\"195\" r=\"1\"/><circle cx=\"1238\" cy=\"292\" r=\"2\"/><circle cx=\"1411\" cy=\"389\" r=\"3\"/><circle cx=\"1584\" cy=\"486\" r=\"1\"/><circle cx=\"157\" cy=\"583\" r=\"2\"/><circle cx=\"330\" cy=\"30\" r=\"3\"/><circle cx=\"503\" cy=\"127\" r=\"1\"/><circle cx=\"676\" cy=\"224\" r=\"2\"/><circle cx=\"849\" cy=\"321\" r=\"3\"/><circle cx=\"1022\" cy=\"418\" r=\"1\"/><circle cx=\"1195\" cy=\"515\" r=\"2\"/><circle cx=\"1368\" cy=\"612\" r=\"3\"/><circle cx=\"1541\" cy=\"59\" r=\"1\"/><circle cx=\"114\" cy=\"156\" r=\"2\"/><circle cx=\"287\" cy=\"253\" r=\"3\"/><circle cx=\"460\" cy=\"350\" r=\"1\"/><circle cx=\"633\" cy=\"447\" r=\"2\"/><circle cx=\"806\" cy=\"544\" r=\"3\"/><circle cx=\"979\" cy=\"641\" r=\"1\"/><circle cx=\"1152\" cy=\"88\" r=\"2\"/><circle cx=\"1325\" cy=\"185\" r=\"3\"/><circle cx=\"1498\" cy=\"282\" r=\"1\"/><circle cx=\"71\" cy=\"379\" r=\"2\"/><circle cx=\"244\" cy=\"476\" r=\"3\"/><circle cx=\"417\" cy=\"573\" r=\"1\"/><circle cx=\"590\" cy=\"20\" r=\"2\"/><circle cx=\"763\" cy=\"117\" r=\"3\"/><circle cx=\"936\" cy=\"214\" r=\"1\"/><circle cx=\"1109\" cy=\"311\" r=\"2\"/><circle cx=\"1282\" cy=\"408\" r=\"3\"/><circle cx=\"1455\" cy=\"505\" r=\"1\"/><circle cx=\"28\" cy=\"602\" r=\"2\"/><circle cx=\"201\" cy=\"49\" r=\"3\"/><circle cx=\"1170\" cy=\"270\" r=\"65\"/></g><circle cx=\"1195\" cy=\"250\" r=\"63\" fill=\"#1d2c46\"/><path d=\"M0 900Q330 520 790 880T1600 740v460H0\" fill=\"#293d55\"/><path d=\"M0 1050Q350 770 900 1020T1600 900v300H0\" fill=\"#142d42\"/></svg>"}, {"name": "Olive Hills", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1600\" height=\"1200\" viewBox=\"0 0 1600 1200\"><defs><linearGradient id=\"sky\" x2=\"0\" y2=\"1\"><stop stop-color=\"#40565a\"/><stop offset=\"1\" stop-color=\"#c6bd92\"/></linearGradient></defs><path fill=\"url(#sky)\" d=\"M0 0h1600v1200H0z\"/><circle cx=\"1080\" cy=\"360\" r=\"100\" fill=\"#e0cf9f\"/><path d=\"M0 870q350-360 800-100t800-120v550H0\" fill=\"#728071\"/><path d=\"M0 1050q460-350 900-100t700-80v330H0\" fill=\"#465f55\"/><g fill=\"#253f3c\"><path d=\"M180 1200 210 720h18l10 480z\"/><ellipse cx=\"220\" cy=\"700\" rx=\"155\" ry=\"100\"/><ellipse cx=\"120\" cy=\"740\" rx=\"90\" ry=\"75\"/><ellipse cx=\"310\" cy=\"745\" rx=\"100\" ry=\"85\"/><path d=\"m1410 1200 18-340h16l12 340z\"/><ellipse cx=\"1435\" cy=\"850\" rx=\"125\" ry=\"85\"/></g></svg>"}, {"name": "Light Through the Window", "svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1600\" height=\"1200\" viewBox=\"0 0 1600 1200\"><defs><linearGradient id=\"sky\" x2=\"0\" y2=\"1\"><stop stop-color=\"#17273c\"/><stop offset=\"1\" stop-color=\"#665b52\"/></linearGradient></defs><path fill=\"url(#sky)\" d=\"M0 0h1600v1200H0z\"/><path d=\"M520 1200V390a280 280 0 0 1 560 0v810\" fill=\"#b9a784\" opacity=\".45\"/><path d=\"M580 1200V400a220 220 0 0 1 440 0v800\" fill=\"#e0c69b\" opacity=\".28\"/><g stroke=\"#263246\" stroke-width=\"24\"><path d=\"M800 180v1020M530 550h540M530 850h540\"/></g><path d=\"m560 640-430 560h1340l-430-560\" fill=\"#f2d49a\" opacity=\".08\"/></svg>"}];
-const SCENES=[...Array.from({length:10},(_,i)=>({name:'Original scene '+(i+1),file:`background${i+1}`})),...EXTRA_SCENES];
+// Only uploaded photographic backgrounds are included.
+const SCENES=Array.from({length:12},(_,i)=>({name:'Photo '+(i+1),file:`background${i+1}.jpg`}));
 let sceneBag=[];
 function setSceneBackground(value){document.body.style.backgroundImage=`linear-gradient(180deg,rgba(10,20,34,.64),rgba(10,20,34,.82)),url("${value}")`;}
-function loadScene(index,extensionIndex,request){
- const scene=SCENES[index];if(!scene||request!==imageRequest)return;
- if(scene.svg){setSceneBackground('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(scene.svg));return;}
- const extensions=['.jpg','.jpeg','.png'];
- if(extensionIndex>=extensions.length){const fallback=EXTRA_SCENES[(index%EXTRA_SCENES.length)];setSceneBackground('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(fallback.svg));return;}
- const path=scene.file+extensions[extensionIndex],image=new Image();
- image.onload=()=>{if(request===imageRequest)setSceneBackground(path);};
- image.onerror=()=>{if(request===imageRequest)loadScene(index,extensionIndex+1,request);};image.src=path;
+function loadScene(index,attempt,request){
+ if(request!==imageRequest||attempt>=SCENES.length)return;
+ const candidate=(index+attempt)%SCENES.length,scene=SCENES[candidate],image=new Image();
+ image.onload=()=>{if(request===imageRequest){imageIndex=candidate;setSceneBackground(scene.file);}};
+ image.onerror=()=>{if(request===imageRequest)loadScene(index,attempt+1,request);};
+ image.src=scene.file;
 }
 function changeScene(){
  if(!sceneBag.length){sceneBag=SCENES.map((_,i)=>i).filter(i=>i!==imageIndex);for(let i=sceneBag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[sceneBag[i],sceneBag[j]]=[sceneBag[j],sceneBag[i]];}}
- imageIndex=sceneBag.pop();loadScene(imageIndex,0,++imageRequest);closeMenus();
+ imageIndex=sceneBag.pop();loadScene(imageIndex,0,++imageRequest);
 }
 
 
