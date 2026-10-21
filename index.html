@@ -816,7 +816,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 .site-header .grow-toggle{padding:7px 12px 7px 9px}
 .site-header .pill:hover{background:#26374c;border-color:#d9b975}
 .page{max-width:760px}
-.verse-card{padding:60px 52px 36px;border-radius:24px;background:linear-gradient(145deg,rgba(31,47,65,.96),rgba(17,29,46,.97));border:1px solid rgba(232,200,135,.38);box-shadow:0 18px 48px #0004,inset 0 1px 0 #fff2;backdrop-filter:blur(12px)}
+.verse-card{padding:60px 52px 36px;border-radius:24px;background:linear-gradient(145deg,rgba(31,47,65,.78),rgba(17,29,46,.84));border:1px solid rgba(232,200,135,.38);box-shadow:0 18px 48px #0004,inset 0 1px 0 #fff2;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .tag{font:600 11px/1.6 'Cinzel',Georgia,serif;letter-spacing:2.1px;color:#e8c887;margin-bottom:27px}
 .verse{font:400 clamp(25px,3.4vw,34px)/1.6 Georgia,'Times New Roman',serif;color:#fff9ed;text-shadow:none;margin-bottom:25px;text-wrap:pretty}
 .reference{font:600 clamp(15px,2vw,18px)/1.6 'Cinzel',Georgia,serif;letter-spacing:.3px;color:#e8c887}
@@ -933,6 +933,13 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 .faith-emoji{font-size:20px;line-height:1;display:inline-flex;align-items:center;justify-content:center;width:22px;height:24px;flex-basis:22px}
 .daily-card-actions{display:flex;justify-content:center;margin-top:18px}
 #daily-share{min-height:44px;max-width:100%;padding:10px 18px;font:600 12px/1.4 system-ui,sans-serif;white-space:normal}
+
+/* A small remove glyph with a phone-friendly touch target on every saved card. */
+#favorites-list .saved-entry{position:relative;padding:20px 52px 20px 0}
+.favorite-remove{position:absolute;top:8px;right:0;width:44px;height:44px;display:grid;place-items:center;padding:0;border:1px solid transparent;border-radius:50%;background:transparent;color:var(--gold);font:26px/1 system-ui;cursor:pointer}
+.favorite-remove:hover{background:#e8c88718;border-color:#e8c88755}
+.favorite-remove:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
 </style>
 </head>
 
@@ -1660,7 +1667,7 @@ const $ = id => document.getElementById(id);
 
 const MILESTONES = [
     [1, "🌱", "First Step"],
-    [3, "🙏", "Dedication"],
+    [3, "🙏", "Zealous"],
     [7, "📖", "Devoted"],
     [14, "✝️", "Dedicated"],
     [30, "🕯️", "Disciple"],
@@ -1906,7 +1913,7 @@ const FAITH_ICON_PATHS = {"shield":"M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6z", "book":
 function faithIcon(name){const emoji={praying:'🙏',road:'🛣️',strength:'💪'}[name];if(emoji){const span=document.createElement('span');span.className='faith-icon faith-emoji';span.setAttribute('aria-hidden','true');span.textContent=emoji;return span;}const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('class','faith-icon');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.65');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');const path=document.createElementNS(ns,'path');path.setAttribute('d',FAITH_ICON_PATHS[name]||FAITH_ICON_PATHS.book);svg.append(path);return svg;}
 function topicIcon(id){return ({peace:'leaf',worry:'leaf',healing:'heart',love:'heart',grief:'heart',loneliness:'heart',guidance:'road',gratitude:'sun',hope:'sun',faith:'road',strength:'strength',patience:'road',forgiveness:'leaf',prayer:'praying'})[id]||'book';}
 
-const TOPIC_MENU_ORDER=['peace','worry','forgiveness','healing','grief','loneliness','love','hope','gratitude','strength','prayer','guidance','patience','faith'];
+const TOPIC_MENU_ORDER=['peace','worry','forgiveness','healing','grief','loneliness','love','hope','gratitude','guidance','patience','faith','strength','prayer'];
 const DISPLAY_TOPICS=TOPIC_MENU_ORDER.map(id=>TOPICS.find(topic=>topic.id===id)).filter(Boolean);
 DISPLAY_TOPICS.forEach(topic => {
     const button = element(
@@ -2352,13 +2359,24 @@ function openFavorites(fromBible = false) {
         const actions=element("div","favorite-actions");button.style.marginTop="0";actions.append(button);
         if(verse.bible){
             const read=element("button","secondary","Read in Bible");read.onclick=()=>BibleReader.openPassage(verse);actions.prepend(read);
-            const remove=element("button","secondary","Remove");remove.setAttribute("aria-label","Remove "+verse.ref+" "+verse.version+" from favorites");
-            remove.onclick=()=>{
-                const remaining=favorites().filter(x=>!(normalizeRef(x.ref)===normalizeRef(verse.ref)&&(x.version||"NIV")===(verse.version||"NIV")));
-                if(put("favorite_verses",JSON.stringify(remaining))){openFavorites(fromBible);notify("Verse removed from favorites.");}
-            };actions.append(remove);
         }
-        row.append(actions);
+        const remove=element("button","favorite-remove","×");
+        remove.type="button";
+        remove.setAttribute("aria-label","Remove "+verse.ref+" "+(verse.version||"NIV")+" from favorites");
+        remove.title="Remove saved verse";
+        remove.onclick=()=>{
+            const position=Array.from(box.querySelectorAll('.favorite-remove')).indexOf(remove);
+            const scroll=$('favorites-dialog').scrollTop;
+            const remaining=favorites().filter(x=>!(normalizeRef(x.ref)===normalizeRef(verse.ref)&&(x.version||"NIV")===(verse.version||"NIV")));
+            if(put("favorite_verses",JSON.stringify(remaining))){
+                openFavorites(fromBible);updateDailySaveState();
+                const buttons=box.querySelectorAll('.favorite-remove');
+                const focusTarget=buttons[Math.min(position,buttons.length-1)]||$('favorites-dialog').querySelector('.close');
+                focusTarget?.focus({preventScroll:true});$('favorites-dialog').scrollTop=scroll;
+                notify("Verse removed from favorites.");
+            }
+        };
+        row.append(remove,actions);
         box.append(row);
     });
 
@@ -2968,12 +2986,12 @@ const SiteTour=(()=>{
         {
                 "target": "#grow-toggle",
                 "title": "Scripture & Personal Prayer",
-                "text": "Choose Scripture by Topic for what’s on your heart, or Listen to a Prayer. Pick a prayer category and a recording is chosen for you. Its length appears above the player; Another Prayer appears when that category has more recordings."
+                "text": "Open Find a Prayer to choose Morning, Evening, Healing, Stress & Anxiety, Guidance & Decisions, Protection, Peace, or Gratitude. A prayer is chosen randomly; press Play to listen. Its length appears above the player. Another Prayer appears when more recordings are available. Scripture by Topic is below the prayer and journey buttons."
         },
         {
                 "target": "#grow-toggle",
                 "title": "Journeys That Grow with You",
-                "text": "Open Scripture Journeys for seven-day readings. A 14-day streak unlocks Walking Through the Psalms; a 30-day streak unlocks Walking with Jesus. Earned access stays available. Complete one reading per journey each day, and revisit earlier readings anytime."
+                "text": "Open Explore Journeys for seven-day readings. Complete today’s reading using the button beside the verse; Listen to a Prayer is farther down. A 14-day streak unlocks Walking Through the Psalms; 30 days unlocks Walking with Jesus. Earned access stays available. If a window shows More below, tap it or scroll to see the rest."
         },
         {
                 "target": "#bible-launch",
@@ -2983,7 +3001,7 @@ const SiteTour=(()=>{
         {
                 "target": ".verse-card .bookmark",
                 "title": "Keep a Favorite",
-                "text": "Tap the white star to save today’s verse; it turns gold when saved. Use Share Verse on this card to share the daily passage. Find saved passages in Menu → View Favorites. Favorites and progress stay in this browser on this device; clearing browser data removes them."
+                "text": "Tap the white star to save today’s verse; it turns gold when saved. Share Verse shares this passage. Open Menu → View Favorites to revisit saved verses. Tap the × on any saved card to remove just that bookmark; you can save it again later. Favorites and progress stay in this browser on this device."
         },
         {
                 "target": "#audio-button",
@@ -2993,7 +3011,7 @@ const SiteTour=(()=>{
         {
                 "target": "#explore-verse-button",
                 "title": "Explore Another Verse",
-                "text": "Want another reading? Open a separate WEB passage here, then tap Another Verse to explore more Save Verse to keep one, or Share Verse to send it. Today’s homepage passage stays in place. You can replay this tour from the bottom of Menu anytime."
+                "text": "Open another WEB passage here. Use Another Verse to browse, Save Verse to keep one, or Share Verse to share it. Today’s homepage passage stays in place. Replay this tutorial anytime using Replay Tour at the bottom of Menu."
         }
 ];
     let index=0,active=false,frame=0,originalScroll=0,originalOverflow='',returnFocus=null;
