@@ -942,14 +942,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 
 
 .daily-card-actions{flex-wrap:wrap;gap:10px}
-#quiet-reading{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px}
-.candle-icon{width:19px;height:22px;flex-shrink:0;color:var(--gold)}
 .save-toggle{color:#fff}.save-toggle.is-saved{color:var(--gold);border-color:var(--gold-line)}
-#quiet-exit:not([hidden]){display:block;position:fixed;top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));z-index:100;min-height:44px;background:#152235f2}
-body.quiet-reading .site-header,body.quiet-reading .page>:not(.verse-card),body.quiet-reading .daily-card-actions{display:none!important}
-body.quiet-reading .page{position:relative;z-index:1;padding-top:90px;margin-top:0;min-height:100svh;display:flex;align-items:center;justify-content:center}
-body.quiet-reading .verse-card{width:100%;box-sizing:border-box;box-shadow:0 0 95px 24px #e6a44322,inset 0 0 65px #e6a4430c}
-body.quiet-reading::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 72%,#ffc97922,transparent 65%),linear-gradient(#070c1233,#070c1266)}
 .prayer-title-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
 .prayer-title-row #prayer-track-title{margin:0;min-width:0}
 #prayer-save{flex:0 0 44px;width:44px;height:44px;border-radius:50%;font-size:25px;padding:0;background:#ffffff08}
@@ -959,6 +952,15 @@ body.quiet-reading::after{content:'';position:fixed;inset:0;z-index:0;pointer-ev
 .saved-prayer-row p{margin:0 0 8px;overflow-wrap:anywhere}
 .saved-prayer-row .favorite-remove{right:0;top:8px}
 .saved-prayer-row .secondary{min-height:44px}
+
+
+/* Matching gold outline symbols, preserving each existing subject. */
+#grow-menu .faith-icon,#prayer-dialog .faith-icon{color:var(--gold)}
+.bible-bookmark-card{position:relative;min-width:0}
+.bible-choices .bible-bookmark-card .bible-resume-choice{width:100%;box-sizing:border-box;padding-right:64px}
+.bible-choices .bible-bookmark-remove{position:absolute;top:10px;right:10px;display:grid;place-items:center;width:40px;height:44px;min-height:44px;padding:0;border:1px solid var(--gold-line);border-radius:50%;background:#152235;color:var(--gold);font:26px/1 system-ui,sans-serif;cursor:pointer}
+.bible-choices .bible-bookmark-remove:hover{background:#334052}
+.bible-choices .bible-bookmark-remove:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
 </style>
 </head>
@@ -1010,11 +1012,11 @@ body.quiet-reading::after{content:'';position:fixed;inset:0;z-index:0;pointer-ev
             <div id="grow-menu" class="drop glass" hidden>
                 <section class="faith-section" aria-labelledby="prayer-section-label">
                   <p id="prayer-section-label" class="drop-label">Listen to a Prayer</p>
-                  <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()"><span class="faith-icon faith-emoji" aria-hidden="true">🙏</span><span>Find a Prayer</span></button>
+                  <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4c0-1-2-1-2 1l-1 6-3 4 M12 15V4c0-1 2-1 2 1l1 6 3 4 M3 18l4-4 5 3 5-3 4 4 M3 18l3 3 6-4 6 4 3-3"/></svg><span>Find a Prayer</span></button>
                 </section>
                 <section class="faith-section" aria-labelledby="journey-section-label">
                   <p id="journey-section-label" class="drop-label">Scripture Journeys</p>
-                  <button class="menu-item" type="button" onclick="openJourneys()"><span class="faith-icon faith-emoji" aria-hidden="true">🛣️</span><span>Explore Journeys</span></button>
+                  <button class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 3 21 M16 3l5 18 M12 3v3 M12 10v4 M12 18v3"/></svg><span>Explore Journeys</span></button>
                 </section>
                 <section class="faith-section" aria-labelledby="topic-section-label">
                   <p id="topic-section-label" class="drop-label">Scripture by Topic</p>
@@ -1054,7 +1056,6 @@ body.quiet-reading::after{content:'';position:fixed;inset:0;z-index:0;pointer-ev
 </div>
 </header>
 
-<button id="quiet-exit" class="secondary" type="button" hidden>× Exit Quiet Reading</button>
 <main class="page">
     <section class="verse-card glass" aria-label="Daily Scripture">
         <button id="daily-save" class="bookmark" type="button" onclick="saveVerse(currentDaily)" aria-label="Save daily verse to favorites" aria-pressed="false" title="Save daily verse to favorites"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.2 3.05 6.18 6.82 1-4.93 4.8 1.16 6.8L12 17.77l-6.1 3.21 1.17-6.8-4.94-4.8 6.82-1z"/></svg></button>
@@ -1066,7 +1067,7 @@ body.quiet-reading::after{content:'';position:fixed;inset:0;z-index:0;pointer-ev
         <p id="feed-status" class="tiny feed-status" role="status">
             Loading the daily verse…
         </p>
-        <div class="daily-card-actions"><button id="daily-share" class="secondary" type="button" onclick="shareVerse(currentDaily)" aria-label="Share daily verse">↗ Share Verse</button><button id="quiet-reading" class="secondary" type="button" aria-pressed="false"><svg class="candle-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-1 2-3 3-3 5a3 3 0 0 0 6 0c0-2-2-3-3-5Z"/><path d="M9 12h6v9H9zM7 21h10M12 10v2"/></svg><span>Quiet Reading</span></button></div>
+        <div class="daily-card-actions"><button id="daily-share" class="secondary" type="button" onclick="shareVerse(currentDaily)" aria-label="Share daily verse">↗ Share Verse</button></div>
     </section>
 
     <section class="audio-section" aria-label="Scripture audio">
@@ -1689,9 +1690,9 @@ const $ = id => document.getElementById(id);
 
 const MILESTONES = [
     [1, "🌱", "First Step"],
-    [3, "🙏", "Zealous"],
+    [3, "🙏", "Dedicated"],
     [7, "📖", "Devoted"],
-    [14, "✝️", "Dedicated"],
+    [14, "✝️", "Zealous"],
     [30, "🕯️", "Disciple"],
     [90, "🕊️", "Apostle"],
     [180, "⛪", "Deacon"],
@@ -1931,8 +1932,8 @@ function element(tag, className, text) {
 }
 
 
-const FAITH_ICON_PATHS = {"shield":"M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6z", "book": "M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15", "headphones": "M4 14v-3a8 8 0 0 1 16 0v3 M4 12h3v8H4z M17 12h3v8h-3z", "sun": "M12 3v2 M12 19v2 M3 12h2 M19 12h2 M5.6 5.6 1.4 1.4 M17 17l1.4 1.4 M5.6 18.4 1.4-1.4 M17 7l1.4-1.4 M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0", "moon": "M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11z", "heart": "M12 21 3.5 12.5C-2 6 6 0 12 7c6-7 14-1 8.5 5.5z", "leaf": "M20 3C7 3 3 8 5 15s14 7 15-12z M4 21 16 9", "compass": "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M16 8l-3 5-5 3 3-5z", "path": "M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3", "flame": "M13 2c1 6-4 7-3 11-3-1-3-3-3-3-6 8 0 12 5 12s11-6 1-20z", "shuffle": "M3 6h3c5 0 7 12 12 12h3 M18 15l3 3-3 3 M3 18h3c2 0 3-2 4-4 M14 9c1-2 2-3 4-3h3 M18 3l3 3-3 3", "share": "M8 10l8-5 M8 14l8 5 M8 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 20a3 3 0 1 1-6 0 3 3 0 0 1 6 0", "award": "M17 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0 M8 12l-2 9 6-3 6 3-2-9", "church": "M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7", "play": "m8 4 12 8-12 8z", "menu": "M4 6h16 M4 12h16 M4 18h16", "next": "m5 4 11 8-11 8z M19 4v16", "spark": "m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"};
-function faithIcon(name){const emoji={praying:'🙏',road:'🛣️',strength:'💪'}[name];if(emoji){const span=document.createElement('span');span.className='faith-icon faith-emoji';span.setAttribute('aria-hidden','true');span.textContent=emoji;return span;}const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('class','faith-icon');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.65');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');const path=document.createElementNS(ns,'path');path.setAttribute('d',FAITH_ICON_PATHS[name]||FAITH_ICON_PATHS.book);svg.append(path);return svg;}
+const FAITH_ICON_PATHS = {"road":"M8 3 3 21 M16 3l5 18 M12 3v3 M12 10v4 M12 18v3","praying":"M12 15V4c0-1-2-1-2 1l-1 6-3 4 M12 15V4c0-1 2-1 2 1l1 6 3 4 M3 18l4-4 5 3 5-3 4 4 M3 18l3 3 6-4 6 4 3-3","strength":"M4 13l2-8h4l1 3-3 1-1 5 M7 14c2-3 5-3 7 0 1-2 4-2 5 0 2 2 2 5-1 6-4 2-10 2-14-1l-1-3 1-3 M6 5V3h4v2","shield":"M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6z", "book": "M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15", "headphones": "M4 14v-3a8 8 0 0 1 16 0v3 M4 12h3v8H4z M17 12h3v8h-3z", "sun": "M12 3v2 M12 19v2 M3 12h2 M19 12h2 M5.6 5.6 1.4 1.4 M17 17l1.4 1.4 M5.6 18.4 1.4-1.4 M17 7l1.4-1.4 M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0", "moon": "M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11z", "heart": "M12 21 3.5 12.5C-2 6 6 0 12 7c6-7 14-1 8.5 5.5z", "leaf": "M20 3C7 3 3 8 5 15s14 7 15-12z M4 21 16 9", "compass": "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M16 8l-3 5-5 3 3-5z", "path": "M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3", "flame": "M13 2c1 6-4 7-3 11-3-1-3-3-3-3-6 8 0 12 5 12s11-6 1-20z", "shuffle": "M3 6h3c5 0 7 12 12 12h3 M18 15l3 3-3 3 M3 18h3c2 0 3-2 4-4 M14 9c1-2 2-3 4-3h3 M18 3l3 3-3 3", "share": "M8 10l8-5 M8 14l8 5 M8 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 20a3 3 0 1 1-6 0 3 3 0 0 1 6 0", "award": "M17 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0 M8 12l-2 9 6-3 6 3-2-9", "church": "M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7", "play": "m8 4 12 8-12 8z", "menu": "M4 6h16 M4 12h16 M4 18h16", "next": "m5 4 11 8-11 8z M19 4v16", "spark": "m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"};
+function faithIcon(name){const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('class','faith-icon');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.65');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');const path=document.createElementNS(ns,'path');path.setAttribute('d',FAITH_ICON_PATHS[name]||FAITH_ICON_PATHS.book);svg.append(path);return svg;}
 function topicIcon(id){return ({peace:'leaf',worry:'leaf',healing:'heart',love:'heart',grief:'heart',loneliness:'heart',guidance:'road',gratitude:'sun',hope:'sun',faith:'road',strength:'strength',patience:'road',forgiveness:'leaf',prayer:'praying'})[id]||'book';}
 
 const TOPIC_MENU_ORDER=['peace','worry','forgiveness','healing','grief','loneliness','love','hope','gratitude','guidance','patience','faith','strength','prayer'];
@@ -2842,14 +2843,31 @@ const BibleReader = (() => {
             cover(message,true);id('live').textContent=message;
         }
     }
+    function renderBookmarks(){
+        const shortcuts=document.getElementById('bible-continue');shortcuts.replaceChildren();
+        const order=saved.lastVersion==='web'?['web','kjv']:['kjv','web'];
+        for(const code of order){
+            const pos=saved.positions[code],meta=pos&&BIBLE_TRANSLATIONS[code].books[pos.book];
+            if(!meta||!Number.isInteger(pos.chapter)||pos.chapter<1||pos.chapter>meta.chapters.length)continue;
+            const row=element('div','bible-bookmark-card');
+            const b=element('button','bible-resume-choice');b.type='button';
+            b.append(element('strong','','Continue '+meta.name+' '+pos.chapter),element('span','',code.toUpperCase()+' • Return to your saved place'));b.onclick=()=>choose(code);
+            const remove=element('button','bible-bookmark-remove','×');remove.type='button';
+            remove.title='Clear '+code.toUpperCase()+' reading bookmark';remove.setAttribute('aria-label',remove.title);
+            remove.onclick=()=>{
+                const next={...saved,positions:{...saved.positions}};delete next.positions[code];
+                if(next.lastVersion===code)next.lastVersion=Object.keys(next.positions)[0]||null;
+                if(!put(storageKey,JSON.stringify(next)))return;
+                saved=next;renderBookmarks();id('choose-'+code).focus({preventScroll:true});
+                notify(code.toUpperCase()+' reading bookmark cleared.');
+            };
+            row.append(b,remove);shortcuts.append(row);
+        }
+    }
     function open() {
         closeMenus();closeAudio();stopBackgroundMusic();musicLabel();
         document.querySelectorAll('dialog[open]').forEach(d=>d.close());
-        const shortcuts=document.getElementById('bible-continue');shortcuts.replaceChildren();
-        const order=saved.lastVersion==='web'?['web','kjv']:['kjv','web'];
-        for(const code of order){const pos=saved.positions[code],meta=pos&&BIBLE_TRANSLATIONS[code].books[pos.book];if(!meta||!Number.isInteger(pos.chapter)||pos.chapter<1||pos.chapter>meta.chapters.length)continue;
-            const b=element('button','bible-resume-choice');b.type='button';b.append(element('strong','','Continue '+meta.name+' '+pos.chapter),element('span','',code.toUpperCase()+' • Return to your saved place'));b.onclick=()=>choose(code);shortcuts.append(b);
-        }
+        renderBookmarks();
         id('choice-dialog').showModal();
     }
     function choose(nextVersion, passage=null, highlight=false) {
@@ -3011,17 +3029,12 @@ const SiteTour=(()=>{
         {
                 "target": "#bible-launch",
                 "title": "Read & Continue Your Bible",
-                "text": "Choose KJV or WEB, or tap Continue to return to a saved reading place. Use the arrows or swipe to turn pages. Tap a verse to highlight or save it. Each translation keeps its own reading position on this device."
+                "text": "Choose KJV or WEB, or Continue to return to a saved reading place. The × on a Continue card clears that translation’s bookmark so you can start fresh. Reading again saves a new place automatically. Use arrows or swipe to turn pages, and tap verses to highlight or save them."
         },
         {
                 "target": ".verse-card .bookmark",
                 "title": "Keep a Favorite",
                 "text": "Tap a white star or Save Verse to keep a verse. Tap the gold star or Saved button again to remove it. Menu → View Favorites also has an × on every saved card. Share Verse shares the passage. Saved verses stay in this browser on this device."
-        },
-        {
-                "target": "#quiet-reading",
-                "title": "Quiet Reading",
-                "text": "The candle button hides navigation and other homepage sections, leaving the daily scripture with a gentle, steady amber glow. Background audio pauses. Tap Exit Quiet Reading at the top or press Escape to return. Your saved items and progress stay intact."
         },
         {
                 "target": "#audio-button",
@@ -3415,18 +3428,6 @@ const ExtraJourneys=(()=>{
   const resize=new ResizeObserver(schedule);resize.observe(d);for(const child of d.children){if(child!==b)resize.observe(child);}
  }
  window.addEventListener('resize',schedule);window.visualViewport?.addEventListener('resize',schedule);window.visualViewport?.addEventListener('scroll',schedule);document.fonts?.ready.then(schedule);schedule();
-})();
-
-</script>
-<script>
-const QuietReading=(()=>{
- const enter=document.getElementById('quiet-reading'),exit=document.getElementById('quiet-exit');
- let active=false,scrollYBefore=0;
- function stop(){if(!active)return;active=false;document.body.classList.remove('quiet-reading');exit.hidden=true;enter.setAttribute('aria-pressed','false');window.scrollTo(0,scrollYBefore);enter.focus({preventScroll:true});}
- function start(){if(active)return;closeMenus(true);closeAudio();PrayerPlayer.pause();stopBackgroundMusic();musicLabel();scrollYBefore=window.scrollY;active=true;document.body.classList.add('quiet-reading');exit.hidden=false;enter.setAttribute('aria-pressed','true');window.scrollTo(0,0);exit.focus({preventScroll:true});}
- enter.addEventListener('click',start);exit.addEventListener('click',stop);
- document.addEventListener('keydown',e=>{if(active&&e.key==='Escape'){e.preventDefault();stop();}});
- return {stop};
 })();
 
 </script>
