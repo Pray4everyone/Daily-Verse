@@ -2404,7 +2404,7 @@ music.volume=musicPreferences.volume;
 $('music-volume').value=String(Math.round(musicPreferences.volume*100));
 $('music-volume-value').textContent=$('music-volume').value+'%';
 $('music-volume').addEventListener('input',event=>{musicPreferences.volume=Number(event.target.value)/100;music.volume=musicPreferences.volume;$('music-volume-value').textContent=event.target.value+'%';saveMusicPreferences();});
-const MUSIC_FILES=['music.mp3',...Array.from({length:9},(_,i)=>`music${i+2}.mp3`)];
+const MUSIC_FILES=['music/music.mp3',...Array.from({length:9},(_,i)=>`music/music${i+2}.mp3`)];
 let musicIndex=Math.floor(Math.random()*MUSIC_FILES.length),musicRequest=0,musicLoading=false,musicWanted=false;
 let imageIndex=0,imageRequest=0;
 function musicLabel(){ $('music-btn').textContent=musicLoading?'♪ Loading Music…':music.paused?'▶ Play Music':'⏸ Pause Music'; }
@@ -2412,10 +2412,11 @@ music.addEventListener('play',musicLabel);music.addEventListener('pause',musicLa
 async function startMusic(index,userInitiated=true){
  const request=++musicRequest;musicWanted=true;musicLoading=true;musicLabel();
  if(userInitiated){musicPreferences.enabled=true;saveMusicPreferences();PrayerPlayer.pause();closeAudio();}
- for(let attempt=0;attempt<MUSIC_FILES.length;attempt++){
+ for(let attempt=0;attempt<MUSIC_FILES.length*2;attempt++){
   if(request!==musicRequest||!musicWanted)return;
-  musicIndex=(index+attempt)%MUSIC_FILES.length;
-  music.src=MUSIC_FILES[musicIndex];let timer;
+  musicIndex=(index+Math.floor(attempt/2))%MUSIC_FILES.length;
+  // During folder migration, try the same recording at its old location next.
+  music.src=attempt%2?MUSIC_FILES[musicIndex].replace(/^music\//,''):MUSIC_FILES[musicIndex];let timer;
   try{
    await Promise.race([music.play(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('load-timeout')),12000);})]);
    clearTimeout(timer);if(request!==musicRequest)return;
@@ -2439,14 +2440,15 @@ music.addEventListener('error',()=>{if(musicWanted&&!musicLoading)startMusic((mu
 function stopBackgroundMusic(){musicRequest++;musicWanted=false;musicLoading=false;music.pause();musicLabel();}
 
 // Only uploaded photographic backgrounds are included.
-const SCENES=Array.from({length:12},(_,i)=>({name:'Photo '+(i+1),file:`background${i+1}.jpg`}));
+const SCENES=Array.from({length:12},(_,i)=>({name:'Photo '+(i+1),file:`backgrounds/background${i+1}.jpg`}));
 let sceneBag=[];
 function setSceneBackground(value){document.body.style.backgroundImage=`linear-gradient(180deg,rgba(10,20,34,.64),rgba(10,20,34,.82)),url("${value}")`;}
 function loadScene(index,attempt,request){
  if(request!==imageRequest||attempt>=SCENES.length)return;
  const candidate=(index+attempt)%SCENES.length,scene=SCENES[candidate],image=new Image();
- image.onload=()=>{if(request===imageRequest){imageIndex=candidate;setSceneBackground(scene.file);}};
- image.onerror=()=>{if(request===imageRequest)loadScene(index,attempt+1,request);};
+ image.onload=()=>{if(request===imageRequest){imageIndex=candidate;setSceneBackground(image.src);}};
+ let triedLegacy=false;
+ image.onerror=()=>{if(request!==imageRequest)return;if(!triedLegacy){triedLegacy=true;image.src=scene.file.replace(/^backgrounds\//,'');}else loadScene(index,attempt+1,request);};
  image.src=scene.file;
 }
 function changeScene(){
