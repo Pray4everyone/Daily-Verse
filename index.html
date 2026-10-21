@@ -962,6 +962,41 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 .bible-choices .bible-bookmark-remove:hover{background:#334052}
 .bible-choices .bible-bookmark-remove:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
+
+/* Visual polish: shared spacing, readable type and restrained feedback. */
+:root{--ui-font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;--scripture-font:Georgia,'Times New Roman',serif;--surface-border:rgba(232,200,135,.32)}
+body{padding:calc(152px + env(safe-area-inset-top)) clamp(14px,3vw,24px) max(36px,env(safe-area-inset-bottom))}
+.page{position:relative;z-index:1;max-width:760px;gap:22px}
+.page>.audio-section,.page>.explore-launch,.page>.resume-card{margin-top:0;margin-bottom:0}
+.verse-card{padding:60px clamp(24px,6vw,52px) 32px}
+.verse-card .verse{line-height:1.62;margin-bottom:24px}
+.daily-card-actions{margin-top:22px;gap:10px;flex-wrap:wrap}
+.daily-card-actions .secondary{min-height:44px;padding:10px 18px}
+.page>.resume-card{padding:20px;gap:16px}
+button,input,select,.menu-item,.tiny,.dialog-body,.resume-card,.toast{font-family:var(--ui-font)}
+.dialog-body{font-size:15px;line-height:1.65}
+.verse,#reader-text,.explore-reading,.extended-reading,.saved-entry>p,.bible-page-text{font-family:var(--scripture-font)}
+#reader-text,.explore-reading,.saved-entry>p{line-height:1.6}
+.tiny{font-size:12px;line-height:1.6;color:#c4cbd5}
+#daily-version,.feed-status{font-family:var(--ui-font);font-size:12px;line-height:1.6}
+.reference,.tag{font-family:var(--scripture-font)}
+.dialog-head h2,#prayer-dialog .dialog-head h2,#extended-dialog .dialog-head h2,#explore-dialog .dialog-head h2{font:600 clamp(18px,4vw,21px)/1.35 var(--ui-font);letter-spacing:0;min-width:0;overflow-wrap:anywhere}
+dialog:not(#bible-dialog):not(#site-tour){border:1px solid var(--surface-border);border-radius:22px;background:#142337;box-shadow:0 22px 64px #0008,inset 0 1px 0 #ffffff09}
+.dialog-head{padding:14px 20px;background:#17263a;border-bottom:1px solid var(--line);gap:12px}
+dialog:not(#bible-dialog):not(#site-tour) .dialog-body{padding:22px}
+.dialog-head .close,#bible-close{display:grid;place-items:center;border:1px solid var(--surface-border);border-radius:50%;background:#ffffff06;color:var(--gold);width:44px;height:44px;min-width:44px;min-height:44px;padding:0;font:26px/1 var(--ui-font)}
+.primary,.secondary,.audio-button{min-height:44px;font-weight:600;line-height:1.4}
+.secondary{border-color:var(--surface-border)}
+button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+button:not(:disabled):active{filter:brightness(1.12)}
+button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--gold);box-shadow:inset 0 0 0 1px #e8c88725}
+@media(hover:hover){.secondary:hover,.audio-button:hover,.dialog-head .close:hover{background-color:#e8c88716;border-color:var(--gold)}}
+@media(prefers-reduced-motion:no-preference){button{transition:background-color 160ms ease,border-color 160ms ease,color 160ms ease,box-shadow 160ms ease}}
+.scene-fade-layer{position:fixed;inset:0;z-index:0;pointer-events:none;background-position:center;background-size:cover;background-repeat:no-repeat;opacity:1;transition:opacity 650ms ease}
+@media(max-width:600px){body{padding-top:calc(144px + env(safe-area-inset-top))}.page{gap:18px}.verse-card{padding:57px 24px 28px}.page>.resume-card{padding:18px}.dialog-head{padding:12px 16px}dialog:not(#bible-dialog):not(#site-tour) .dialog-body{padding:18px}}
+@media(max-width:360px){.verse-card{padding-left:18px;padding-right:18px}.dialog-head h2{font-size:18px}.page{gap:16px}}
+@media(prefers-reduced-motion:reduce){.scene-fade-layer{transition:none!important}button{transition:none!important;animation:none!important}}
+
 </style>
 </head>
 
@@ -2475,7 +2510,20 @@ function stopBackgroundMusic(){musicRequest++;musicWanted=false;musicLoading=fal
 // Only uploaded photographic backgrounds are included.
 const SCENES=Array.from({length:12},(_,i)=>({name:'Photo '+(i+1),file:`backgrounds/background${i+1}.jpg`}));
 let sceneBag=[];
-function setSceneBackground(value){document.body.style.backgroundImage=`linear-gradient(180deg,rgba(10,20,34,.64),rgba(10,20,34,.82)),url("${value}")`;}
+let sceneFadeLayer=null,sceneFadeTimer=0;
+const sceneMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+function clearSceneFade(){clearTimeout(sceneFadeTimer);sceneFadeLayer?.remove();sceneFadeLayer=null;}
+sceneMotion.addEventListener?.('change',()=>{if(sceneMotion.matches)clearSceneFade();});
+function setSceneBackground(value){
+ const previous=document.body.style.backgroundImage;
+ const next=`linear-gradient(180deg,rgba(10,20,34,.64),rgba(10,20,34,.82)),url("${value}")`;
+ if(previous===next)return;
+ clearSceneFade();document.body.style.backgroundImage=next;
+ if(!previous||sceneMotion.matches)return;
+ const layer=document.createElement('div');layer.className='scene-fade-layer';layer.setAttribute('aria-hidden','true');layer.style.backgroundImage=previous;document.body.append(layer);sceneFadeLayer=layer;
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{if(sceneFadeLayer===layer)layer.style.opacity='0';}));
+ sceneFadeTimer=setTimeout(()=>{if(sceneFadeLayer===layer)clearSceneFade();},750);
+}
 function loadScene(index,attempt,request){
  if(request!==imageRequest||attempt>=SCENES.length)return;
  const candidate=(index+attempt)%SCENES.length,scene=SCENES[candidate],image=new Image();
@@ -3431,6 +3479,20 @@ const ExtraJourneys=(()=>{
 })();
 
 </script>
+
+<script>
+/* Save feedback changes light only: no bouncing or layout movement. */
+(()=>{
+ const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
+ document.addEventListener('click',event=>{
+  const button=event.target.closest?.('#daily-save,.save-toggle');
+  if(!button||button.disabled||motion.matches||!button.animate)return;
+  button.getAnimations?.().forEach(a=>a.cancel());
+  button.animate([{filter:'brightness(1)'},{filter:'brightness(1.18)'},{filter:'brightness(1)'}],{duration:260,easing:'ease-out'});
+ });
+})();
+</script>
+
 </body>
 </html>
 
