@@ -1042,6 +1042,14 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 #badge-list .locked strong{color:#bdc6d2}
 @media(max-width:360px){#favorites-list .saved-entry{padding-left:15px;padding-right:50px}.prayer-now{padding:20px 14px}.journey-day-dot{max-width:28px;max-height:28px}}
 
+
+/* Reading ease: real loading feedback and reversible removals. */
+.loading-hands{display:inline-block;margin-right:.5em;animation:prayer-spin 2.4s linear infinite}
+@keyframes prayer-spin{to{transform:rotate(360deg)}}
+.undo-notice{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10000;display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #cfb77d;border-radius:14px;background:#142235;color:#fff;box-shadow:0 6px 24px #0008;max-width:calc(100% - 32px);width:max-content}
+dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:none;width:auto;max-width:100%;z-index:20;margin:8px 0}
+.undo-notice button{min-height:44px;color:#efd69b;flex-shrink:0}
+@media(prefers-reduced-motion:reduce){.loading-hands{animation:none}}
 </style>
 </head>
 
@@ -1201,7 +1209,7 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
     <p class="tiny prayer-credit">AI-generated prayer narration.</p>
    </section>
   </div>
-  <button id="prayer-back" class="secondary" type="button" hidden>← Back to Scripture</button>
+  <button id="prayer-back" class="secondary" type="button" hidden>← Back to Your Reading</button>
  </div>
 </dialog>
 
@@ -1782,6 +1790,41 @@ const MILESTONES = [
 
 const STATE_KEY = "scripture_growth_v1";
 const memory = {};
+
+let undoNotice=null;
+function offerUndo(message,restore){
+ if(undoNotice)undoNotice.remove();
+ const host=Array.from(document.querySelectorAll('dialog[open]')).pop()||document.body;
+ const box=document.createElement('div');box.className='undo-notice';box.setAttribute('role','status');
+ const label=document.createElement('span');label.textContent=message;
+ const button=document.createElement('button');button.type='button';button.textContent='Undo';
+ const dismiss=document.createElement('button');dismiss.type='button';dismiss.textContent='×';dismiss.setAttribute('aria-label','Dismiss undo');
+ box.append(label,button,dismiss);host.prepend(box);undoNotice=box;
+ // Keep Undo available until dismissed or replaced; no timed accessibility barrier.
+ dismiss.onclick=()=>box.remove();
+ button.onclick=()=>{box.remove();restore();};
+}
+function undoVerseRemoval(record,after){
+ if(!record)return;
+ offerUndo('Verse removed.',()=>{
+  if(!verseIsSaved(record))put('favorite_verses',JSON.stringify([...favorites(),record]));
+  if(document.getElementById('favorites-dialog').open)openFavorites(!!record.bible);
+  after?.();notify('Verse restored.');
+ });
+}
+const delayedLoads=new WeakMap();
+function stopLoading(node){
+ clearTimeout(delayedLoads.get(node));delayedLoads.delete(node);
+ node.removeAttribute('aria-busy');node.querySelector('.loading-hands')?.remove();
+}
+function startLoading(node,message){
+ stopLoading(node);node.textContent='';node.setAttribute('aria-busy','true');
+ delayedLoads.set(node,setTimeout(()=>{
+  const hands=document.createElement('span');hands.className='loading-hands';hands.textContent='🙏';hands.setAttribute('aria-hidden','true');
+  node.replaceChildren(hands,document.createTextNode(message));
+ },500));
+}
+
 let toastTimer;
 let storageWarned = false;
 
@@ -2420,7 +2463,7 @@ function saveVerse(verse) {
  const next=removing?list.filter(item=>!(normalizeRef(item.ref)===normalizeRef(verse.ref)&&(item.version||'NIV')===(verse.version||'NIV'))):[...list,{...verse,version:verse.version||'NIV'}];
  if(put('favorite_verses',JSON.stringify(next))){
   if(!removing)window.FaithJourney?.record('verses',(verse.version||'NIV')+':'+normalizeRef(verse.ref),normalizeRef(verse.ref));
-  notify(removing?'Verse removed from favorites.':'Verse saved to your favorites.');
+  if(removing)undoVerseRemoval(list.find(item=>!next.includes(item)));else notify('Verse saved to your favorites.');
  }
 }
 
@@ -2475,7 +2518,7 @@ function openFavorites(fromBible = false) {
                 const buttons=box.querySelectorAll('.favorite-remove');
                 const focusTarget=buttons[Math.min(position,buttons.length-1)]||$('favorites-dialog').querySelector('.close');
                 focusTarget?.focus({preventScroll:true});$('favorites-dialog').scrollTop=scroll;
-                notify("Verse removed from favorites.");
+                undoVerseRemoval(verse);
             }
         };
         row.append(remove,actions);
@@ -2842,10 +2885,10 @@ const BibleReader = (() => {
         optionList(id('verse'),Array.from({length:BIBLE_BOOKS[book].chapters[chapter-1]},(_,i)=>[i+1,i+1]),verse);
     }
     function cover(message,retry=false) {
-        id('message').textContent=message;id('cover').hidden=false;id('retry').hidden=!retry;
+        stopLoading(id('message'));if(retry)id('message').textContent=message;else startLoading(id('message'),message);id('cover').hidden=false;id('retry').hidden=!retry;
     }
     function setBusy(value) {
-        busy=value;
+        busy=value;if(!value)stopLoading(id('message'));
         ['book','chapter','verse','smaller','larger'].forEach(n=>id(n).disabled=value);
         buttons();
     }
@@ -2943,6 +2986,7 @@ const BibleReader = (() => {
             cover(message,true);id('live').textContent=message;
         }
     }
+    dialog.addEventListener('close',()=>stopLoading(id('message')));
     function renderBookmarks(){
         const shortcuts=document.getElementById('bible-continue');shortcuts.replaceChildren();
         const order=saved.lastVersion==='web'?['web','kjv']:['kjv','web'];
@@ -2959,7 +3003,11 @@ const BibleReader = (() => {
                 if(next.lastVersion===code)next.lastVersion=Object.keys(next.positions)[0]||null;
                 if(!put(storageKey,JSON.stringify(next)))return;
                 saved=next;renderBookmarks();id('choose-'+code).focus({preventScroll:true});
-                notify(code.toUpperCase()+' reading bookmark cleared.');
+                offerUndo(code.toUpperCase()+' bookmark cleared.',()=>{
+                    if(saved.positions[code]){notify('Your newer reading bookmark was kept.');return;}
+                    const restored={...saved,positions:{...saved.positions,[code]:pos},lastVersion:saved.lastVersion||code};
+                    if(put(storageKey,JSON.stringify(restored))){saved=restored;renderBookmarks();notify('Reading bookmark restored.');}
+                });
             };
             row.append(b,remove);shortcuts.append(row);
         }
@@ -3070,6 +3118,7 @@ const BibleReader = (() => {
         const persisted=put('favorite_verses',JSON.stringify(next));
         if(persisted&&!removing)window.FaithJourney?.record('verses',record.version+':'+normalizeRef(record.ref),normalizeRef(record.ref));
         updateVerseActions();decorateVerses();
+        if(persisted&&removing)undoVerseRemoval(list.find(x=>!next.includes(x)),()=>{updateVerseActions();decorateVerses();});
         id('action-status').textContent=persisted?(removing?'Verse removed from favorites.':'Verse saved to Favorite Verses.'):'This change could not be saved permanently in this browser.';
     });
     id('actions-close').addEventListener('click',()=>id('actions-dialog').close());
@@ -3318,6 +3367,12 @@ const PrayerPlayer=(()=>{
  }
  function prayerIsSaved(){const c=selectedCategory();return !!c&&!!currentTrack&&savedPrayers().some(t=>t.category===c.id&&t.file===currentTrack.file);}
  function updatePrayerSave(){const saved=prayerIsSaved();saveButton.textContent=saved?'★':'☆';saveButton.classList.toggle('is-saved',saved);saveButton.setAttribute('aria-pressed',String(saved));saveButton.setAttribute('aria-label',saved?'Remove prayer from saved prayers':'Save prayer');saveButton.title=saved?'Remove saved prayer':'Save prayer';}
+ function undoPrayerRemoval(item){
+  offerUndo('Prayer removed.',()=>{
+   const list=savedPrayers();if(!list.some(t=>t.category===item.category&&t.file===item.file))writeSavedPrayers([...list,item]);
+   notify('Prayer restored.');
+  });
+ }
  function writeSavedPrayers(items){if(!put(prayerFavoritesKey,JSON.stringify(items)))return false;renderSavedPrayers();updatePrayerSave();return true;}
  function renderSavedPrayers(){
   const list=savedPrayers(),root=document.getElementById('saved-prayers-list');root.replaceChildren();
@@ -3332,7 +3387,7 @@ const PrayerPlayer=(()=>{
    const listen=element('button','secondary','▶ Listen');listen.type='button';listen.setAttribute('aria-label','Listen to saved '+c.label+' prayer, '+length);
    listen.onclick=()=>{categoryRequest++;category.value=c.id;renderCategories();loadPrayer({id:item.id,title:c.label+' Prayer',file:item.file},true);document.getElementById('saved-prayers').open=false;document.getElementById('prayer-now').scrollIntoView({block:'nearest',behavior:'auto'});saveButton.focus({preventScroll:true});};
    const remove=element('button','favorite-remove','×');remove.type='button';remove.title='Remove saved prayer';remove.setAttribute('aria-label','Remove saved '+c.label+' prayer, '+length);
-   remove.onclick=()=>{if(writeSavedPrayers(savedPrayers().filter(t=>!(t.category===item.category&&t.file===item.file)))){document.getElementById('saved-prayers-summary').focus();notify('Prayer removed from saved prayers.');}};
+   remove.onclick=()=>{if(writeSavedPrayers(savedPrayers().filter(t=>!(t.category===item.category&&t.file===item.file)))){document.getElementById('saved-prayers-summary').focus();undoPrayerRemoval(item);}};
    row.append(listen,remove);root.append(row);
   }
  }
@@ -3340,7 +3395,7 @@ const PrayerPlayer=(()=>{
   const c=selectedCategory();if(!c||!currentTrack)return;
   const removing=prayerIsSaved(),list=savedPrayers();
   const next=removing?list.filter(t=>!(t.category===c.id&&t.file===currentTrack.file)):[...list,{category:c.id,id:currentTrack.id,file:currentTrack.file,duration:Number.isFinite(audio.duration)?audio.duration:null}];
-  if(writeSavedPrayers(next))notify(removing?'Prayer removed from saved prayers.':'Prayer saved.');
+  if(writeSavedPrayers(next)){if(removing)undoPrayerRemoval(list.find(t=>!next.includes(t)));else notify('Prayer saved.');}
  });
  window.addEventListener('storage',e=>{if(e.key===prayerFavoritesKey||e.key===null){delete memory[prayerFavoritesKey];if(catalog)renderSavedPrayers();updatePrayerSave();}});
 
@@ -3356,7 +3411,7 @@ const PrayerPlayer=(()=>{
   const track=bag.pop();lastPlayed.set(c.id,track.id);return track;
  }
  function loadPrayer(track,play=false){
-  const token=++selectionToken;clear();status.textContent='';document.getElementById('prayer-retry').hidden=true;
+  const token=++selectionToken;stopLoading(status);clear();status.textContent='';document.getElementById('prayer-retry').hidden=true;
   const c=selectedCategory();currentTrack=track;if(!c||!track)return;updatePrayerSave();
   window.FaithJourney?.prayerSelected(c.id+':'+track.id,c.label);
   document.getElementById('prayer-track-title').textContent=c.label+' Prayer';
@@ -3366,14 +3421,15 @@ const PrayerPlayer=(()=>{
   if(play)audio.play().catch(()=>{if(token===selectionToken&&dialog.open)status.textContent='Press Play to listen to this prayer.';});
  }
  async function selectCategory(){
-  const token=++categoryRequest;
+  const token=++categoryRequest;stopLoading(status);
   renderCategories();selectionToken++;currentTrack=null;clear();another.hidden=true;
   document.getElementById('prayer-retry').hidden=true;
   const c=selectedCategory();
   if(!c){status.textContent='Choose a topic for a prayer.';return;}
-  status.textContent='Checking available prayers…';
+  startLoading(status,'Finding prayers for you…');
   const result=await discoverPrayers(c);
   if(token!==categoryRequest||!dialog.open||selectedCategory()!==c)return;
+  stopLoading(status);
   if(!c.tracks.length){
    status.textContent=result.incomplete?'Unable to check for prayers. Please try again.':'No prayers are available for this topic yet.';
    document.getElementById('prayer-retry').hidden=!result.incomplete;return;
@@ -3389,7 +3445,10 @@ const PrayerPlayer=(()=>{
    category.value=categories.some(c=>c.id===requestedCategory)?requestedCategory:'';controls.hidden=false;renderSavedPrayers();selectCategory();
   }catch{if(token!==request||!dialog.open)return;status.textContent='The prayer collection could not load. Please check your connection and try again.';document.getElementById('prayer-retry').hidden=false;}
  }
+ let readingReturn=null;
  function open(topic='',back=false){
+  const reader=document.getElementById('reader-dialog');
+  readingReturn=back?{scroll:reader.scrollTop,focus:document.activeElement,children:Array.from(reader.querySelectorAll('*')).filter(n=>n.scrollTop>0).map(n=>[n,n.scrollTop])}:null;
   categoryRequest++;requestedCategory=topicMap[topic]||topic;fromScripture=back;
   clear();closeMenus();document.getElementById('prayer-back').hidden=!fromScripture;
   showDialog('prayer-dialog');dialog.scrollTop=0;showCatalog();
@@ -3404,11 +3463,11 @@ const PrayerPlayer=(()=>{
  audio.addEventListener('error',()=>{if(!audio.getAttribute('src')||!dialog.open)return;duration.textContent='Recording length unavailable';status.textContent='This prayer could not play. Check your connection and try again.';document.getElementById('prayer-retry').hidden=false;});
  audio.addEventListener('durationchange',updateDuration);
  audio.addEventListener('loadedmetadata',()=>{updateDuration();if(dialog.open){status.textContent='';document.getElementById('prayer-retry').hidden=true;}});
- document.getElementById('prayer-retry').addEventListener('click',()=>{if(catalog&&!controls.hidden&&selectedCategory()&&currentTrack)loadPrayer(currentTrack);else showCatalog();});
+ document.getElementById('prayer-retry').addEventListener('click',()=>{if(catalog&&!controls.hidden&&selectedCategory()&&currentTrack)loadPrayer(currentTrack);else if(selectedCategory())selectCategory();else showCatalog();});
  document.getElementById('prayer-close').addEventListener('click',()=>{pause();dialog.close();});
  dialog.addEventListener('cancel',pause);
- document.getElementById('prayer-back').addEventListener('click',()=>{pause();showDialog('reader-dialog');});
- dialog.addEventListener('close',()=>{request++;categoryRequest++;selectionToken++;pause();});
+ document.getElementById('prayer-back').addEventListener('click',()=>{pause();showDialog('reader-dialog');const place=readingReturn;requestAnimationFrame(()=>{if(!place)return;document.getElementById('reader-dialog').scrollTop=place.scroll;place.children.forEach(([node,top])=>node.scrollTop=top);if(place.focus?.isConnected)place.focus.focus({preventScroll:true});});});
+ dialog.addEventListener('close',()=>{request++;categoryRequest++;selectionToken++;stopLoading(status);pause();});
  music.addEventListener('play',pause);
  return {open,pause};
 })();
