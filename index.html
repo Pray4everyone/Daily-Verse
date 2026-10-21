@@ -997,6 +997,51 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 @media(max-width:360px){.verse-card{padding-left:18px;padding-right:18px}.dialog-head h2{font-size:18px}.page{gap:16px}}
 @media(prefers-reduced-motion:reduce){.scene-fade-layer{transition:none!important}button{transition:none!important;animation:none!important}}
 
+
+/* Scripture-page composition: ornament sits above, never over the text or star. */
+.verse-card{padding-top:56px}
+.scripture-quote-mark{display:block;height:39px;margin:0 auto 10px;color:rgba(232,200,135,.42);font:70px/.9 Georgia,serif;pointer-events:none;user-select:none}
+.verse-card .tag{margin-bottom:22px}
+.verse-card .verse{margin-bottom:27px;letter-spacing:.005em}
+.verse-card .reference::before{width:54px;margin:0 auto 17px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.verse-card .reference{letter-spacing:.05em}
+/* Bookmark cards retain generous space for the remove button. */
+#favorites-list .saved-entry{position:relative;margin:0 0 16px;padding:22px 56px 20px 20px;border:1px solid var(--gold-line);border-left:3px solid var(--gold);border-radius:4px 14px 14px 4px;background:linear-gradient(110deg,#e8c8870c,#ffffff02);box-shadow:0 5px 18px #0002}
+#favorites-list .saved-entry>p{font-size:clamp(20px,4.6vw,24px);line-height:1.6;margin-bottom:12px}
+#favorites-list .saved-entry>small{font:600 12px/1.6 var(--ui-font,system-ui);color:var(--gold);padding-top:12px;border-top:1px solid var(--line)}
+#favorites-list .saved-entry .favorite-remove{right:7px;top:8px;background:#142337;border-color:var(--gold-line)}
+/* Selected prayer: one header row and a stable playing border. */
+.prayer-now{position:relative;border-radius:18px;padding:24px 20px;background:linear-gradient(145deg,#213247,#142136);box-shadow:0 8px 24px #0002}
+.prayer-category-icon{margin:0 auto 14px;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--gold-line);border-radius:50%;background:#e8c8870b}
+.prayer-title-row{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:12px;align-items:center;text-align:left;margin:0 0 10px}
+.prayer-title-row #prayer-track-title{font-size:clamp(22px,5vw,28px);line-height:1.3;margin:0;overflow-wrap:anywhere}
+#prayer-save{align-self:center;border:1px solid var(--gold-line)}
+.prayer-duration{font:500 12px/1.6 var(--ui-font,system-ui);letter-spacing:.02em;margin:0 0 18px;color:var(--soft)}
+#prayer-audio{display:block;width:100%;max-width:100%;margin:0 auto 16px}
+.prayer-now.is-playing{border-color:var(--gold);box-shadow:0 0 0 1px #e8c88733,0 8px 28px #0003}
+/* Seven equal touch cells; the visible dots are smaller to fit narrow phones. */
+#day-nav{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;margin:20px 0;padding:4px 0;isolation:isolate}
+#day-nav::before{content:'';position:absolute;left:7%;right:7%;top:26px;height:1px;background:var(--gold-line);z-index:-1}
+#day-nav button{display:grid;place-items:center;min-width:0;min-height:44px;width:100%;height:44px;margin:0;padding:0;border:0;border-radius:6px;background:transparent!important;color:var(--soft);box-shadow:none}
+#day-nav .journey-day-dot{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--gold-line);border-radius:50%;background:#142337;font:600 12px/1 system-ui,sans-serif}
+#day-nav button.done .journey-day-dot{background:var(--gold);border-color:var(--gold);color:#142337}
+#day-nav button.today .journey-day-dot{outline:2px solid var(--gold);outline-offset:3px}
+#day-nav button[aria-current="true"] .journey-day-dot{font-weight:800;border-color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+#day-nav button:disabled{opacity:.62}
+/* Permanent milestones: linked vertical progression, current streak distinguished. */
+#badge-list{gap:12px;position:relative;isolation:isolate}
+#badge-list::before{content:'';position:absolute;left:31px;top:30px;bottom:30px;width:1px;background:var(--gold-line);z-index:-1}
+#badge-list .milestone-row{display:grid;grid-template-columns:36px minmax(0,1fr);gap:6px 12px;align-items:center;border-color:var(--line);padding:14px;background:#142337}
+.milestone-marker{grid-row:1/3;display:grid;place-items:center;width:36px;height:36px;border:1px solid #86909d;border-radius:50%;background:#142337;color:var(--soft);font:600 12px/1 system-ui,sans-serif}
+#badge-list .milestone-row .badge-status{grid-column:2;text-align:left;font-size:12px;color:var(--soft)}
+#badge-list .milestone-row strong{font:600 17px/1.4 var(--ui-font,system-ui)}
+#badge-list .earned{border-color:var(--gold-line)}
+#badge-list .earned .milestone-marker{color:#142337;background:var(--gold);border-color:var(--gold)}
+#badge-list .earned .badge-status{color:var(--gold)}
+#badge-list .current-milestone{border-color:var(--gold);background:#1e3044;box-shadow:inset 0 0 0 1px #e8c88725}
+#badge-list .locked strong{color:#bdc6d2}
+@media(max-width:360px){#favorites-list .saved-entry{padding-left:15px;padding-right:50px}.prayer-now{padding:20px 14px}.journey-day-dot{max-width:28px;max-height:28px}}
+
 </style>
 </head>
 
@@ -1095,6 +1140,7 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
     <section class="verse-card glass" aria-label="Daily Scripture">
         <button id="daily-save" class="bookmark" type="button" onclick="saveVerse(currentDaily)" aria-label="Save daily verse to favorites" aria-pressed="false" title="Save daily verse to favorites"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.2 3.05 6.18 6.82 1-4.93 4.8 1.16 6.8L12 17.77l-6.1 3.21 1.17-6.8-4.94-4.8 6.82-1z"/></svg></button>
 
+        <span class="scripture-quote-mark" aria-hidden="true">“</span>
         <h1 class="tag">Daily Scripture</h1>
         <blockquote id="verse-text" class="verse"></blockquote>
         <p id="verse-ref" class="reference"></p>
@@ -2179,11 +2225,13 @@ function renderJourney() {
             String(index + 1)
         );
 
+        button.replaceChildren(element('span','journey-day-dot',String(index+1)));
+        button.classList.toggle('today',journey.completed<7&&index===available);
         button.disabled = index > available;
 
         button.setAttribute(
             "aria-label",
-            `Day ${index + 1}${index < journey.completed ? ", completed" : ""}`
+            `Day ${index + 1}${index < journey.completed ? ", completed" : ""}${journey.completed<7&&index===available?", today’s reading":""}`
         );
 
         button.setAttribute("aria-current", String(index === viewDay));
@@ -2283,23 +2331,27 @@ function openBadges() {
     $("stat-total").textContent = state.total;
     $("badge-list").replaceChildren();
 
+    const currentMilestone=MILESTONES.filter(([days])=>days<=state.current).at(-1)?.[0];
     MILESTONES.forEach(([days, icon, name]) => {
         const earned = state.badges.includes(days);
-        const row = element("div", "badge" + (earned ? " earned" : ""));
+        const isCurrent=days===currentMilestone;
+        const row = element("div", "badge milestone-row" + (earned ? " earned" : " locked")+(isCurrent?" current-milestone":""));
+        if(isCurrent)row.setAttribute('aria-current','step');
         const details = element("div");
 
         details.append(
-            element("strong", "", `${icon} ${name}`),
+            element("strong", "", name),
             element("small", "", `${days}-day streak milestone`)
         );
 
+        const marker=element('span','milestone-marker',String(days));marker.setAttribute('aria-hidden','true');
         row.append(
-            details,
+            marker,details,
             element(
                 "span",
                 "badge-status",
                 earned
-                    ? "Earned ✓"
+                    ? (isCurrent?"Current milestone • Earned ✓":"Earned ✓")
                     : `${Math.max(0, days - state.current)} streak days to go`
             )
         );
@@ -3344,6 +3396,8 @@ const PrayerPlayer=(()=>{
  }
  category.addEventListener('change',selectCategory);
  another.addEventListener('click',()=>{const c=selectedCategory();if(c&&c.tracks.length>1)loadPrayer(pickPrayer(c),!audio.paused);});
+ function paintPrayerPlayback(){document.getElementById('prayer-now').classList.toggle('is-playing',!audio.paused&&!audio.ended&&audio.readyState>=2);}
+ for(const event of ['playing','pause','ended','emptied','waiting','error'])audio.addEventListener(event,()=>{if(['waiting','error','emptied'].includes(event))document.getElementById('prayer-now').classList.remove('is-playing');else paintPrayerPlayback();});
  audio.addEventListener('ended',()=>window.FaithJourney?.prayerEnded());
  audio.addEventListener('timeupdate',()=>window.FaithJourney?.prayerProgress(audio));
  audio.addEventListener('play',()=>{stopBackgroundMusic();musicLabel();closeAudio();status.textContent='';});
