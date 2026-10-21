@@ -3099,37 +3099,22 @@ const PrayerPlayer=(()=>{
 
  const bags=new Map(),lastPlayed=new Map();let currentTrack=null,selectionToken=0;
  const status=document.getElementById('prayer-status'),controls=document.getElementById('prayer-controls');
- let catalog=null,pending=null,request=0,requestedCategory='',fromScripture=false;
+ let catalog=null,request=0,requestedCategory='',fromScripture=false;
  const topicMap={peace:'peace',worry:'stress-anxiety',healing:'healing',guidance:'guidance-decisions',patience:'guidance-decisions',gratitude:'gratitude',protection:'protection'};
  function pause(){audio.pause();}
  function clear(){pause();audio.removeAttribute('src');audio.load();document.getElementById('prayer-now').hidden=true;}
  function option(value,label){const o=document.createElement('option');o.value=value;o.textContent=label;return o;}
  async function loadCatalog(){
-  if(catalog)return catalog;
-  if(!pending)pending=(async()=>{
-   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
-   try{
-    const response=await fetch(new URL('prayers/catalog.json',document.baseURI),{signal:controller.signal});if(!response.ok)throw Error('Catalog not available');
-    const data=await response.json();if(!Array.isArray(data.categories)||!data.categories.length)throw Error('Invalid catalog');
-    const ids=new Set();
-    for(const c of data.categories){
-     if(!c||typeof c.id!=='string'||!c.id||ids.has(c.id)||typeof c.label!=='string'||!Array.isArray(c.tracks)||!c.tracks.length)throw Error('Invalid category');ids.add(c.id);
-     const tracks=new Set();
-     for(const t of c.tracks){if(!t||typeof t.id!=='string'||!t.id||tracks.has(t.id)||typeof t.title!=='string'||typeof t.file!=='string'||!/^[-a-zA-Z0-9_]+\.mp3$/.test(t.file))throw Error('Invalid recording');tracks.add(t.id);}
-    }
-    catalog=data.categories;
-    for(const [id,label] of [['protection','Protection'],['peace','Peace'],['gratitude','Gratitude']]){
-     if(!catalog.some(c=>c.id===id))catalog.push({id,label,tracks:[]});
-    }
-    return catalog;
-   }finally{clearTimeout(timer);}
-  })().finally(()=>{pending=null;});
-  return pending;
+  if(!catalog)catalog=[
+   ['morning','Morning'],['evening','Evening'],['healing','Healing'],
+   ['stress-anxiety','Stress & Anxiety'],['guidance-decisions','Guidance & Decisions'],
+   ['protection','Protection'],['peace','Peace'],['gratitude','Gratitude']
+  ].map(([id,label])=>({id,label,tracks:[]}));
+  return catalog;
  }
- // Discover same-site numbered uploads without changing catalog.json.
- // Existing catalog entries (including legacy guidance filenames) remain supported.
+ // Discover numbered MP3s directly on this site. No catalog file is needed.
  const prayerPrefixes={morning:'morning',evening:'evening',healing:'healing',
-  'stress-anxiety':'stress-anxiety','guidance-decisions':'guidance-decisions',
+  'stress-anxiety':'stress-anxiety','guidance-decisions':'guidance-wisdom',
   protection:'protection',peace:'peace',gratitude:'gratitude'};
  const discoveryCache=new Map(),discoveryPending=new Map();
  const NUMBERED_PRAYER_LIMIT=50;
