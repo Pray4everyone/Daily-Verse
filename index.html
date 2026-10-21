@@ -940,6 +940,26 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 .favorite-remove:hover{background:#e8c88718;border-color:#e8c88755}
 .favorite-remove:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
+
+.daily-card-actions{flex-wrap:wrap;gap:10px}
+#quiet-reading{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px}
+.candle-icon{width:19px;height:22px;flex-shrink:0;color:var(--gold)}
+.save-toggle{color:#fff}.save-toggle.is-saved{color:var(--gold);border-color:var(--gold-line)}
+#quiet-exit:not([hidden]){display:block;position:fixed;top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));z-index:100;min-height:44px;background:#152235f2}
+body.quiet-reading .site-header,body.quiet-reading .page>:not(.verse-card),body.quiet-reading .daily-card-actions{display:none!important}
+body.quiet-reading .page{position:relative;z-index:1;padding-top:90px;margin-top:0;min-height:100svh;display:flex;align-items:center;justify-content:center}
+body.quiet-reading .verse-card{width:100%;box-sizing:border-box;box-shadow:0 0 95px 24px #e6a44322,inset 0 0 65px #e6a4430c}
+body.quiet-reading::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 72%,#ffc97922,transparent 65%),linear-gradient(#070c1233,#070c1266)}
+.prayer-title-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
+.prayer-title-row #prayer-track-title{margin:0;min-width:0}
+#prayer-save{flex:0 0 44px;width:44px;height:44px;border-radius:50%;font-size:25px;padding:0;background:#ffffff08}
+.saved-prayers{margin:14px 0;border:1px solid var(--gold-line);border-radius:12px;padding:10px 14px}
+.saved-prayers summary{min-height:32px;cursor:pointer;color:var(--gold);font:600 14px/2 system-ui,sans-serif}
+.saved-prayer-row{position:relative;padding:16px 48px 16px 0;border-top:1px solid var(--gold-line)}
+.saved-prayer-row p{margin:0 0 8px;overflow-wrap:anywhere}
+.saved-prayer-row .favorite-remove{right:0;top:8px}
+.saved-prayer-row .secondary{min-height:44px}
+
 </style>
 </head>
 
@@ -1034,6 +1054,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 </div>
 </header>
 
+<button id="quiet-exit" class="secondary" type="button" hidden>× Exit Quiet Reading</button>
 <main class="page">
     <section class="verse-card glass" aria-label="Daily Scripture">
         <button id="daily-save" class="bookmark" type="button" onclick="saveVerse(currentDaily)" aria-label="Save daily verse to favorites" aria-pressed="false" title="Save daily verse to favorites"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 2.2 3.05 6.18 6.82 1-4.93 4.8 1.16 6.8L12 17.77l-6.1 3.21 1.17-6.8-4.94-4.8 6.82-1z"/></svg></button>
@@ -1045,7 +1066,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
         <p id="feed-status" class="tiny feed-status" role="status">
             Loading the daily verse…
         </p>
-        <div class="daily-card-actions"><button id="daily-share" class="secondary" type="button" onclick="shareVerse(currentDaily)" aria-label="Share daily verse">↗ Share Verse</button></div>
+        <div class="daily-card-actions"><button id="daily-share" class="secondary" type="button" onclick="shareVerse(currentDaily)" aria-label="Share daily verse">↗ Share Verse</button><button id="quiet-reading" class="secondary" type="button" aria-pressed="false"><svg class="candle-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-1 2-3 3-3 5a3 3 0 0 0 6 0c0-2-2-3-3-5Z"/><path d="M9 12h6v9H9zM7 21h10M12 10v2"/></svg><span>Quiet Reading</span></button></div>
     </section>
 
     <section class="audio-section" aria-label="Scripture audio">
@@ -1087,10 +1108,11 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
   <p class="prayer-intro">Choose a category to hear a randomly selected prayer.</p>
   <p id="prayer-status" class="tiny" role="status" aria-live="polite"></p>
   <button id="prayer-retry" class="secondary" type="button" hidden>Try Again</button>
+  <details id="saved-prayers" class="saved-prayers"><summary id="saved-prayers-summary">Saved Prayers</summary><div id="saved-prayers-list"></div></details>
   <div id="prayer-controls" hidden>
    <p id="prayer-topics-label" class="prayer-label">Prayer topic</p><select id="prayer-category" hidden aria-label="Prayer topic"></select><div id="prayer-categories" class="prayer-categories" role="group" aria-labelledby="prayer-topics-label"></div>
    <section id="prayer-now" class="prayer-now" hidden aria-labelledby="prayer-track-title">
-    <div id="prayer-category-icon" class="prayer-category-icon"></div><h3 id="prayer-track-title"></h3><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
+    <div id="prayer-category-icon" class="prayer-category-icon"></div><div class="prayer-title-row"><h3 id="prayer-track-title"></h3><button id="prayer-save" class="secondary save-toggle" type="button" aria-label="Save prayer" aria-pressed="false">☆</button></div><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
     <audio id="prayer-audio" controls controlsList="nodownload" preload="metadata" aria-label="Prayer audio player"></audio>
     <p class="tiny">Press Play when you’re ready. Closing this window pauses the prayer.</p>
     <button id="prayer-another" class="secondary" type="button" hidden>↻ Another Prayer</button>
@@ -1135,7 +1157,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
             <button id="another-button" class="primary" onclick="anotherVerse()">
                 Show Another Verse
             </button>
-            <button class="secondary" onclick="saveVerse(selectedVerse)">☆ Save</button>
+            <button id="topic-save" class="secondary save-toggle" type="button" aria-pressed="false" onclick="saveVerse(selectedVerse)">☆ Save Verse</button>
             <button class="secondary" onclick="shareVerse(selectedVerse)">↗ Share</button>
             <a id="chapter-link"
                class="secondary"
@@ -2004,6 +2026,7 @@ function anotherVerse() {
 
 function paintReading(verse) {
     selectedVerse = { ...verse, version: "WEB" };
+    updateVerseSaveButton($("topic-save"),selectedVerse);
     window.FaithJourney?.record("passages",verse.ref,verse.ref);
 
     $("reader-text").textContent = verse.text;
@@ -2295,31 +2318,22 @@ function normalizeRef(reference) {
     return reference.replace(/^[—–\s]+/, "").trim();
 }
 
+function verseIsSaved(verse){return !!verse&&favorites().some(item=>normalizeRef(item.ref)===normalizeRef(verse.ref)&&(item.version||'NIV')===(verse.version||'NIV'));}
+function updateVerseSaveButton(button,verse){
+ if(!button)return;const saved=verseIsSaved(verse);
+ button.classList.add('save-toggle');button.classList.toggle('is-saved',saved);
+ button.textContent=saved?'★ Saved':'☆ Save Verse';button.setAttribute('aria-pressed',String(saved));
+ button.setAttribute('aria-label',(saved?'Remove ':'Save ')+(verse?.ref||'verse')+(saved?' from favorites':' to favorites'));
+ button.title=saved?'Remove saved verse':'Save verse';
+}
 function saveVerse(verse) {
-    if (!verse) return;
-
-    const list = favorites();
-
-    const exists = list.some(item =>
-        normalizeRef(item.ref) === normalizeRef(verse.ref) &&
-        (item.version || "NIV") === (verse.version || "NIV")
-    );
-
-    if (exists) {
-        notify("This verse is already saved.");
-        return;
-    }
-
-    list.push({
-        text: verse.text,
-        ref: verse.ref,
-        version: verse.version || "NIV"
-    });
-
-    if (put("favorite_verses", JSON.stringify(list))) {
-        window.FaithJourney?.record("verses",(verse.version||"NIV")+":"+normalizeRef(verse.ref),normalizeRef(verse.ref));
-        notify("Verse saved to your favorites.");
-    }
+ if(!verse)return;
+ const list=favorites(),removing=verseIsSaved(verse);
+ const next=removing?list.filter(item=>!(normalizeRef(item.ref)===normalizeRef(verse.ref)&&(item.version||'NIV')===(verse.version||'NIV'))):[...list,{...verse,version:verse.version||'NIV'}];
+ if(put('favorite_verses',JSON.stringify(next))){
+  if(!removing)window.FaithJourney?.record('verses',(verse.version||'NIV')+':'+normalizeRef(verse.ref),normalizeRef(verse.ref));
+  notify(removing?'Verse removed from favorites.':'Verse saved to your favorites.');
+ }
 }
 
 function openFavorites(fromBible = false) {
@@ -2492,10 +2506,10 @@ function updateDailySaveState(){
     if(!button)return;
     const saved=favorites().some(v=>normalizeRef(v.ref)===normalizeRef(currentDaily.ref)&&(v.version||'NIV')===(currentDaily.version||'NIV'));
     button.classList.toggle('is-saved',saved);button.setAttribute('aria-pressed',String(saved));
-    const label=saved?'Daily verse saved to favorites':'Save daily verse to favorites';button.setAttribute('aria-label',label);button.title=label;
+    const label=saved?'Remove daily verse from favorites':'Save daily verse to favorites';button.setAttribute('aria-label',label);button.title=label;
 }
-window.addEventListener('scripture-favorites-changed',updateDailySaveState);
-window.addEventListener('storage',e=>{if(e.key==='favorite_verses'||e.key===null){delete memory.favorite_verses;updateDailySaveState();}});
+window.addEventListener('scripture-favorites-changed',()=>{updateDailySaveState();updateVerseSaveButton($('topic-save'),selectedVerse);});
+window.addEventListener('storage',e=>{if(e.key==='favorite_verses'||e.key===null){delete memory.favorite_verses;window.dispatchEvent(new Event('scripture-favorites-changed'));}});
 function paintDaily() {
     updateDailySaveState();
     $("verse-text").textContent = currentDaily.text;
@@ -2905,10 +2919,11 @@ const BibleReader = (() => {
         id('action-text').textContent=record.text||'This verse number has no text in this WEB source.';
         id('highlight').textContent=highlighted?'Remove highlight':'Highlight verse';
         id('highlight').setAttribute('aria-pressed',String(highlighted));
-        id('save').textContent=saved?'Remove from favorites':'Save verse';
+        id('save').textContent=saved?'★ Saved':'☆ Save Verse';id('save').classList.add('save-toggle');id('save').classList.toggle('is-saved',saved);id('save').setAttribute('aria-label',saved?'Remove verse from favorites':'Save verse');
         id('save').setAttribute('aria-pressed',String(saved));
         id('highlight').disabled=id('save').disabled=!record.text;
     }
+    window.addEventListener('scripture-favorites-changed',()=>{if(id('actions-dialog').open)updateVerseActions();});
     function openVerseActions(v){
         if(busy||!chapterData||!Object.hasOwn(chapterData,String(v)))return;
         selectedVerse=v;updateVerseActions();id('action-status').textContent='';id('actions-dialog').showModal();id('actions-close').focus({preventScroll:true});id('actions-dialog').scrollTop=0;
@@ -2986,7 +3001,7 @@ const SiteTour=(()=>{
         {
                 "target": "#grow-toggle",
                 "title": "Scripture & Personal Prayer",
-                "text": "Open Find a Prayer to choose Morning, Evening, Healing, Stress & Anxiety, Guidance & Decisions, Protection, Peace, or Gratitude. A prayer is chosen randomly; press Play to listen. Its length appears above the player. Another Prayer appears when more recordings are available. Scripture by Topic is below the prayer and journey buttons."
+                "text": "Choose Find a Prayer, then a topic. Press Play for a randomly selected recording, or Another Prayer for another. Tap its white star to save it; tap the gold star to unsave. Open Saved Prayers here to replay a specific recording or remove it with ×. Saved prayers stay on this device."
         },
         {
                 "target": "#grow-toggle",
@@ -3001,7 +3016,12 @@ const SiteTour=(()=>{
         {
                 "target": ".verse-card .bookmark",
                 "title": "Keep a Favorite",
-                "text": "Tap the white star to save today’s verse; it turns gold when saved. Share Verse shares this passage. Open Menu → View Favorites to revisit saved verses. Tap the × on any saved card to remove just that bookmark; you can save it again later. Favorites and progress stay in this browser on this device."
+                "text": "Tap a white star or Save Verse to keep a verse. Tap the gold star or Saved button again to remove it. Menu → View Favorites also has an × on every saved card. Share Verse shares the passage. Saved verses stay in this browser on this device."
+        },
+        {
+                "target": "#quiet-reading",
+                "title": "Quiet Reading",
+                "text": "The candle button hides navigation and other homepage sections, leaving the daily scripture with a gentle, steady amber glow. Background audio pauses. Tap Exit Quiet Reading at the top or press Escape to return. Your saved items and progress stay intact."
         },
         {
                 "target": "#audio-button",
@@ -3014,6 +3034,7 @@ const SiteTour=(()=>{
                 "text": "Open another WEB passage here. Use Another Verse to browse, Save Verse to keep one, or Share Verse to share it. Today’s homepage passage stays in place. Replay this tutorial anytime using Replay Tour at the bottom of Menu."
         }
 ];
+
     let index=0,active=false,frame=0,originalScroll=0,originalOverflow='',returnFocus=null;
     const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
     function viewport(){
@@ -3176,6 +3197,40 @@ const PrayerPlayer=(()=>{
   })().finally(()=>discoveryPending.delete(c.id));
   discoveryPending.set(c.id,job);return job;
  }
+ const prayerFavoritesKey='saved_prayers_v1';
+ const saveButton=document.getElementById('prayer-save');
+ function savedPrayers(){
+  const data=readJSON(prayerFavoritesKey,[]);if(!Array.isArray(data))return [];
+  return data.filter(t=>t&&typeof t.id==='string'&&typeof t.category==='string'&&prayerPrefixes[t.category]&&typeof t.file==='string'&&new RegExp('^'+prayerPrefixes[t.category]+'-([1-9]|[1-4][0-9]|50)\\.mp3$').test(t.file));
+ }
+ function prayerIsSaved(){const c=selectedCategory();return !!c&&!!currentTrack&&savedPrayers().some(t=>t.category===c.id&&t.file===currentTrack.file);}
+ function updatePrayerSave(){const saved=prayerIsSaved();saveButton.textContent=saved?'★':'☆';saveButton.classList.toggle('is-saved',saved);saveButton.setAttribute('aria-pressed',String(saved));saveButton.setAttribute('aria-label',saved?'Remove prayer from saved prayers':'Save prayer');saveButton.title=saved?'Remove saved prayer':'Save prayer';}
+ function writeSavedPrayers(items){if(!put(prayerFavoritesKey,JSON.stringify(items)))return false;renderSavedPrayers();updatePrayerSave();return true;}
+ function renderSavedPrayers(){
+  const list=savedPrayers(),root=document.getElementById('saved-prayers-list');root.replaceChildren();
+  document.getElementById('saved-prayers-summary').textContent='Saved Prayers ('+list.length+')';
+  if(!list.length){root.append(element('p','tiny','Tap the star beside a prayer to save it here.'));return;}
+  for(const item of list.slice().reverse()){
+   const c=catalog?.find(c=>c.id===item.category);if(!c)continue;
+   const row=element('div','saved-prayer-row'),heading=element('p','',c.label+' Prayer');
+   row.append(heading);
+   const seconds=Number(item.duration),length=Number.isFinite(seconds)&&seconds>0?Math.floor(seconds/60)+':'+String(Math.floor(seconds)%60).padStart(2,'0'):'Length available when opened';
+   row.append(element('p','tiny',length));
+   const listen=element('button','secondary','▶ Listen');listen.type='button';listen.setAttribute('aria-label','Listen to saved '+c.label+' prayer, '+length);
+   listen.onclick=()=>{categoryRequest++;category.value=c.id;renderCategories();loadPrayer({id:item.id,title:c.label+' Prayer',file:item.file},true);document.getElementById('saved-prayers').open=false;document.getElementById('prayer-now').scrollIntoView({block:'nearest',behavior:'auto'});saveButton.focus({preventScroll:true});};
+   const remove=element('button','favorite-remove','×');remove.type='button';remove.title='Remove saved prayer';remove.setAttribute('aria-label','Remove saved '+c.label+' prayer, '+length);
+   remove.onclick=()=>{if(writeSavedPrayers(savedPrayers().filter(t=>!(t.category===item.category&&t.file===item.file)))){document.getElementById('saved-prayers-summary').focus();notify('Prayer removed from saved prayers.');}};
+   row.append(listen,remove);root.append(row);
+  }
+ }
+ saveButton.addEventListener('click',()=>{
+  const c=selectedCategory();if(!c||!currentTrack)return;
+  const removing=prayerIsSaved(),list=savedPrayers();
+  const next=removing?list.filter(t=>!(t.category===c.id&&t.file===currentTrack.file)):[...list,{category:c.id,id:currentTrack.id,file:currentTrack.file,duration:Number.isFinite(audio.duration)?audio.duration:null}];
+  if(writeSavedPrayers(next))notify(removing?'Prayer removed from saved prayers.':'Prayer saved.');
+ });
+ window.addEventListener('storage',e=>{if(e.key===prayerFavoritesKey||e.key===null){delete memory[prayerFavoritesKey];if(catalog)renderSavedPrayers();updatePrayerSave();}});
+
  function selectedCategory(){return catalog?.find(c=>c.id===category.value);}
  function pickPrayer(c){
   let bag=bags.get(c.id);
@@ -3189,7 +3244,7 @@ const PrayerPlayer=(()=>{
  }
  function loadPrayer(track,play=false){
   const token=++selectionToken;clear();status.textContent='';document.getElementById('prayer-retry').hidden=true;
-  const c=selectedCategory();currentTrack=track;if(!c||!track)return;
+  const c=selectedCategory();currentTrack=track;if(!c||!track)return;updatePrayerSave();
   window.FaithJourney?.prayerSelected(c.id+':'+track.id,c.label);
   document.getElementById('prayer-track-title').textContent=c.label+' Prayer';
   document.getElementById('prayer-category-icon').replaceChildren(faithIcon(categoryIcons[c.id]||'headphones'));duration.textContent='Loading recording length…';
@@ -3218,7 +3273,7 @@ const PrayerPlayer=(()=>{
   try{
    const categories=await loadCatalog();if(token!==request||!dialog.open)return;
    category.replaceChildren(option('','Choose a prayer topic…'),...categories.map(c=>option(c.id,c.label)));
-   category.value=categories.some(c=>c.id===requestedCategory)?requestedCategory:'';controls.hidden=false;selectCategory();
+   category.value=categories.some(c=>c.id===requestedCategory)?requestedCategory:'';controls.hidden=false;renderSavedPrayers();selectCategory();
   }catch{if(token!==request||!dialog.open)return;status.textContent='The prayer collection could not load. Please check your connection and try again.';document.getElementById('prayer-retry').hidden=false;}
  }
  function open(topic='',back=false){
@@ -3308,8 +3363,9 @@ window.FaithJourney=FaithJourney;
 const VerseExplorer=(()=>{
  let bag=[],current=null,last='';
  function next(){if(!bag.length){bag=Object.keys(PASSAGES);for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}if(bag.length>1&&bag.at(-1)===last)[bag[0],bag[bag.length-1]]=[bag.at(-1),bag[0]];}
-  const ref=bag.pop();last=ref;current={ref,text:PASSAGES[ref],version:'WEB'};$('explore-text').textContent=current.text;$('explore-reference').textContent=ref+' • World English Bible';$('explore-text').scrollTop=0;window.FaithJourney?.record('passages',ref,ref);}
+  const ref=bag.pop();last=ref;current={ref,text:PASSAGES[ref],version:'WEB'};$('explore-text').textContent=current.text;$('explore-reference').textContent=ref+' • World English Bible';$('explore-text').scrollTop=0;updateVerseSaveButton($('explore-save'),current);window.FaithJourney?.record('passages',ref,ref);}
  function open(){closeAudio();showDialog('explore-dialog');next();}
+ window.addEventListener('scripture-favorites-changed',()=>updateVerseSaveButton($('explore-save'),current));
  $('explore-next').addEventListener('click',next);$('explore-save').addEventListener('click',()=>saveVerse(current));$('explore-share').addEventListener('click',()=>{if(current)shareVerse(current);});
  return {open};
 })();
@@ -3359,6 +3415,18 @@ const ExtraJourneys=(()=>{
   const resize=new ResizeObserver(schedule);resize.observe(d);for(const child of d.children){if(child!==b)resize.observe(child);}
  }
  window.addEventListener('resize',schedule);window.visualViewport?.addEventListener('resize',schedule);window.visualViewport?.addEventListener('scroll',schedule);document.fonts?.ready.then(schedule);schedule();
+})();
+
+</script>
+<script>
+const QuietReading=(()=>{
+ const enter=document.getElementById('quiet-reading'),exit=document.getElementById('quiet-exit');
+ let active=false,scrollYBefore=0;
+ function stop(){if(!active)return;active=false;document.body.classList.remove('quiet-reading');exit.hidden=true;enter.setAttribute('aria-pressed','false');window.scrollTo(0,scrollYBefore);enter.focus({preventScroll:true});}
+ function start(){if(active)return;closeMenus(true);closeAudio();PrayerPlayer.pause();stopBackgroundMusic();musicLabel();scrollYBefore=window.scrollY;active=true;document.body.classList.add('quiet-reading');exit.hidden=false;enter.setAttribute('aria-pressed','true');window.scrollTo(0,0);exit.focus({preventScroll:true});}
+ enter.addEventListener('click',start);exit.addEventListener('click',stop);
+ document.addEventListener('keydown',e=>{if(active&&e.key==='Escape'){e.preventDefault();stop();}});
+ return {stop};
 })();
 
 </script>
