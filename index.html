@@ -929,6 +929,10 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
 .window-scroll-cue[hidden]{display:none}
 .window-scroll-cue:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 
+
+.faith-emoji{font-size:20px;line-height:1;display:inline-flex;align-items:center;justify-content:center;width:22px;height:24px;flex-basis:22px}
+.daily-card-actions{display:flex;justify-content:center;margin-top:18px}
+#daily-share{min-height:44px;max-width:100%;padding:10px 18px;font:600 12px/1.4 system-ui,sans-serif;white-space:normal}
 </style>
 </head>
 
@@ -979,11 +983,11 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
             <div id="grow-menu" class="drop glass" hidden>
                 <section class="faith-section" aria-labelledby="prayer-section-label">
                   <p id="prayer-section-label" class="drop-label">Listen to a Prayer</p>
-                  <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14v-3a8 8 0 0 1 16 0v3 M4 12h3v8H4z M17 12h3v8h-3z"/></svg><span>Find a Prayer</span></button>
+                  <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()"><span class="faith-icon faith-emoji" aria-hidden="true">🙏</span><span>Find a Prayer</span></button>
                 </section>
                 <section class="faith-section" aria-labelledby="journey-section-label">
                   <p id="journey-section-label" class="drop-label">Scripture Journeys</p>
-                  <button class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3"/></svg><span>Explore Journeys</span></button>
+                  <button class="menu-item" type="button" onclick="openJourneys()"><span class="faith-icon faith-emoji" aria-hidden="true">🛣️</span><span>Explore Journeys</span></button>
                 </section>
                 <section class="faith-section" aria-labelledby="topic-section-label">
                   <p id="topic-section-label" class="drop-label">Scripture by Topic</p>
@@ -1006,12 +1010,8 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
             <button id="music-btn" class="menu-item" onclick="toggleMusic()">
                 ▶ Play Music
             </button>
-            <div class="music-volume-control"><label for="music-volume">Music volume <output id="music-volume-value" for="music-volume">100%</output></label><input id="music-volume" type="range" min="0" max="100" step="1" value="100"><p class="tiny">Your music preference is saved on this device. Some phones use their device volume controls.</p></div>
             <button class="menu-item" onclick="nextTrack()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 4 11 8-11 8z M19 4v16"/></svg> Next Track</button>
             <button class="menu-item" onclick="changeScene()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6h3c5 0 7 12 12 12h3 M18 15l3 3-3 3 M3 18h3c2 0 3-2 4-4 M14 9c1-2 2-3 4-3h3 M18 3l3 3-3 3"/></svg> Shuffle Scene</button>
-            <button class="menu-item" onclick="shareVerse(currentDaily)">
-                <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 10l8-5 M8 14l8 5 M8 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 20a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/></svg> Share Daily Verse
-            </button>
             <button class="menu-item" onclick="openFavorites()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15"/></svg> View Favorites</button>
             <a class="menu-item"
                href="https://localchurches.org/"
@@ -1020,6 +1020,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
                 <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7"/></svg> Find a Church
             </a>
             <hr class="menu-divider">
+            <div class="music-volume-control"><label for="music-volume">Music volume <output id="music-volume-value" for="music-volume">100%</output></label><input id="music-volume" type="range" min="0" max="100" step="1" value="100"><p class="tiny">Your music preference is saved on this device. Some phones use their device volume controls.</p></div>
             <button id="tour-replay" class="menu-item" type="button" onclick="SiteTour.start()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg> Replay Tour</button>
         </div>
     <button id="bible-launch" class="pill glass bible-launch" type="button" onclick="BibleReader.open()" aria-haspopup="dialog" aria-controls="bible-choice-dialog"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15"/></svg><span>Read Holy Bible</span></button>
@@ -1037,6 +1038,7 @@ body{background-color:#0e1929;background-image:radial-gradient(ellipse at 50% 15
         <p id="feed-status" class="tiny feed-status" role="status">
             Loading the daily verse…
         </p>
+        <div class="daily-card-actions"><button id="daily-share" class="secondary" type="button" onclick="shareVerse(currentDaily)" aria-label="Share daily verse">↗ Share Verse</button></div>
     </section>
 
     <section class="audio-section" aria-label="Scripture audio">
@@ -1901,10 +1903,12 @@ function element(tag, className, text) {
 
 
 const FAITH_ICON_PATHS = {"book": "M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15", "headphones": "M4 14v-3a8 8 0 0 1 16 0v3 M4 12h3v8H4z M17 12h3v8h-3z", "sun": "M12 3v2 M12 19v2 M3 12h2 M19 12h2 M5.6 5.6 1.4 1.4 M17 17l1.4 1.4 M5.6 18.4 1.4-1.4 M17 7l1.4-1.4 M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0", "moon": "M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11z", "heart": "M12 21 3.5 12.5C-2 6 6 0 12 7c6-7 14-1 8.5 5.5z", "leaf": "M20 3C7 3 3 8 5 15s14 7 15-12z M4 21 16 9", "compass": "M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0 M16 8l-3 5-5 3 3-5z", "path": "M6 3v4c0 5 12 0 12 6s-12 1-12 6v2 M3 18l3 3 3-3", "flame": "M13 2c1 6-4 7-3 11-3-1-3-3-3-3-6 8 0 12 5 12s11-6 1-20z", "shuffle": "M3 6h3c5 0 7 12 12 12h3 M18 15l3 3-3 3 M3 18h3c2 0 3-2 4-4 M14 9c1-2 2-3 4-3h3 M18 3l3 3-3 3", "share": "M8 10l8-5 M8 14l8 5 M8 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0 M22 20a3 3 0 1 1-6 0 3 3 0 0 1 6 0", "award": "M17 8a5 5 0 1 1-10 0 5 5 0 0 1 10 0 M8 12l-2 9 6-3 6 3-2-9", "church": "M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7", "play": "m8 4 12 8-12 8z", "menu": "M4 6h16 M4 12h16 M4 18h16", "next": "m5 4 11 8-11 8z M19 4v16", "spark": "m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"};
-function faithIcon(name){const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('class','faith-icon');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.65');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');const path=document.createElementNS(ns,'path');path.setAttribute('d',FAITH_ICON_PATHS[name]||FAITH_ICON_PATHS.book);svg.append(path);return svg;}
-function topicIcon(id){return ({peace:'leaf',worry:'leaf',healing:'heart',love:'heart',grief:'heart',loneliness:'heart',guidance:'compass',gratitude:'sun',hope:'sun',faith:'spark',strength:'flame',patience:'path',forgiveness:'leaf',prayer:'headphones'})[id]||'book';}
+function faithIcon(name){const emoji={praying:'🙏',road:'🛣️',strength:'💪'}[name];if(emoji){const span=document.createElement('span');span.className='faith-icon faith-emoji';span.setAttribute('aria-hidden','true');span.textContent=emoji;return span;}const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('class','faith-icon');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.65');svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');svg.setAttribute('aria-hidden','true');svg.setAttribute('focusable','false');const path=document.createElementNS(ns,'path');path.setAttribute('d',FAITH_ICON_PATHS[name]||FAITH_ICON_PATHS.book);svg.append(path);return svg;}
+function topicIcon(id){return ({peace:'leaf',worry:'leaf',healing:'heart',love:'heart',grief:'heart',loneliness:'heart',guidance:'road',gratitude:'sun',hope:'sun',faith:'road',strength:'strength',patience:'road',forgiveness:'leaf',prayer:'praying'})[id]||'book';}
 
-TOPICS.forEach(topic => {
+const TOPIC_MENU_ORDER=['peace','worry','forgiveness','healing','grief','loneliness','love','hope','gratitude','strength','prayer','guidance','patience','faith'];
+const DISPLAY_TOPICS=TOPIC_MENU_ORDER.map(id=>TOPICS.find(topic=>topic.id===id)).filter(Boolean);
+DISPLAY_TOPICS.forEach(topic => {
     const button = element(
         "button",
         "menu-item",
@@ -2024,7 +2028,7 @@ function renderJourneyList() {
     const list = $("journey-list");
     list.replaceChildren();
 
-    TOPICS.forEach(topic => {
+    DISPLAY_TOPICS.forEach(topic => {
         const journey = state.journeys[topic.id];
         const completed = journey?.completed || 0;
 
@@ -2952,7 +2956,7 @@ const SiteTour=(()=>{
         {
                 "target": "#main-toggle",
                 "title": "Your Menu",
-                "text": "Play music, adjust its volume, switch tracks, shuffle photo backgrounds, and revisit favorites. Music preferences are saved on this device. The menu stays open for quick changes; tap Menu again or outside to close it. Replay Tour is at the bottom."
+                "text": "Play music, adjust its volume, switch tracks, shuffle photo backgrounds, and revisit favorites. The volume control is near the bottom, above Replay Tour. Music preferences are saved on this device. The menu stays open for quick changes; tap Menu again or outside to close it. Replay Tour is at the bottom."
         },
         {
                 "target": "#streak-button",
@@ -2977,7 +2981,7 @@ const SiteTour=(()=>{
         {
                 "target": ".verse-card .bookmark",
                 "title": "Keep a Favorite",
-                "text": "Tap the white star to save today’s verse; it turns gold when saved. Find saved passages in Menu → View Favorites. Favorites and progress stay in this browser on this device; clearing browser data removes them."
+                "text": "Tap the white star to save today’s verse; it turns gold when saved. Use Share Verse on this card to share the daily passage. Find saved passages in Menu → View Favorites. Favorites and progress stay in this browser on this device; clearing browser data removes them."
         },
         {
                 "target": "#audio-button",
@@ -2987,7 +2991,7 @@ const SiteTour=(()=>{
         {
                 "target": "#explore-verse-button",
                 "title": "Explore Another Verse",
-                "text": "Want another reading? Open a separate WEB passage here, then tap Another Verse to explore more or Save Verse to keep one. Today’s homepage passage stays in place. You can replay this tour from the bottom of Menu anytime."
+                "text": "Want another reading? Open a separate WEB passage here, then tap Another Verse to explore more Save Verse to keep one, or Share Verse to send it. Today’s homepage passage stays in place. You can replay this tour from the bottom of Menu anytime."
         }
 ];
     let index=0,active=false,frame=0,originalScroll=0,originalOverflow='',returnFocus=null;
@@ -3228,7 +3232,7 @@ window.FaithJourney=FaithJourney;
 
 <dialog id="explore-dialog" aria-labelledby="explore-title">
  <header class="dialog-head"><h2 id="explore-title">Explore Scripture</h2><button class="close" type="button" onclick="closeDialog('explore-dialog')" aria-label="Close extra Scripture">×</button></header>
- <div class="dialog-body"><p class="tiny">An extra reading from the World English Bible. Daily Scripture audio belongs to the daily passage on the homepage.</p><blockquote id="explore-text" class="explore-reading"></blockquote><p id="explore-reference" class="reference" aria-live="polite"></p><div class="extra-actions"><button id="explore-save" type="button" class="secondary">Save Verse</button><button id="explore-next" type="button" class="secondary">Another Verse →</button></div></div>
+ <div class="dialog-body"><p class="tiny">An extra reading from the World English Bible. Daily Scripture audio belongs to the daily passage on the homepage.</p><blockquote id="explore-text" class="explore-reading"></blockquote><p id="explore-reference" class="reference" aria-live="polite"></p><div class="extra-actions"><button id="explore-save" type="button" class="secondary">Save Verse</button><button id="explore-share" type="button" class="secondary">↗ Share Verse</button><button id="explore-next" type="button" class="secondary">Another Verse →</button></div></div>
 </dialog>
 <dialog id="extended-dialog" aria-labelledby="extended-title">
  <header class="dialog-head"><h2 id="extended-title">Your Scripture Journey</h2><button class="close" type="button" onclick="closeDialog('extended-dialog')" aria-label="Close journey">×</button></header>
@@ -3242,7 +3246,7 @@ const VerseExplorer=(()=>{
  function next(){if(!bag.length){bag=Object.keys(PASSAGES);for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}if(bag.length>1&&bag.at(-1)===last)[bag[0],bag[bag.length-1]]=[bag.at(-1),bag[0]];}
   const ref=bag.pop();last=ref;current={ref,text:PASSAGES[ref],version:'WEB'};$('explore-text').textContent=current.text;$('explore-reference').textContent=ref+' • World English Bible';$('explore-text').scrollTop=0;window.FaithJourney?.record('passages',ref,ref);}
  function open(){closeAudio();showDialog('explore-dialog');next();}
- $('explore-next').addEventListener('click',next);$('explore-save').addEventListener('click',()=>saveVerse(current));
+ $('explore-next').addEventListener('click',next);$('explore-save').addEventListener('click',()=>saveVerse(current));$('explore-share').addEventListener('click',()=>{if(current)shareVerse(current);});
  return {open};
 })();
 
