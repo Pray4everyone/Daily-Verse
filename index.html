@@ -1059,6 +1059,58 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
 .backup-actions{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}.backup-primary{background:#e8c887;color:#172337;border:1px solid #e8c887;border-radius:12px;padding:12px 18px;font-weight:700}
 #backup-preview{border-top:1px solid #ffffff26;margin-top:20px;padding-top:16px}#backup-replace-warning{padding:12px;border:1px solid #d1ac70;border-radius:10px;margin-bottom:14px}#backup-replace-warning label{display:flex;gap:10px;align-items:flex-start}#backup-confirm{width:22px;height:22px;flex-shrink:0}#backup-status{line-height:1.6}
 @media(max-width:350px){.lifetime-grid{gap:8px}.lifetime-card{padding:16px 8px}}
+/* Brief interface transitions. Animate contents, not modal geometry: fixed
+   scroll cues keep their viewport positioning throughout the entrance. */
+@media (prefers-reduced-motion: no-preference) {
+  dialog[open]:not(#site-tour) {
+    animation: scripture-window-fade 200ms ease-out;
+  }
+  dialog[open]:not(#site-tour)::backdrop {
+    animation: scripture-window-fade 180ms ease-out;
+  }
+  dialog[open]:not(#site-tour) > .dialog-head,
+  dialog[open]:not(#site-tour) > .dialog-body {
+    animation: scripture-content-rise 220ms cubic-bezier(.2,.7,.3,1);
+  }
+  .drop:not([hidden]), .audio-panel:not([hidden]) {
+    animation: scripture-menu-enter 170ms cubic-bezier(.2,.7,.3,1);
+  }
+  #tour-card.tour-enter {
+    animation: scripture-menu-enter 180ms cubic-bezier(.2,.7,.3,1);
+  }
+  button, a.menu-item {
+    transition: background-color 160ms ease, border-color 160ms ease,
+      color 160ms ease, box-shadow 160ms ease, filter 120ms ease,
+      scale 110ms ease-out;
+  }
+  button:not(:disabled):not([aria-disabled="true"]):active,
+  a.menu-item:active {
+    scale: .985;
+    filter: brightness(1.08);
+    transition-duration: 70ms;
+  }
+  @keyframes scripture-window-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scripture-content-rise {
+    from { translate: 0 6px; }
+    to { translate: 0 0; }
+  }
+  @keyframes scripture-menu-enter {
+    from { opacity: 0; translate: 0 4px; }
+    to { opacity: 1; translate: 0 0; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog[open], dialog[open]::backdrop,
+  dialog[open] > .dialog-head, dialog[open] > .dialog-body,
+  .drop, .audio-panel, #tour-card, button, a.menu-item {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 </style>
 </head>
 
