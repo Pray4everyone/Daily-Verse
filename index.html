@@ -1119,8 +1119,6 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
 .fx-badge-reveal{position:relative;overflow:hidden}.fx-badge-reveal::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 25%,#fff2cf30 50%,transparent 75%);opacity:0}
 .fx-reading-done{position:relative}.fx-reading-done::after{content:'';position:absolute;inset:-3px;border:1px solid #e8c887;border-radius:inherit;pointer-events:none;opacity:0}
 .fx-particle{position:absolute;left:50%;top:48%;width:4px;height:4px;border-radius:50%;background:#f5d690;opacity:0;pointer-events:none}
-#fx-preview-stage{border:1px solid #e8c88755;border-radius:18px;padding:20px 16px;min-height:215px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:16px 0;overflow:hidden;text-align:center}
-#fx-preview-stage>.fx-celebration{width:100%}.fx-preview-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fx-preview-buttons button{min-height:48px;white-space:normal}.fx-demo-path{display:flex;justify-content:space-between;gap:6px;width:100%}.fx-demo-path .journey-day-dot{display:grid;place-items:center;width:30px;height:30px;flex-shrink:0;border:1px solid #e8c88788;border-radius:50%;background:#142337;color:#f5e6c9;font:600 12px system-ui,sans-serif}.fx-demo-current{outline:2px solid #e8c887;outline-offset:3px}
 @media(prefers-reduced-motion:no-preference){
  .fx-path-step{animation:fx-light-path 850ms ease-in-out var(--fx-delay,0ms)}
  .fx-dot-done{animation:fx-light-path 800ms ease-in-out}
@@ -1137,7 +1135,6 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
  @keyframes fx-border-welcome{0%,100%{border-color:#e8c88755}35%{border-color:#fff0bd;box-shadow:0 0 22px #e8c88745}}
 }
 @media(prefers-reduced-motion:reduce){.fx-particle,.fx-badge-reveal::after,.fx-reading-done::after{display:none}.fx-reading-done,.fx-welcome{outline:1px solid #e8c887;outline-offset:-2px}}
-@media(max-width:350px){.fx-demo-path{gap:3px}.fx-demo-path .journey-day-dot{width:25px;height:25px}.fx-preview-buttons{grid-template-columns:1fr}}
 
 </style>
 </head>
@@ -1434,13 +1431,9 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
 
 <dialog id="lifetime-dialog" aria-labelledby="lifetime-title">
 <header class="dialog-head"><h2 id="lifetime-title">Lifetime Achievements</h2><button class="close" type="button" onclick="closeDialog('lifetime-dialog')" aria-label="Close lifetime achievements">×</button></header>
-<div class="dialog-body"><p id="lifetime-stats" class="tiny"></p><div class="backup-actions"><button id="lifetime-backup" class="secondary" type="button" onclick="ProgressBackup.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v5h16v-5"/></svg> Backup &amp; Restore</button></div><h3>Earned badges</h3><div id="lifetime-earned" class="lifetime-grid"></div><p id="lifetime-next"></p><details id="lifetime-future"><summary>View upcoming badges</summary><div id="lifetime-upcoming" class="lifetime-grid"></div></details><h3>Completed journeys</h3><div id="lifetime-journeys" class="lifetime-grid"></div><details class="fx-preview-details"><summary>Preview visual effects</summary><p class="tiny">Try the celebrations without changing your real progress.</p><button class="secondary" type="button" onclick="VisualEffects.openPreview()">Open Effect Previews</button></details><p class="tiny">Earned achievements stay with you after a missed day. Your history is saved only in this browser. Use Backup &amp; Restore above to keep a copy.</p></div>
+<div class="dialog-body"><p id="lifetime-stats" class="tiny"></p><div class="backup-actions"><button id="lifetime-backup" class="secondary" type="button" onclick="ProgressBackup.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v5h16v-5"/></svg> Backup &amp; Restore</button></div><h3>Earned badges</h3><div id="lifetime-earned" class="lifetime-grid"></div><p id="lifetime-next"></p><details id="lifetime-future"><summary>View upcoming badges</summary><div id="lifetime-upcoming" class="lifetime-grid"></div></details><h3>Completed journeys</h3><div id="lifetime-journeys" class="lifetime-grid"></div><p class="tiny">Earned achievements stay with you after a missed day. Your history is saved only in this browser. Use Backup &amp; Restore above to keep a copy.</p></div>
 </dialog>
 
-<dialog id="fx-preview-dialog" aria-labelledby="fx-preview-title">
-<header class="dialog-head"><h2 id="fx-preview-title">Visual Effect Previews</h2><button class="close" type="button" onclick="closeDialog('fx-preview-dialog')" aria-label="Close effect previews">×</button></header>
-<div class="dialog-body"><p class="tiny">These examples do not change your streak, badges, saved items, or journey progress. Reduced-motion settings apply here too.</p><div id="fx-preview-stage"></div><div class="fx-preview-buttons"><button type="button" class="secondary" onclick="VisualEffects.preview('start')">1. Start a Journey</button><button type="button" class="secondary" onclick="VisualEffects.preview('reading')">2. Complete a Reading</button><button type="button" class="secondary" onclick="VisualEffects.preview('journey')">3. Finish a Journey</button><button type="button" class="secondary" onclick="VisualEffects.preview('badge')">4. Earn a Badge</button><button type="button" class="secondary" onclick="VisualEffects.preview('welcome')">5. First Visit Glow</button></div><p id="fx-preview-status" class="tiny" role="status"></p><button type="button" class="secondary" onclick="Lifetime.open()">← Back to Lifetime Achievements</button></div>
-</dialog>
 
 <dialog id="backup-dialog" aria-labelledby="backup-title">
 <header class="dialog-head"><h2 id="backup-title">Backup &amp; Restore</h2><button class="close" type="button" onclick="closeDialog('backup-dialog')" aria-label="Close backup and restore">×</button></header>
@@ -3771,19 +3764,10 @@ const VisualEffects=(()=>{
  for(const id of welcomed){const dialog=$(id);new MutationObserver(()=>{if(dialog.open)welcome(dialog);}).observe(dialog,{attributes:true,attributeFilter:['open']});}
  $('lifetime-dialog').addEventListener('close',markBadgesViewed);
  document.querySelectorAll('dialog').forEach(d=>d.addEventListener('close',()=>{for(const [node,entry]of cleanup)if(node===d||d.contains(node)){clearTimeout(entry.timer);node.classList.remove(entry.cls);cleanup.delete(node);}if(toast&&d.contains(toast)){toast.remove();toast=null;clearTimeout(toastTimer);}}));
- function preview(kind){const stage=$('fx-preview-stage');for(const [node,entry]of cleanup)if(stage===node||stage.contains(node)){clearTimeout(entry.timer);node.classList.remove(entry.cls);cleanup.delete(node);}stage.replaceChildren();stage.classList.remove('fx-welcome');
-  const labels={start:'Starting a journey',reading:'Completing today’s reading',journey:'Finishing an entire journey',badge:'Earning a milestone',welcome:'Opening a feature for the first time'};$('fx-preview-status').textContent=labels[kind]+' — preview only. Your progress is unchanged.';
-  if(kind==='start'){const row=element('div','fx-demo-path');row.setAttribute('aria-label','Example seven-day journey');for(let i=1;i<=7;i++)row.append(element('span','journey-day-dot'+(i===1?' fx-demo-current':''),String(i)));stage.append(row);path(stage);}
-  else if(kind==='reading'){const button=element('button','secondary','✓ Reading Completed');button.type='button';button.disabled=true;stage.append(button);ripple(button);}
-  else if(kind==='journey')stage.append(badgeCard('Journey Complete','Example seven-day journey',true));
-  else if(kind==='badge'){const card=badgeCard('Devoted','Example 7-day milestone');card.append(element('span','fx-new','New'));stage.append(card);}
-  else if(kind==='welcome'){stage.append(element('strong','','Welcome to your Bible reader'));play(stage,'fx-welcome',1400);}
- }
- function openPreview(){showDialog('fx-preview-dialog');$('fx-preview-stage').replaceChildren(element('p','tiny','Choose an effect below to preview it.'));$('fx-preview-status').textContent='Previews do not earn badges, finish readings, or mark features as visited.';}
  motion.addEventListener('change',()=>{if(motion.matches)document.querySelectorAll('.fx-particle').forEach(p=>p.remove());});
  // A milestone earned during page startup can be announced after the page initializes.
  const pending=Object.keys(window.pendingBadgeDates||{}).map(Number);if(pending.length)setTimeout(()=>{if(!$('site-tour').open)milestone(Math.max(...pending));},650);
- return {journeyStart,complete,milestone,decorateBadges,openPreview,preview};
+ return {journeyStart,complete,milestone,decorateBadges};
 })();
 window.VisualEffects=VisualEffects;
 
