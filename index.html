@@ -1174,12 +1174,17 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 .confirm-delete-actions button{min-height:44px;min-width:88px}
 #prayer-name-list-dialog{width:min(600px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
 #prayer-name-list-dialog .dialog-head h2{font-size:20px}
-.prayer-name-row{display:grid;grid-template-columns:24px minmax(0,1fr) 44px 44px;align-items:center;gap:6px;margin:10px 0}
-.prayer-name-number{font:600 13px/1 var(--ui-font);color:var(--gold);text-align:center}
-.prayer-name-row input{width:100%;min-width:0;min-height:44px;padding:10px;border:1px solid var(--gold-line);border-radius:10px;background:#142337;color:var(--ink);font:16px/1.4 var(--ui-font)}
+.prayer-name-row{display:grid;grid-template-columns:24px minmax(0,.8fr) minmax(0,1.3fr) auto;align-items:start;gap:8px;margin:14px 0;padding-bottom:14px;border-bottom:1px solid var(--gold-line)}
+.prayer-entry-field{display:grid;min-width:0;gap:6px}
+.prayer-field-label{color:var(--muted);font:600 11px/1.4 var(--ui-font)}
+.prayer-name-actions{display:flex;gap:6px;padding-top:21px}
+.prayer-name-number{padding-top:36px;font:600 13px/1 var(--ui-font);color:var(--gold);text-align:center}
+.prayer-name-row input,.prayer-name-row textarea{width:100%;min-width:0;min-height:44px;padding:10px;border:1px solid var(--gold-line);border-radius:10px;background:#142337;color:var(--ink);font:16px/1.4 var(--ui-font)}
+.prayer-name-row textarea{min-height:68px;resize:vertical}
+.prayer-name-row input::placeholder,.prayer-name-row textarea::placeholder{color:var(--muted);opacity:.8}
 .prayer-name-row button{width:44px;height:44px;padding:0;border:1px solid var(--gold-line);border-radius:10px;background:#ffffff06;color:var(--gold);font:20px/1 var(--ui-font)}
 .prayer-name-row button:disabled{opacity:.3}
-.prayer-name-row input:focus-visible,.prayer-name-row button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.prayer-name-row input:focus-visible,.prayer-name-row textarea:focus-visible,.prayer-name-row button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 #prayer-name-list-button{display:inline-flex;align-items:center;justify-content:center;gap:9px}
 #prayer-name-list-button .faith-icon{color:var(--gold);width:21px;height:21px;flex-shrink:0}
 .prayer-list-welcome{display:grid;grid-template-columns:24px minmax(0,1fr) 24px;align-items:center;gap:8px;padding:16px 0 18px;margin:0 0 16px;border-bottom:1px solid var(--gold-line)}
@@ -1187,7 +1192,8 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 .prayer-list-wing{display:block;width:24px;height:44px;color:var(--gold)}
 .prayer-list-wing-right{transform:scaleX(-1)}
 #prayer-name-list-done{min-height:44px;width:100%;margin-top:18px}
-@media(max-width:360px){.daily-card-actions{gap:6px}.daily-card-actions .secondary{padding:10px 4px;font-size:11px}.prayer-name-row{grid-template-columns:20px minmax(0,1fr) 44px 44px;gap:4px}}
+@media(max-width:480px){.prayer-name-row{grid-template-columns:20px minmax(0,.8fr) minmax(0,1.3fr);gap:8px}.prayer-name-actions{grid-column:2 / -1;justify-content:flex-end;padding-top:0}}
+@media(max-width:360px){.daily-card-actions{gap:6px}.daily-card-actions .secondary{padding:10px 4px;font-size:11px}.prayer-name-row{gap:6px}}
 /* Signets and selectable journeys preserve the established gold line style. */
 #active-journeys-title{font:750 16px/1.5 var(--ui-font);letter-spacing:.02em}
 .active-journey-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:10px;flex-shrink:0}
@@ -1349,7 +1355,7 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
         </div>
     </section>
 
-    <div class="explore-launch"><button id="prayer-name-list-button" class="secondary" type="button" onclick="PrayerNameList.open()" aria-haspopup="dialog" aria-controls="prayer-name-list-dialog"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h6"/></svg><span>Prayer Name List</span></button></div>
+    <div class="explore-launch"><button id="prayer-name-list-button" class="secondary" type="button" onclick="PrayerNameList.open()" aria-haspopup="dialog" aria-controls="prayer-name-list-dialog"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 3h10l4 4v14H5z M14 3v5h5 M8 12h8 M8 16h6"/></svg><span>Lift Them Up</span></button></div>
     <section id="resume-card" class="active-journeys" aria-labelledby="active-journeys-title" hidden>
         <h2 id="active-journeys-title"><span aria-hidden="true">– </span>Your Journeys</h2>
         <div id="active-journeys-list" class="active-journeys-list"></div>
@@ -1362,14 +1368,14 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
  <div class="dialog-body"><p id="confirm-delete-message"></p><div class="confirm-delete-actions"><button id="confirm-delete-cancel" class="secondary" type="button" autofocus>Cancel</button><button id="confirm-delete-accept" class="primary" type="button">Delete</button></div></div>
 </dialog>
 <dialog id="prayer-name-list-dialog" aria-labelledby="prayer-name-list-title">
- <header class="dialog-head"><h2 id="prayer-name-list-title">Prayer Name List</h2><button class="close" type="button" onclick="closeDialog('prayer-name-list-dialog')" aria-label="Close prayer name list">×</button></header>
+ <header class="dialog-head"><h2 id="prayer-name-list-title">Lift Them Up</h2><button class="close" type="button" onclick="closeDialog('prayer-name-list-dialog')" aria-label="Close Lift Them Up">×</button></header>
  <div class="dialog-body">
   <div class="prayer-list-welcome">
    <svg class="prayer-list-wing" viewBox="0 0 40 64" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M35 57C20 51 8 35 5 7c7 5 10 14 13 22C16 18 17 10 20 4c5 10 4 20 5 29 1-8 4-14 7-17 3 9-1 20 3 41Z M35 57C24 43 14 29 5 7 M12 29l12 8 M19 42l10 3"/></svg>
    <p>We all need prayers to help us through life. Use this list to remember the important people in your life who need your prayers.</p>
    <svg class="prayer-list-wing prayer-list-wing-right" viewBox="0 0 40 64" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M35 57C20 51 8 35 5 7c7 5 10 14 13 22C16 18 17 10 20 4c5 10 4 20 5 29 1-8 4-14 7-17 3 9-1 20 3 41Z M35 57C24 43 14 29 5 7 M12 29l12 8 M19 42l10 3"/></svg>
   </div>
-  <p class="tiny">20 names • Use the arrows to reorder. Leave a line empty to clear a name.</p><p id="prayer-name-list-status" class="tiny" role="status">Names save automatically on this device. Backup &amp; Restore includes your list.</p><div id="prayer-name-list-fields"></div><button id="prayer-name-list-done" class="secondary" type="button" onclick="closeDialog('prayer-name-list-dialog')">Done</button></div>
+  <p class="tiny">20 entries • Add a name and an optional prayer reason. Use the arrows to reorder; clear both boxes to empty an entry.</p><p id="prayer-name-list-status" class="tiny" role="status" aria-live="polite">Names and reasons save automatically on this device. Backup &amp; Restore includes your list.</p><div id="prayer-name-list-fields"></div><button id="prayer-name-list-done" class="secondary" type="button" onclick="closeDialog('prayer-name-list-dialog')">Done</button></div>
 </dialog>
 
 <dialog id="prayer-dialog" aria-labelledby="prayer-title">
@@ -1524,7 +1530,7 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 <header class="dialog-head"><h2 id="backup-title">Backup &amp; Restore</h2><button class="close" type="button" onclick="closeDialog('backup-dialog')" aria-label="Close backup and restore">×</button></header>
 <div class="dialog-body"><div class="backup-actions"><button type="button" class="secondary" onclick="Lifetime.open(); document.getElementById('lifetime-backup').focus({preventScroll:true});">← Back to Lifetime Achievements</button></div><p>Keep a private copy of your achievements, reading progress, saved verses and prayers, highlights, bookmarks, and preferences.</p><p class="tiny">The file stays on your device. No account or upload is needed. Your personal background photo is included. Site audio and built-in backgrounds stay on the site; saved prayers link to those recordings.</p>
 <div class="backup-actions"><button type="button" class="backup-primary" onclick="ProgressBackup.download()">Download Backup</button></div><p class="tiny" id="backup-last"></p><hr class="menu-divider"><h3>Restore a backup</h3><label for="backup-file">Choose your Daily Scripture backup file</label><input id="backup-file" type="file" accept=".json,application/json">
-<div id="backup-preview" hidden><p id="backup-summary"></p><label for="backup-mode">How would you like to restore?</label><select id="backup-mode"><option value="merge">Merge with this device (recommended)</option><option value="replace">Replace this device’s data</option></select><p class="tiny">Merge combines saved items, highlights, achievements, and journey progress. This device’s bookmarks, populated prayer name list, and preferences take priority. Reading-day and activity totals use the larger known totals rather than adding overlapping history. Restoring never changes an old visit date to today or revives an expired streak.</p><div id="backup-replace-warning" hidden><p>Replacement removes this site’s current progress and saved items and uses the backup instead. Download a backup first to keep your current history.</p><label><input id="backup-confirm" type="checkbox">I understand that my current site data will be replaced.</label></div><button type="button" class="backup-primary" onclick="ProgressBackup.restore()">Restore &amp; Reload</button></div><p id="backup-status" role="status" aria-live="polite"></p></div>
+<div id="backup-preview" hidden><p id="backup-summary"></p><label for="backup-mode">How would you like to restore?</label><select id="backup-mode"><option value="merge">Merge with this device (recommended)</option><option value="replace">Replace this device’s data</option></select><p class="tiny">Merge combines saved items, highlights, achievements, and journey progress. This device’s bookmarks, populated Lift Them Up list, and preferences take priority. Names and reasons stay together. Reading-day and activity totals use the larger known totals rather than adding overlapping history. Restoring never changes an old visit date to today or revives an expired streak.</p><div id="backup-replace-warning" hidden><p>Replacement removes this site’s current progress and saved items and uses the backup instead. Download a backup first to keep your current history.</p><label><input id="backup-confirm" type="checkbox">I understand that my current site data will be replaced.</label></div><button type="button" class="backup-primary" onclick="ProgressBackup.restore()">Restore &amp; Reload</button></div><p id="backup-status" role="status" aria-live="polite"></p></div>
 </dialog>
 
 <dialog id="favorites-dialog" aria-labelledby="favorites-title">
@@ -2018,27 +2024,35 @@ const DeleteConfirmation=(()=>{
  return {open};
 })();
 const PrayerNameList=(()=>{
- const key='scripture_prayer_names_v1';
- function names(){const d=readJSON(key,{});return Array.from({length:20},(_,i)=>typeof d.names?.[i]==='string'?d.names[i].slice(0,100):'');}
- function save(items){const ok=put(key,JSON.stringify({version:1,names:items}));$('prayer-name-list-status').textContent=ok?'Names saved on this device. Backup & Restore includes your list.':'This browser could not save your names permanently. Keep this window open and try again.';return ok;}
+ const key='scripture_prayer_names_v1';let draft=null;
+ function entries(data=readJSON(key,{})){return Array.from({length:20},(_,i)=>({name:typeof data.names?.[i]==='string'?data.names[i].slice(0,100):'',reason:typeof data.reasons?.[i]==='string'?data.reasons[i].slice(0,300):''}));}
+ function current(){return draft?draft.map(item=>({...item})):entries();}
+ function encode(items){return {version:1,names:items.map(item=>item.name),reasons:items.map(item=>item.reason)};}
+ function valid(data){return !!data&&data.version===1&&Array.isArray(data.names)&&data.names.length===20&&data.names.every(n=>typeof n==='string'&&n.length<=100)&&(data.reasons===undefined||(Array.isArray(data.reasons)&&data.reasons.length===20&&data.reasons.every(r=>typeof r==='string'&&r.length<=300)));}
+ function merge(a,b){const items=entries(a);return encode(items.some(item=>item.name.trim()||item.reason.trim())?items:entries(b));}
+ function save(items){const ok=put(key,JSON.stringify(encode(items)));draft=ok?null:items;$('prayer-name-list-status').textContent=ok?'Names and reasons saved on this device. Backup & Restore includes your list.':'This browser could not save your list permanently. Keep this window open and try editing again.';return ok;}
  function render(focusIndex){
-  const items=names(),root=$('prayer-name-list-fields');root.replaceChildren();
-  items.forEach((name,index)=>{
-   const row=element('div','prayer-name-row'),label=element('label','prayer-name-number',String(index+1));
-   const input=element('input','');input.type='text';input.id='prayer-name-'+(index+1);input.value=name;input.maxLength=100;input.autocomplete='off';input.setAttribute('aria-label','Prayer name '+(index+1));label.htmlFor=input.id;
-   input.addEventListener('input',()=>{const latest=names();latest[index]=input.value;save(latest);});
-   row.append(label,input);
-   for(const [offset,symbol,direction] of [[-1,'↑','up'],[1,'↓','down']]){
-    const button=element('button','',symbol);button.type='button';button.disabled=index+offset<0||index+offset>=20;button.setAttribute('aria-label','Move name '+(index+1)+' '+direction);
-    button.onclick=()=>{const latest=names(),next=index+offset;[latest[index],latest[next]]=[latest[next],latest[index]];if(save(latest))render(next);};row.append(button);
+  const items=current(),root=$('prayer-name-list-fields');root.replaceChildren();
+  items.forEach((item,index)=>{
+   const row=element('div','prayer-name-row'),number=element('span','prayer-name-number',String(index+1));row.setAttribute('role','group');row.setAttribute('aria-label','Prayer entry '+(index+1));row.append(number);
+   for(const [field,title,limit]of [['name','Name',100],['reason','Reason (optional)',300]]){
+    const label=element('label','prayer-entry-field'),caption=element('span','prayer-field-label',title),input=element(field==='name'?'input':'textarea','');
+    if(field==='name')input.type='text';else input.rows=2;
+    input.id='prayer-'+field+'-'+(index+1);input.value=item[field];input.maxLength=limit;input.autocomplete='off';input.placeholder=field==='name'?'Name':'e.g. Healing or guidance';input.setAttribute('aria-label',(field==='name'?'Name':'Prayer reason')+' '+(index+1));label.htmlFor=input.id;label.append(caption,input);
+    input.addEventListener('input',()=>{const latest=current();latest[index][field]=input.value.slice(0,limit);save(latest);});row.append(label);
    }
-   root.append(row);
+   const actions=element('div','prayer-name-actions');
+   for(const [offset,symbol,direction] of [[-1,'↑','up'],[1,'↓','down']]){
+    const button=element('button','',symbol);button.type='button';button.disabled=index+offset<0||index+offset>=20;button.setAttribute('aria-label','Move entry '+(index+1)+' '+direction);
+    button.onclick=()=>{const latest=current(),next=index+offset;[latest[index],latest[next]]=[latest[next],latest[index]];save(latest);render(next);};actions.append(button);
+   }
+   row.append(actions);root.append(row);
   });
   if(Number.isInteger(focusIndex))$('prayer-name-'+(focusIndex+1)).focus({preventScroll:true});
  }
  function open(){render();showDialog('prayer-name-list-dialog');}
- window.addEventListener('storage',e=>{if(e.key===key||e.key===null){delete memory[key];if($('prayer-name-list-dialog').open)render();}});
- return {open};
+ window.addEventListener('storage',e=>{if(e.key===key||e.key===null){draft=null;delete memory[key];if($('prayer-name-list-dialog').open)render();}});
+ return {open,valid,merge};
 })();
 const delayedLoads=new WeakMap();
 function stopLoading(node){
@@ -3291,8 +3305,8 @@ const SiteTour=(()=>{
         },
         {
                 "target": "#prayer-name-list-button",
-                "title": "Your Prayer Name List",
-                "text": "Keep up to 20 names in your prayer list. Use the arrows to change their order."
+                "title": "Lift Them Up",
+                "text": "Keep 20 names with a prayer reason, such as healing or guidance. Use the arrows to reorder."
         }
 ];
 
@@ -3727,7 +3741,7 @@ const ProgressBackup=(()=>{
   if(k==='scripture_growth_v1'){check(obj(x)&&x.version===1&&['current','longest','total'].every(k=>integer(x[k]))&&x.longest>=x.current&&x.total>=x.longest&&past(x.last)&&Array.isArray(x.badges)&&x.badges.every(n=>MILESTONES.some(m=>m[0]===n))&&obj(x.journeys)&&(x.active===null||TOPICS.some(t=>t.id===x.active)));for(const [id,j]of Object.entries(x.journeys))check(TOPICS.some(t=>t.id===id)&&obj(j)&&integer(j.completed)&&j.completed<=7&&(j.last===null||past(j.last)));}
   else if(k==='scripture_journey_runs_v2')check(JourneyRuns.valid(x));
   else if(k==='favorite_verses')check(Array.isArray(x)&&x.every(v=>obj(v)&&text(v.ref)&&text(v.text)&&(v.version===undefined||['KJV','WEB','NIV'].includes(v.version))&&(!v.bible||(obj(v.bible)&&['kjv','web'].includes(v.bible.version)&&position({...v.bible,offset:v.bible.offset||0})))));
-  else if(k==='scripture_prayer_names_v1')check(obj(x)&&x.version===1&&Array.isArray(x.names)&&x.names.length===20&&x.names.every(n=>typeof n==='string'&&n.length<=100));
+  else if(k==='scripture_prayer_names_v1')check(PrayerNameList.valid(x));
   else if(k==='saved_prayers_v1')check(Array.isArray(x)&&x.every(v=>obj(v)&&text(v.id)&&['morning','evening','healing','stress-anxiety','guidance-decisions','protection','peace','gratitude'].includes(v.category)&&typeof v.file==='string'&&new RegExp('^'+(v.category==='guidance-decisions'?'guidance-wisdom':v.category)+'-([1-9]|[1-4][0-9]|50)\\.mp3$').test(v.file)&&(v.duration===null||v.duration===undefined||(Number.isFinite(v.duration)&&v.duration>=0))));
   else if(k==='holy_bible_reader_v2')check(obj(x)&&obj(x.positions)&&Object.entries(x.positions).every(([c,p])=>['kjv','web'].includes(c)&&position(p))&&(x.lastVersion===null||x.lastVersion===undefined||['kjv','web'].includes(x.lastVersion))&&(x.fontSize===undefined||(Number.isFinite(x.fontSize)&&x.fontSize>=16&&x.fontSize<=30)));
   else if(k==='holy_bible_highlights_v1')check(obj(x)&&Object.entries(x).every(([id,v])=>/^(kjv|web):\d+:\d+:\d+$/.test(id)&&v===true));
@@ -3750,7 +3764,7 @@ const ProgressBackup=(()=>{
   else if(k==='scripture_journey_runs_v2')out[k]=JourneyRuns.merge(x,y);
   else if(k==='scripture_background_v1')out[k]={...y,...x,announced:x.announced||y.announced};
   else if(k==='favorite_verses')out[k]=union(x,y,v=>(v.version||'NIV')+':'+normalizeRef(v.ref));
-  else if(k==='scripture_prayer_names_v1')out[k]=x.names.some(n=>n.trim())?x:y;
+  else if(k==='scripture_prayer_names_v1')out[k]=PrayerNameList.merge(x,y);
   else if(k==='saved_prayers_v1')out[k]=union(x,y,v=>v.category+':'+v.file);
   else if(k==='holy_bible_reader_v2')out[k]={...y,...x,positions:{...y.positions,...x.positions}};
   else if(k==='holy_bible_highlights_v1')out[k]={...y,...x};
@@ -3766,7 +3780,7 @@ const ProgressBackup=(()=>{
  const status=t=>$('backup-status').textContent=t;
  function open(){pending=null;sequence++;$('backup-preview').hidden=true;$('backup-file').value='';$('backup-confirm').checked=false;$('backup-mode').value='merge';$('backup-replace-warning').hidden=true;status('');const stamp=get('scripture_last_backup_v1');$('backup-last').textContent=stamp?'Last backup download requested: '+new Date(stamp).toLocaleString():'No backup downloaded on this device yet.';showDialog('backup-dialog');}
  function download(){try{window.Lifetime.capture();const data=collect(),createdAt=new Date().toISOString(),blob=new Blob([JSON.stringify({app:'daily-scripture',format:1,createdAt,data},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Daily-Scripture-Backup-'+dayKey()+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);put('scripture_last_backup_v1',createdAt);$('backup-last').textContent='Last backup download requested: '+new Date(createdAt).toLocaleString();status('Backup download requested. Check your Downloads folder or your browser’s save prompt.');}catch(e){status('Backup could not be created. '+e.message);}}
- async function select(file){const token=++sequence;pending=null;$('backup-preview').hidden=true;$('backup-confirm').checked=false;if(!file)return;try{check(file.size<=10000000);const p=parse(await file.text());if(token!==sequence)return;pending=p;const d=p.data,g=d.scripture_growth_v1,l=d.scripture_lifetime_v1;const badgeCount=new Set([...(g?.badges||[]),...Object.keys(l?.badges||{}).map(Number)]).size;$('backup-summary').textContent='Created '+new Date(p.createdAt).toLocaleString()+' • '+badgeCount+' streak signets • '+(d.scripture_journey_runs_v2?.signets.length||0)+' journey signets • '+(d.favorite_verses?.length||0)+' saved verses • '+(d.saved_prayers_v1?.length||0)+' saved prayers • '+(d.scripture_prayer_names_v1?.names.filter(n=>n.trim()).length||0)+' prayer names';$('backup-preview').hidden=false;status('Review the backup and choose how to restore it.');}catch(e){if(token===sequence)status(e instanceof SyntaxError?'This is not a valid backup JSON file. Nothing was changed.':e.message);}}
+ async function select(file){const token=++sequence;pending=null;$('backup-preview').hidden=true;$('backup-confirm').checked=false;if(!file)return;try{check(file.size<=10000000);const p=parse(await file.text());if(token!==sequence)return;pending=p;const d=p.data,g=d.scripture_growth_v1,l=d.scripture_lifetime_v1;const badgeCount=new Set([...(g?.badges||[]),...Object.keys(l?.badges||{}).map(Number)]).size;$('backup-summary').textContent='Created '+new Date(p.createdAt).toLocaleString()+' • '+badgeCount+' streak signets • '+(d.scripture_journey_runs_v2?.signets.length||0)+' journey signets • '+(d.favorite_verses?.length||0)+' saved verses • '+(d.saved_prayers_v1?.length||0)+' saved prayers • '+(d.scripture_prayer_names_v1?.names.filter((n,i)=>n.trim()||d.scripture_prayer_names_v1.reasons?.[i]?.trim()).length||0)+' prayer entries';$('backup-preview').hidden=false;status('Review the backup and choose how to restore it.');}catch(e){if(token===sequence)status(e instanceof SyntaxError?'This is not a valid backup JSON file. Nothing was changed.':e.message);}}
  function restore(){if(!pending)return;const replace=$('backup-mode').value==='replace';if(replace&&!$('backup-confirm').checked){status('Confirm replacement before restoring. Download a backup first if you want to keep your current data.');return;}try{const data=replace?pending.data:merge(collect(),pending.data);for(const [k,v]of Object.entries(data))validate(k,v);window.scriptureRestoring=true;apply(data,replace);location.reload();}catch(e){window.scriptureRestoring=false;status(e.message);}}
  return {open,download,select,restore,parse,merge,apply,validate,collect};
 })();
