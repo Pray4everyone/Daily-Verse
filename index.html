@@ -973,6 +973,14 @@ body{padding:calc(152px + env(safe-area-inset-top)) clamp(14px,3vw,24px) max(36p
 .daily-card-actions{margin-top:22px;gap:10px;flex-wrap:wrap}
 .daily-card-actions .secondary{min-height:44px;padding:10px 18px}
 .page>.resume-card{padding:20px;gap:16px}
+.active-journeys{width:100%;min-width:0}
+.active-journeys>h2{margin:0 0 12px;color:var(--gold);font:600 14px/1.5 var(--ui-font,system-ui)}
+.active-journeys-list{display:grid;gap:14px}
+.active-journey-card{width:100%;min-width:0;padding:20px;gap:16px;margin:0}
+.active-journey-card>div{min-width:0;overflow-wrap:anywhere}
+.active-journey-card .journey-availability{display:block;margin-top:5px}
+.active-journey-card>button{flex-shrink:0;max-width:100%}
+@media(max-width:600px){.active-journey-card{padding:18px}.active-journey-card>button{align-self:flex-end}}
 button,input,select,.menu-item,.tiny,.dialog-body,.resume-card,.toast{font-family:var(--ui-font)}
 .dialog-body{font-size:15px;line-height:1.65}
 .verse,#reader-text,.explore-reading,.extended-reading,.saved-entry>p,.bible-page-text{font-family:var(--scripture-font)}
@@ -1013,9 +1021,11 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 /* Selected prayer: one header row and a stable playing border. */
 .prayer-now{position:relative;border-radius:18px;padding:24px 20px;background:linear-gradient(145deg,#213247,#142136);box-shadow:0 8px 24px #0002}
 .prayer-category-icon{margin:0 auto 14px;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--gold-line);border-radius:50%;background:#e8c8870b}
-.prayer-title-row{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:12px;align-items:center;text-align:left;margin:0 0 10px}
+.prayer-title-row{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:center;text-align:left;margin:0 0 10px}
 .prayer-title-row #prayer-track-title{font-size:clamp(22px,5vw,28px);line-height:1.3;margin:0;overflow-wrap:anywhere}
-#prayer-save{align-self:center;border:1px solid var(--gold-line)}
+.prayer-window-actions{display:flex;align-items:flex-end;gap:12px;margin-top:18px}
+.prayer-window-actions #prayer-back{min-width:0}
+#prayer-save{align-self:flex-end;flex-shrink:0;margin-left:auto;border:1px solid var(--gold-line)}
 .prayer-duration{font:500 12px/1.6 var(--ui-font,system-ui);letter-spacing:.02em;margin:0 0 18px;color:var(--soft)}
 #prayer-audio{display:block;width:100%;max-width:100%;margin:0 auto 16px}
 .prayer-now.is-playing{border-color:var(--gold);box-shadow:0 0 0 1px #e8c88733,0 8px 28px #0003}
@@ -1049,6 +1059,8 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 .undo-notice{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10000;display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #cfb77d;border-radius:14px;background:#142235;color:#fff;box-shadow:0 6px 24px #0008;max-width:calc(100% - 32px);width:max-content}
 dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:none;width:auto;max-width:100%;z-index:20;margin:8px 0}
 .undo-notice button{min-height:44px;color:#efd69b;flex-shrink:0}
+.undo-notice.is-fading{opacity:0;transition:opacity .2s ease}
+@media(prefers-reduced-motion:reduce){.undo-notice.is-fading{transition:none}}
 @media(prefers-reduced-motion:reduce){.loading-hands{animation:none}}
 
 .lifetime-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0 24px}
@@ -1209,7 +1221,7 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
                 </section>
                 <section class="faith-section" aria-labelledby="journey-section-label">
                   <p id="journey-section-label" class="drop-label">Scripture Journeys</p>
-                  <button class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 3 21 M16 3l5 18 M12 3v3 M12 10v4 M12 18v3"/></svg><span>Explore Journeys</span></button>
+                  <button class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 3 21 M16 3l5 18 M12 3v3 M12 10v4 M12 18v3"/></svg><span>Explore 7 Day Prayer Journey</span></button>
                 </section>
                 <section class="faith-section" aria-labelledby="topic-section-label">
                   <p id="topic-section-label" class="drop-label">Scripture by Topic</p>
@@ -1288,13 +1300,10 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
     </section>
 
     <div class="explore-launch"><button id="explore-verse-button" class="secondary" type="button" onclick="VerseExplorer.open()">Explore Another Verse →</button></div>
-    <div id="resume-card" class="resume-card glass" hidden>
-        <div>
-            <strong id="resume-title"></strong>
-            <p id="resume-detail" class="tiny"></p>
-        </div>
-        <button class="secondary" onclick="resumeJourney()">Continue Journey →</button>
-    </div>
+    <section id="resume-card" class="active-journeys" aria-labelledby="active-journeys-title" hidden>
+        <h2 id="active-journeys-title">Your Journeys</h2>
+        <div id="active-journeys-list" class="active-journeys-list"></div>
+    </section>
 
 </main>
 
@@ -1308,14 +1317,14 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
   <div id="prayer-controls" hidden>
    <p id="prayer-topics-label" class="prayer-label">Prayer topic</p><select id="prayer-category" hidden aria-label="Prayer topic"></select><div id="prayer-categories" class="prayer-categories" role="group" aria-labelledby="prayer-topics-label"></div>
    <section id="prayer-now" class="prayer-now" hidden aria-labelledby="prayer-track-title">
-    <div id="prayer-category-icon" class="prayer-category-icon"></div><div class="prayer-title-row"><h3 id="prayer-track-title"></h3><button id="prayer-save" class="secondary save-toggle" type="button" aria-label="Save prayer" aria-pressed="false">☆</button></div><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
+    <div id="prayer-category-icon" class="prayer-category-icon"></div><div class="prayer-title-row"><h3 id="prayer-track-title"></h3></div><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
     <audio id="prayer-audio" controls controlsList="nodownload" preload="metadata" aria-label="Prayer audio player"></audio>
     <p class="tiny">Press Play when you’re ready. Closing this window pauses the prayer.</p>
     <button id="prayer-another" class="secondary" type="button" hidden>↻ Another Prayer</button>
     <p class="tiny prayer-credit">AI-generated prayer narration.</p>
    </section>
   </div>
-  <button id="prayer-back" class="secondary" type="button" hidden>← Back to Your Reading</button>
+  <div class="prayer-window-actions"><button id="prayer-back" class="secondary" type="button" hidden>← Back to Your Reading</button><button id="prayer-save" class="secondary save-toggle" type="button" aria-label="Save prayer" aria-pressed="false" hidden>☆</button></div>
  </div>
 </dialog>
 
@@ -1910,18 +1919,26 @@ const MILESTONES = [
 const STATE_KEY = "scripture_growth_v1";
 const memory = {};
 
-let undoNotice=null;
+let undoNotice=null,undoTimer=0,undoFadeTimer=0;
+function clearUndoNotice(box=undoNotice){
+ if(box!==undoNotice){box?.remove();return;}
+ clearTimeout(undoTimer);clearTimeout(undoFadeTimer);
+ undoNotice=null;box?.remove();
+}
 function offerUndo(message,restore){
- if(undoNotice)undoNotice.remove();
+ clearUndoNotice();
  const host=Array.from(document.querySelectorAll('dialog[open]')).pop()||document.body;
  const box=document.createElement('div');box.className='undo-notice';box.setAttribute('role','status');
  const label=document.createElement('span');label.textContent=message;
  const button=document.createElement('button');button.type='button';button.textContent='Undo';
- const dismiss=document.createElement('button');dismiss.type='button';dismiss.textContent='×';dismiss.setAttribute('aria-label','Dismiss undo');
- box.append(label,button,dismiss);host.prepend(box);undoNotice=box;
- // Keep Undo available until dismissed or replaced; no timed accessibility barrier.
- dismiss.onclick=()=>box.remove();
- button.onclick=()=>{box.remove();restore();};
+ box.append(label,button);host.prepend(box);undoNotice=box;
+ button.onclick=()=>{if(box!==undoNotice)return;clearUndoNotice(box);restore();};
+ undoTimer=setTimeout(()=>{
+  if(box!==undoNotice)return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){clearUndoNotice(box);return;}
+  box.classList.add('is-fading');
+  undoFadeTimer=setTimeout(()=>clearUndoNotice(box),200);
+ },3000);
 }
 function undoVerseRemoval(record,after){
  if(!record)return;
@@ -2472,25 +2489,42 @@ function completeJourneyDay() {
     );
 }
 
-function renderResume() {
-    const topic = TOPICS.find(item => item.id === state.active);
-    const journey = topic && state.journeys[topic.id];
-
-    $("resume-card").hidden = !journey;
-    if (!journey) return;
-
-    $("resume-title").replaceChildren(faithIcon(topicIcon(topic.id)),document.createTextNode(" "+topic.name));
-
-    $("resume-detail").textContent =
-        journey.completed === 7
-            ? "Journey completed • Your badge is earned"
-            : journey.last === dayKey()
-                ? `${journey.completed} of 7 complete • Next reading tomorrow`
-                : `Continue your journey • Day ${journey.completed + 1} of 7`;
+function activeJourneys() {
+    const topics = DISPLAY_TOPICS.flatMap(topic => {
+        const progress = state.journeys[topic.id];
+        return progress && progress.completed < 7 ? [{
+            id:topic.id,name:topic.name,icon:topicIcon(topic.id),total:7,
+            completed:progress.completed,last:progress.last,
+            open:()=>startJourney(topic.id)
+        }] : [];
+    });
+    return [...topics,...(window.ExtraJourneys?.active() || [])];
 }
 
-function resumeJourney() {
-    if (state.active) startJourney(state.active);
+function renderResume() {
+    const journeys = activeJourneys(), list = $('active-journeys-list');
+    $('resume-card').hidden = journeys.length === 0;
+    list.replaceChildren();
+    for (const journey of journeys) {
+        const waiting = journey.last === dayKey();
+        const day = waiting ? Math.max(1,journey.completed) : journey.completed + 1;
+        const card = element('article','resume-card glass active-journey-card');
+        const details = element('div','');
+        const title = element('strong','',journey.name);
+        title.id = 'active-journey-title-' + journey.id;
+        title.prepend(faithIcon(journey.icon),document.createTextNode(' '));
+        card.setAttribute('aria-labelledby',title.id);
+        const progress = element('p','tiny',`Day ${day} of ${journey.total} • ${journey.completed} of ${journey.total} readings complete`);
+        const availability = element('span','tiny journey-availability',waiting
+            ? `Day ${journey.completed + 1} opens tomorrow`
+            : 'Your next reading is ready');
+        details.append(title,progress,availability);
+        const button = element('button','secondary','Continue Journey →');
+        button.type = 'button';
+        button.setAttribute('aria-label','Continue ' + journey.name + ' journey');
+        button.onclick = journey.open;
+        card.append(details,button);list.append(card);
+    }
 }
 
 function openBadges() {
@@ -3247,7 +3281,7 @@ const SiteTour=(()=>{
         {
                 "target": "#grow-toggle",
                 "title": "Journeys That Grow with You",
-                "text": "Open Explore Journeys for seven-day readings. Complete today’s reading using the button beside the verse; Listen to a Prayer is farther down. A 14-day streak unlocks Walking Through the Psalms; 30 days unlocks Walking with Jesus. Earned access stays available. If a window shows More below, tap it or scroll to see the rest."
+                "text": "Open Explore 7 Day Prayer Journey for seven-day readings. Each unfinished journey appears in its own card on the homepage with its day, progress, and Continue button. Complete today’s reading using the button beside the verse; Listen to a Prayer is farther down. A 14-day streak unlocks Walking Through the Psalms; 30 days unlocks Walking with Jesus. Earned access stays available. If a window shows More below, tap it or scroll to see the rest."
         },
         {
                 "target": "#bible-launch",
@@ -3379,7 +3413,7 @@ const PrayerPlayer=(()=>{
  let catalog=null,request=0,requestedCategory='',fromScripture=false;
  const topicMap={peace:'peace',worry:'stress-anxiety',healing:'healing',guidance:'guidance-decisions',patience:'guidance-decisions',gratitude:'gratitude',protection:'protection'};
  function pause(){audio.pause();}
- function clear(){pause();audio.removeAttribute('src');audio.load();document.getElementById('prayer-now').hidden=true;}
+ function clear(){pause();audio.removeAttribute('src');audio.load();document.getElementById('prayer-now').hidden=true;saveButton.hidden=true;}
  function option(value,label){const o=document.createElement('option');o.value=value;o.textContent=label;return o;}
  async function loadCatalog(){
   if(!catalog)catalog=[
@@ -3451,7 +3485,7 @@ const PrayerPlayer=(()=>{
  function renderSavedPrayers(){
   const list=savedPrayers(),root=document.getElementById('saved-prayers-list');root.replaceChildren();
   document.getElementById('saved-prayers-summary').textContent='Saved Prayers ('+list.length+')';
-  if(!list.length){root.append(element('p','tiny','Tap the star beside a prayer to save it here.'));return;}
+  if(!list.length){root.append(element('p','tiny','Choose a prayer, then tap the star at the bottom right of this window to save it here.'));return;}
   for(const item of list.slice().reverse()){
    const c=catalog?.find(c=>c.id===item.category);if(!c)continue;
    const row=element('div','saved-prayer-row'),heading=element('p','',c.label+' Prayer');
@@ -3491,7 +3525,7 @@ const PrayerPlayer=(()=>{
   document.getElementById('prayer-track-title').textContent=c.label+' Prayer';
   document.getElementById('prayer-category-icon').replaceChildren(faithIcon(categoryIcons[c.id]||'headphones'));duration.textContent='Loading recording length…';
   audio.setAttribute('aria-label',c.label+' prayer audio player');audio.src=new URL('prayers/'+track.file,document.baseURI).href;
-  document.getElementById('prayer-now').hidden=false;another.hidden=c.tracks.length<2;audio.load();
+  document.getElementById('prayer-now').hidden=false;saveButton.hidden=false;another.hidden=c.tracks.length<2;audio.load();
   if(play)audio.play().catch(()=>{if(token===selectionToken&&dialog.open)status.textContent='Press Play to listen to this prayer.';});
  }
  async function selectCategory(){
@@ -3630,7 +3664,7 @@ const ExtraJourneys=(()=>{
  function unlocked(plan){return Number(state.longest)>=plan.unlock;}
  function available(p,plan){return p.done>=plan.readings.length?plan.readings.length-1:p.last===dayKey()?Math.max(0,p.done-1):p.done;}
  function list(){const root=$('extended-journeys');root.replaceChildren();for(const plan of plans){const p=item(plan),b=element('button','secondary journey-choice',plan.name);b.type='button';b.disabled=!unlocked(plan);b.append(element('span','tiny',!unlocked(plan)?'Unlocks with a '+plan.unlock+'-day streak':p.done===plan.readings.length?'Completed • Revisit all '+p.done+' readings':plan.readings.length+' days • '+p.done+' complete'));b.onclick=()=>open(plan.id);root.append(b);}}
- function open(id){const plan=plans.find(x=>x.id===id);if(!plan||!unlocked(plan))return;selected=plan;view=available(item(plan),plan);showDialog('extended-dialog');paint();if(item(plan).done===0)window.VisualEffects?.journeyStart(plan.id,$('extended-days'));}
+ function open(id){const plan=plans.find(x=>x.id===id);if(!plan||!unlocked(plan))return;const data=progress();if(!Object.hasOwn(data,id)){data[id]={done:0,last:null};put(key,JSON.stringify(data));}selected=plan;view=available(item(plan),plan);showDialog('extended-dialog');paint();renderResume();if(item(plan).done===0)window.VisualEffects?.journeyStart(plan.id,$('extended-days'));}
  async function paint(){const token=++request;ready=false;const plan=selected,p=item(plan);view=Math.min(view,available(p,plan));const [book,chapter]=plan.readings[view];$('extended-title').textContent=plan.name;$('extended-progress').textContent='Day '+(view+1)+' of '+plan.readings.length+' • '+book+' '+chapter+' • WEB';$('extended-text').replaceChildren();$('extended-status').textContent='Opening your reading…';$('extended-complete').disabled=true;$('extended-retry').hidden=true;
   const days=$('extended-days');days.replaceChildren();plan.readings.forEach((_,i)=>{const b=element('button','secondary',String(i+1)+(i<p.done?' ✓':''));b.type='button';b.disabled=i>available(p,plan);b.setAttribute('aria-label','Day '+(i+1)+(i<p.done?', completed':''));b.setAttribute('aria-current',String(i===view));b.onclick=()=>{view=i;paint();};days.append(b);});
   let timer;try{let data=cache.get(book);if(!data){const controller=new AbortController();timer=setTimeout(()=>controller.abort(),15000);const response=await fetch(new URL('bible-data/web/'+encodeURIComponent(book)+'.json',document.baseURI),{signal:controller.signal});if(!response.ok)throw Error('unavailable');data=await response.json();cache.set(book,data);}if(token!==request||!$('extended-dialog').open)return;const entries=Object.entries(data[String(chapter)]||{});if(!entries.length||entries.some(([n,t])=>!/^\d+$/.test(n)||typeof t!=='string'))throw Error('invalid chapter');
@@ -3638,11 +3672,13 @@ const ExtraJourneys=(()=>{
   }catch{cache.delete(book);if(token===request&&$('extended-dialog').open){$('extended-status').textContent='This reading could not load. Please check your connection and try again.';$('extended-retry').hidden=false;}}finally{clearTimeout(timer);}
  }
  function controls(){const p=item(selected),total=selected.readings.length;const can=ready&&view===p.done&&p.done<total&&p.last!==dayKey();$('extended-complete').disabled=!can;$('extended-complete').textContent=p.done===total?'Journey completed':'Mark today’s reading complete';$('extended-status').textContent=p.done===total?'You completed this journey. Every reading remains available to revisit.':p.last===dayKey()?p.done+' of '+total+' complete. Your next reading opens tomorrow.':p.done+' of '+total+' complete. Missed days do not erase your progress.';}
- function complete(){if(!selected||!ready)return;const p=item(selected);if(view!==p.done||p.done>=selected.readings.length||p.last===dayKey()||!unlocked(selected))return;const data=progress(),before=JSON.stringify(data);data[selected.id]={done:p.done+1,last:dayKey()};if(!put(key,JSON.stringify(data))){memory[key]=before;$('extended-status').textContent='This browser could not save your progress. Please try again.';return;}window.Lifetime?.capture();window.FaithJourney?.record('readings',selected.id+':'+(p.done+1),selected.name+' • Day '+(p.done+1));paint();window.VisualEffects?.complete($('extended-complete'),$('extended-days').children[p.done],p.done+1===selected.readings.length,selected.name);}
+ function complete(){if(!selected||!ready)return;const p=item(selected);if(view!==p.done||p.done>=selected.readings.length||p.last===dayKey()||!unlocked(selected))return;const data=progress(),before=JSON.stringify(data);data[selected.id]={done:p.done+1,last:dayKey()};if(!put(key,JSON.stringify(data))){memory[key]=before;$('extended-status').textContent='This browser could not save your progress. Please try again.';return;}window.Lifetime?.capture();window.FaithJourney?.record('readings',selected.id+':'+(p.done+1),selected.name+' • Day '+(p.done+1));paint();renderResume();window.VisualEffects?.complete($('extended-complete'),$('extended-days').children[p.done],p.done+1===selected.readings.length,selected.name);}
  function badges(){for(const plan of plans){if(item(plan).done===plan.readings.length){const row=element('div','badge earned');row.append(element('strong','',plan.name),element('span','badge-status',plan.readings.length+'-day journey ✓'));$('journey-badges').append(row);}}}
  $('extended-complete').addEventListener('click',complete);$('extended-retry').addEventListener('click',paint);$('extended-dialog').addEventListener('close',()=>{request++;ready=false;});
- return {list,open,badges};
+ function active(){const data=progress();return plans.filter(plan=>unlocked(plan)&&Object.hasOwn(data,plan.id)&&item(plan).done<plan.readings.length).map(plan=>({id:plan.id,name:plan.name,icon:'book',total:plan.readings.length,completed:item(plan).done,last:item(plan).last,open:()=>open(plan.id)}));}
+ return {list,open,badges,active};
 })();
+window.ExtraJourneys=ExtraJourneys;renderResume();
 
 </script>
 <script>
@@ -3700,7 +3736,7 @@ const ProgressBackup=(()=>{
   else if(k==='holy_bible_reader_v2')check(obj(x)&&obj(x.positions)&&Object.entries(x.positions).every(([c,p])=>['kjv','web'].includes(c)&&position(p))&&(x.lastVersion===null||x.lastVersion===undefined||['kjv','web'].includes(x.lastVersion))&&(x.fontSize===undefined||(Number.isFinite(x.fontSize)&&x.fontSize>=16&&x.fontSize<=30)));
   else if(k==='holy_bible_highlights_v1')check(obj(x)&&Object.entries(x).every(([id,v])=>/^(kjv|web):\d+:\d+:\d+$/.test(id)&&v===true));
   else if(k==='faith_journey_activity_v1'){check(obj(x)&&x.version===1&&Array.isArray(x.earned));if(x.current)activity(x.current);x.earned.forEach(e=>{check(obj(e)&&text(e.id)&&integer(e.days)&&past(e.date));activity(e.data);});}
-  else if(k==='extended_scripture_journeys_v1'){check(obj(x));for(const [id,j]of Object.entries(x))check(['psalms14','jesus30'].includes(id)&&obj(j)&&integer(j.done)&&j.done<=(id==='psalms14'?14:30)&&past(j.last));}
+  else if(k==='extended_scripture_journeys_v1'){check(obj(x));for(const [id,j]of Object.entries(x))check(['psalms14','jesus30'].includes(id)&&obj(j)&&integer(j.done)&&j.done<=(id==='psalms14'?14:30)&&(past(j.last)||(j.done===0&&j.last===null)));}
   else if(k==='scripture_music_preferences_v1')check(obj(x)&&Object.values(x).every(v=>typeof v==='boolean'||(typeof v==='number'&&Number.isFinite(v))||text(v)));
   else if(k==='scripture_earned_style_v1')check(obj(x)&&['auto','original','candle','glass','heritage','radiant'].includes(x.choice));
   else if(k==='daily_scripture_tour_seen_v1')check(x==='seen');
