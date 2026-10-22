@@ -1050,6 +1050,15 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:none;width:auto;max-width:100%;z-index:20;margin:8px 0}
 .undo-notice button{min-height:44px;color:#efd69b;flex-shrink:0}
 @media(prefers-reduced-motion:reduce){.loading-hands{animation:none}}
+
+.lifetime-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0 24px}
+.lifetime-card{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;border:1px solid #c9ab6a88;border-radius:16px;padding:20px 12px;background:linear-gradient(145deg,#dcc28b16,#142337);min-width:0;overflow-wrap:anywhere}
+.lifetime-card .faith-icon{width:36px;height:36px;color:#e8c887}.lifetime-card strong{color:#f1ddb0}.lifetime-card small{font-size:12px;color:#c3cad4}.lifetime-card.upcoming{background:#ffffff03;border-color:#ffffff24}.lifetime-card.upcoming .faith-icon{opacity:.4}
+#lifetime-stats{line-height:1.9}#lifetime-next{padding:14px;border-left:2px solid #d9bc7b;background:#ffffff04;border-radius:8px}
+#backup-dialog button,#backup-dialog select,#backup-dialog input[type=file]{min-height:44px;max-width:100%}#backup-dialog select{display:block;width:100%;padding:12px;margin:8px 0 14px;background:#17263a;color:#f5ead6;border:1px solid #ccb77e;border-radius:10px}
+.backup-actions{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}.backup-primary{background:#e8c887;color:#172337;border:1px solid #e8c887;border-radius:12px;padding:12px 18px;font-weight:700}
+#backup-preview{border-top:1px solid #ffffff26;margin-top:20px;padding-top:16px}#backup-replace-warning{padding:12px;border:1px solid #d1ac70;border-radius:10px;margin-bottom:14px}#backup-replace-warning label{display:flex;gap:10px;align-items:flex-start}#backup-confirm{width:22px;height:22px;flex-shrink:0}#backup-status{line-height:1.6}
+@media(max-width:350px){.lifetime-grid{gap:8px}.lifetime-card{padding:16px 8px}}
 </style>
 </head>
 
@@ -1060,7 +1069,7 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
         <button id="streak-button"
                 class="pill glass"
                 onclick="openBadges()"
-                aria-label="View streaks and earned badges">
+                aria-label="View current streak and activity">
             <span id="streak-display"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M13 2c1 6-4 7-3 11-3-1-3-3-3-3-6 8 0 12 5 12s11-6 1-20z"/></svg> 1 Day Streak</span>
         </button>
 
@@ -1136,6 +1145,8 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
                rel="noopener noreferrer">
                 <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7"/></svg> Find a Church
             </a>
+            <button class="menu-item" type="button" onclick="Lifetime.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="m8 12-2 9 6-3 6 3-2-9"/></svg> Lifetime Achievements</button>
+            <button class="menu-item" type="button" onclick="ProgressBackup.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v5h16v-5"/></svg> Backup &amp; Restore</button>
             <hr class="menu-divider">
             <div class="music-volume-control"><label for="music-volume">Music volume <output id="music-volume-value" for="music-volume">100%</output></label><input id="music-volume" type="range" min="0" max="100" step="1" value="100"><p class="tiny">Your music preference is saved on this device. Some phones use their device volume controls.</p></div>
             <button id="tour-replay" class="menu-item" type="button" onclick="SiteTour.start()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg> Replay Tour</button>
@@ -1300,14 +1311,14 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
 
 <dialog id="badges-dialog" aria-labelledby="badges-title">
     <header class="dialog-head">
-        <h2 id="badges-title">🏆 Your Faith Journey</h2>
+        <h2 id="badges-title">Your Streak &amp; Progress</h2>
         <button class="close"
                 onclick="closeDialog('badges-dialog')"
                 aria-label="Close badges">×</button>
     </header>
 
     <div class="dialog-body">
-        <p>Your earned badges stay with you—even when a streak starts again.</p>
+        <p>See your current streak and the activity recorded during it.</p>
 
         <div class="stats">
             <div class="stat">
@@ -1332,14 +1343,25 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
         <section id="faith-overview" aria-label="Your streak activity overview"></section>
         <div id="badge-list" class="badges"></div>
 
-        <h3 style="margin-top:24px">Journey completion badges</h3>
-        <div id="journey-badges" class="badges"></div>
+        <p class="tiny">Find your earned badges and completed journeys in Menu → Lifetime Achievements.</p>
 
         <p class="tiny storage-note">
             Saved in this browser on this device. Earned badges survive
             missed days; clearing browser data removes them.
         </p>
     </div>
+</dialog>
+
+
+<dialog id="lifetime-dialog" aria-labelledby="lifetime-title">
+<header class="dialog-head"><h2 id="lifetime-title">Lifetime Achievements</h2><button class="close" type="button" onclick="closeDialog('lifetime-dialog')" aria-label="Close lifetime achievements">×</button></header>
+<div class="dialog-body"><p id="lifetime-stats" class="tiny"></p><h3>Earned badges</h3><div id="lifetime-earned" class="lifetime-grid"></div><p id="lifetime-next"></p><details id="lifetime-future"><summary>View upcoming badges</summary><div id="lifetime-upcoming" class="lifetime-grid"></div></details><h3>Completed journeys</h3><div id="lifetime-journeys" class="lifetime-grid"></div><p class="tiny">Earned achievements stay with you after a missed day. Your history is saved only in this browser. Use Backup &amp; Restore in Menu to keep a copy.</p></div>
+</dialog>
+<dialog id="backup-dialog" aria-labelledby="backup-title">
+<header class="dialog-head"><h2 id="backup-title">Backup &amp; Restore</h2><button class="close" type="button" onclick="closeDialog('backup-dialog')" aria-label="Close backup and restore">×</button></header>
+<div class="dialog-body"><p>Keep a private copy of your achievements, reading progress, saved verses and prayers, highlights, bookmarks, and preferences.</p><p class="tiny">The file stays on your device. No account or upload is needed. Audio and photographs are not included; saved prayers link to the recordings on this site.</p>
+<div class="backup-actions"><button type="button" class="backup-primary" onclick="ProgressBackup.download()">Download Backup</button></div><p class="tiny" id="backup-last"></p><hr class="menu-divider"><h3>Restore a backup</h3><label for="backup-file">Choose your Daily Scripture backup file</label><input id="backup-file" type="file" accept=".json,application/json">
+<div id="backup-preview" hidden><p id="backup-summary"></p><label for="backup-mode">How would you like to restore?</label><select id="backup-mode"><option value="merge">Merge with this device (recommended)</option><option value="replace">Replace this device’s data</option></select><p class="tiny">Merge combines saved items, highlights, achievements, and journey progress. This device’s bookmarks and preferences take priority. Reading-day and activity totals use the larger known totals rather than adding overlapping history. Restoring never changes an old visit date to today or revives an expired streak.</p><div id="backup-replace-warning" hidden><p>Replacement removes this site’s current progress and saved items and uses the backup instead. Download a backup first to keep your current history.</p><label><input id="backup-confirm" type="checkbox">I understand that my current site data will be replaced.</label></div><button type="button" class="backup-primary" onclick="ProgressBackup.restore()">Restore &amp; Reload</button></div><p id="backup-status" role="status" aria-live="polite"></p></div>
 </dialog>
 
 <dialog id="favorites-dialog" aria-labelledby="favorites-title">
@@ -1862,6 +1884,7 @@ function get(key, fallback = null) {
 }
 
 function put(key, value) {
+    if(window.scriptureRestoring)return false;
     memory[key] = value;
 
     try {
@@ -1975,6 +1998,8 @@ function loadState() {
 let state = loadState();
 
 function persist() {
+    if(window.scriptureRestoring)return;
+    window.Lifetime?.capture();
     put(STATE_KEY, JSON.stringify(state));
     put("verse_streak_count", String(state.current));
     put("last_verse_visit_date", state.last || dayKey());
@@ -2008,6 +2033,7 @@ function updateVisit(today = dayKey()) {
     MILESTONES.forEach(([days]) => {
         if (state.longest >= days && !state.badges.includes(days)) {
             state.badges.push(days);
+            if(window.Lifetime)window.Lifetime.badgeEarned(days);else (window.pendingBadgeDates??={})[days]=dayKey();
         }
     });
 
@@ -2374,61 +2400,8 @@ function openBadges() {
     $("stat-total").textContent = state.total;
     $("badge-list").replaceChildren();
 
-    const currentMilestone=MILESTONES.filter(([days])=>days<=state.current).at(-1)?.[0];
-    MILESTONES.forEach(([days, icon, name]) => {
-        const earned = state.badges.includes(days);
-        const isCurrent=days===currentMilestone;
-        const row = element("div", "badge milestone-row" + (earned ? " earned" : " locked")+(isCurrent?" current-milestone":""));
-        if(isCurrent)row.setAttribute('aria-current','step');
-        const details = element("div");
-
-        details.append(
-            element("strong", "", name),
-            element("small", "", `${days}-day streak milestone`)
-        );
-
-        const marker=element('span','milestone-marker',String(days));marker.setAttribute('aria-hidden','true');
-        row.append(
-            marker,details,
-            element(
-                "span",
-                "badge-status",
-                earned
-                    ? (isCurrent?"Current milestone • Earned ✓":"Earned ✓")
-                    : `${Math.max(0, days - state.current)} streak days to go`
-            )
-        );
-
-        $("badge-list").append(row);
-    });
-
-    const box = $("journey-badges");
-    box.replaceChildren();
-
-    const completed = TOPICS.filter(
-        topic => state.journeys[topic.id]?.completed === 7
-    );
-
-    if (!completed.length) {
-        box.append(element(
-            "p",
-            "tiny",
-            "Finish any seven-day journey to earn your first journey badge."
-        ));
-    }
-
-    completed.forEach(topic => {
-        const row = element("div", "badge earned");
-
-        row.append(
-            element("strong", "", `${topic.icon} ${topic.name}`),
-            element("span", "badge-status", "7-day journey ✓")
-        );
-
-        box.append(row);
-    });
-
-    ExtraJourneys.badges();
+    const next=MILESTONES.find(([days])=>days>state.current);
+    $('badge-list').append(element('p','tiny',next?'Next streak milestone: '+next[2]+' at '+next[0]+' days.':'You have reached the highest streak milestone.'));
     window.FaithJourney?.render();
     showDialog("badges-dialog");
 }
@@ -3158,12 +3131,12 @@ const SiteTour=(()=>{
         {
                 "target": "#main-toggle",
                 "title": "Your Menu",
-                "text": "Play music, adjust its volume, switch tracks, shuffle photo backgrounds, and revisit favorites. The volume control is near the bottom, above Replay Tour. Music preferences are saved on this device. The menu stays open for quick changes; tap Menu again or outside to close it. Replay Tour is at the bottom."
+                "text": "Play music, adjust its volume, switch tracks, shuffle photo backgrounds, and revisit favorites. The volume control is near the bottom, above Replay Tour. Music preferences are saved on this device. Lifetime Achievements holds earned badges and completed journeys. Backup & Restore saves or restores a private progress file. The menu stays open for quick changes; tap Menu again or outside to close it. Replay Tour is at the bottom."
         },
         {
                 "target": "#streak-button",
                 "title": "Your Streak & Milestones",
-                "text": "Tap your streak for badges and progress. After seven consecutive days, your activity overview unlocks. Totals grow through the same streak, including earlier days. Earned milestone summaries and badges remain when a streak ends."
+                "text": "Tap your streak for current progress. Find your permanent badges and completed journeys in Menu → Lifetime Achievements. After seven consecutive days, your activity overview unlocks. Totals grow through the same streak, including earlier days. Earned milestone summaries and badges remain when a streak ends."
         },
         {
                 "target": "#grow-toggle",
@@ -3481,7 +3454,7 @@ const FaithJourney=(()=>{
  let lastVisitDay=dayKey();
  const fresh=()=>({version:1,started:dayKey(),current:null,earned:[]});
  function read(){try{const raw=localStorage.getItem(key);if(raw){const x=JSON.parse(raw);if(x.version===1&&Array.isArray(x.earned))return x;}}catch{storageOK=false;}return fallback||fresh();}
- function write(d){fallback=d;try{localStorage.setItem(key,JSON.stringify(d));storageOK=true;}catch{storageOK=false;}}
+ function write(d){if(window.scriptureRestoring)return;fallback=d;try{localStorage.setItem(key,JSON.stringify(d));storageOK=true;}catch{storageOK=false;}}
  const stamp=n=>new Date(n*86400000).toISOString().slice(0,10);
  function blank(start,day,days){return {start,last:day,days,trackedFrom:day,seconds:0,chapters:{},verses:{},prayers:{},readings:{},passages:{}};}
  function sync(d){const today=dayKey();if(!d.current){const days=Math.max(1,Number(state.current)||1);d.current=blank(stamp(dayNumber(today)-days+1),today,days);}else{const gap=dayNumber(today)-dayNumber(d.current.last);if(gap===1){d.current.days++;d.current.last=today;}else if(gap>1){d.current=blank(today,today,1);}}return d.current;}
@@ -3564,7 +3537,7 @@ const ExtraJourneys=(()=>{
   }catch{cache.delete(book);if(token===request&&$('extended-dialog').open){$('extended-status').textContent='This reading could not load. Please check your connection and try again.';$('extended-retry').hidden=false;}}finally{clearTimeout(timer);}
  }
  function controls(){const p=item(selected),total=selected.readings.length;const can=ready&&view===p.done&&p.done<total&&p.last!==dayKey();$('extended-complete').disabled=!can;$('extended-complete').textContent=p.done===total?'Journey completed':'Mark today’s reading complete';$('extended-status').textContent=p.done===total?'You completed this journey. Every reading remains available to revisit.':p.last===dayKey()?p.done+' of '+total+' complete. Your next reading opens tomorrow.':p.done+' of '+total+' complete. Missed days do not erase your progress.';}
- function complete(){if(!selected||!ready)return;const p=item(selected);if(view!==p.done||p.done>=selected.readings.length||p.last===dayKey()||!unlocked(selected))return;const data=progress(),before=JSON.stringify(data);data[selected.id]={done:p.done+1,last:dayKey()};if(!put(key,JSON.stringify(data))){memory[key]=before;$('extended-status').textContent='This browser could not save your progress. Please try again.';return;}window.FaithJourney?.record('readings',selected.id+':'+(p.done+1),selected.name+' • Day '+(p.done+1));paint();}
+ function complete(){if(!selected||!ready)return;const p=item(selected);if(view!==p.done||p.done>=selected.readings.length||p.last===dayKey()||!unlocked(selected))return;const data=progress(),before=JSON.stringify(data);data[selected.id]={done:p.done+1,last:dayKey()};if(!put(key,JSON.stringify(data))){memory[key]=before;$('extended-status').textContent='This browser could not save your progress. Please try again.';return;}window.Lifetime?.capture();window.FaithJourney?.record('readings',selected.id+':'+(p.done+1),selected.name+' • Day '+(p.done+1));paint();}
  function badges(){for(const plan of plans){if(item(plan).done===plan.readings.length){const row=element('div','badge earned');row.append(element('strong','',plan.name),element('span','badge-status',plan.readings.length+'-day journey ✓'));$('journey-badges').append(row);}}}
  $('extended-complete').addEventListener('click',complete);$('extended-retry').addEventListener('click',paint);$('extended-dialog').addEventListener('close',()=>{request++;ready=false;});
  return {list,open,badges};
@@ -3606,6 +3579,84 @@ const ExtraJourneys=(()=>{
 })();
 </script>
 
+<script>
+/* Portable, private progress. Only this site's explicitly listed keys are read. */
+const ProgressBackup=(()=>{
+ const keys=['scripture_growth_v1','favorite_verses','saved_prayers_v1','holy_bible_reader_v2','holy_bible_highlights_v1','faith_journey_activity_v1','extended_scripture_journeys_v1','scripture_music_preferences_v1','daily_scripture_tour_seen_v1','scripture_lifetime_v1'];
+ const obj=x=>!!x&&typeof x==='object'&&!Array.isArray(x);
+ const integer=x=>Number.isSafeInteger(x)&&x>=0&&x<=1000000;
+ const date=x=>typeof x==='string'&&/^\d{4}-\d{1,2}-\d{1,2}$/.test(x)&&Number.isFinite(dayNumber(x))&&(()=>{const [y,m,d]=x.split('-').map(Number),v=new Date(Date.UTC(y,m-1,d));return v.getUTCFullYear()===y&&v.getUTCMonth()===m-1&&v.getUTCDate()===d;})();
+ const past=x=>date(x)&&dayNumber(x)<=dayNumber(dayKey());
+ const text=x=>typeof x==='string'&&x.length<=20000;
+ const check=(yes)=>{if(!yes)throw Error('This backup contains unsupported or invalid progress data. Nothing was changed.');};
+ function safe(x,depth=0){check(depth<25);if(Array.isArray(x)){check(x.length<20000);x.forEach(v=>safe(v,depth+1));}else if(obj(x)){check(Object.keys(x).length<30000);for(const [k,v]of Object.entries(x)){check(!['__proto__','constructor','prototype'].includes(k));safe(v,depth+1);}}else check(x===null||typeof x==='boolean'||text(x)||(typeof x==='number'&&Number.isFinite(x)));}
+ function position(x){return obj(x)&&integer(x.book)&&x.book<66&&integer(x.chapter)&&x.chapter>0&&x.chapter<=150&&integer(x.verse)&&x.verse>0&&x.verse<=176&&(x.offset===undefined||integer(x.offset));}
+ function activity(c){check(obj(c)&&past(c.start)&&past(c.last)&&integer(c.days)&&c.days>=1&&typeof c.seconds==='number'&&c.seconds>=0&&Number.isFinite(c.seconds));for(const k of ['chapters','verses','prayers','readings','passages'])check(obj(c[k])&&Object.values(c[k]).every(text));}
+ function validate(k,x){safe(x);
+  if(k==='scripture_growth_v1'){check(obj(x)&&x.version===1&&['current','longest','total'].every(k=>integer(x[k]))&&x.longest>=x.current&&x.total>=x.longest&&past(x.last)&&Array.isArray(x.badges)&&x.badges.every(n=>MILESTONES.some(m=>m[0]===n))&&obj(x.journeys)&&(x.active===null||TOPICS.some(t=>t.id===x.active)));for(const [id,j]of Object.entries(x.journeys))check(TOPICS.some(t=>t.id===id)&&obj(j)&&integer(j.completed)&&j.completed<=7&&(j.last===null||past(j.last)));}
+  else if(k==='favorite_verses')check(Array.isArray(x)&&x.every(v=>obj(v)&&text(v.ref)&&text(v.text)&&(v.version===undefined||['KJV','WEB','NIV'].includes(v.version))&&(!v.bible||(obj(v.bible)&&['kjv','web'].includes(v.bible.version)&&position({...v.bible,offset:v.bible.offset||0})))));
+  else if(k==='saved_prayers_v1')check(Array.isArray(x)&&x.every(v=>obj(v)&&text(v.id)&&['morning','evening','healing','stress-anxiety','guidance-decisions','protection','peace','gratitude'].includes(v.category)&&typeof v.file==='string'&&new RegExp('^'+(v.category==='guidance-decisions'?'guidance-wisdom':v.category)+'-([1-9]|[1-4][0-9]|50)\\.mp3$').test(v.file)&&(v.duration===null||v.duration===undefined||(Number.isFinite(v.duration)&&v.duration>=0))));
+  else if(k==='holy_bible_reader_v2')check(obj(x)&&obj(x.positions)&&Object.entries(x.positions).every(([c,p])=>['kjv','web'].includes(c)&&position(p))&&(x.lastVersion===null||x.lastVersion===undefined||['kjv','web'].includes(x.lastVersion))&&(x.fontSize===undefined||(Number.isFinite(x.fontSize)&&x.fontSize>=16&&x.fontSize<=30)));
+  else if(k==='holy_bible_highlights_v1')check(obj(x)&&Object.entries(x).every(([id,v])=>/^(kjv|web):\d+:\d+:\d+$/.test(id)&&v===true));
+  else if(k==='faith_journey_activity_v1'){check(obj(x)&&x.version===1&&Array.isArray(x.earned));if(x.current)activity(x.current);x.earned.forEach(e=>{check(obj(e)&&text(e.id)&&integer(e.days)&&past(e.date));activity(e.data);});}
+  else if(k==='extended_scripture_journeys_v1'){check(obj(x));for(const [id,j]of Object.entries(x))check(['psalms14','jesus30'].includes(id)&&obj(j)&&integer(j.done)&&j.done<=(id==='psalms14'?14:30)&&past(j.last));}
+  else if(k==='scripture_music_preferences_v1')check(obj(x)&&Object.values(x).every(v=>typeof v==='boolean'||(typeof v==='number'&&Number.isFinite(v))||text(v)));
+  else if(k==='daily_scripture_tour_seen_v1')check(x==='seen');
+  else if(k==='scripture_lifetime_v1'){check(obj(x)&&x.version===1&&obj(x.badges)&&obj(x.journeys));for(const [n,d]of Object.entries(x.badges))check(MILESTONES.some(m=>String(m[0])===n)&&(d===null||past(d)));for(const [id,d]of Object.entries(x.journeys))check((TOPICS.some(t=>t.id===id)||['psalms14','jesus30'].includes(id))&&(d===null||past(d)));}
+  return x;
+ }
+ function collect(){const data={};for(const k of keys){const raw=localStorage.getItem(k);if(raw!==null)data[k]=validate(k,k==='daily_scripture_tour_seen_v1'?raw:JSON.parse(raw));}return data;}
+ function parse(raw){check(typeof raw==='string'&&raw.length<=10000000);const p=JSON.parse(raw);check(obj(p)&&p.app==='daily-scripture'&&p.format===1&&typeof p.createdAt==='string'&&Number.isFinite(Date.parse(p.createdAt))&&obj(p.data)&&Object.keys(p.data).length>0);safe(p);for(const [k,x]of Object.entries(p.data)){check(keys.includes(k));validate(k,x);}return p;}
+ const union=(a,b,id)=>Array.from(new Map([...b,...a].map(v=>[id(v),v])).values());
+ function earnedMap(a={},b={}){const out={...a};for(const [k,v]of Object.entries(b))if(!(k in out)||(!out[k]&&v)||(v&&out[k]&&dayNumber(v)<dayNumber(out[k])))out[k]=v;return out;}
+ function journeyMap(a={},b={},field){const out={...a};for(const [k,v]of Object.entries(b))if(!out[k]||v[field]>out[k][field]||(v[field]===out[k][field]&&dayNumber(v.last)>dayNumber(out[k].last)))out[k]=v;return out;}
+ function mergeActivity(a,b){if(!a)return b;if(!b)return a;if(dayNumber(a.start)!==dayNumber(b.start))return dayNumber(a.last)>dayNumber(b.last)?a:dayNumber(a.last)<dayNumber(b.last)?b:a.days>=b.days?a:b;const out={...(dayNumber(a.last)>=dayNumber(b.last)?a:b),days:Math.max(a.days,b.days),seconds:Math.max(a.seconds,b.seconds)};for(const k of ['chapters','verses','prayers','readings','passages'])out[k]={...b[k],...a[k]};return out;}
+ function merge(a,b){const out={...b,...a};for(const k of keys){const x=a[k],y=b[k];if(x===undefined||y===undefined)continue;
+  if(k==='scripture_growth_v1'){const gap=dayNumber(x.last)-dayNumber(y.last),newest=gap>0?x:gap<0?y:x.current>=y.current?x:y;out[k]={...newest,longest:Math.max(x.longest,y.longest),total:Math.max(x.total,y.total),badges:[...new Set([...x.badges,...y.badges])],journeys:journeyMap(x.journeys,y.journeys,'completed')};}
+  else if(k==='favorite_verses')out[k]=union(x,y,v=>(v.version||'NIV')+':'+normalizeRef(v.ref));
+  else if(k==='saved_prayers_v1')out[k]=union(x,y,v=>v.category+':'+v.file);
+  else if(k==='holy_bible_reader_v2')out[k]={...y,...x,positions:{...y.positions,...x.positions}};
+  else if(k==='holy_bible_highlights_v1')out[k]={...y,...x};
+  else if(k==='extended_scripture_journeys_v1')out[k]=journeyMap(x,y,'done');
+  else if(k==='scripture_lifetime_v1')out[k]={version:1,badges:earnedMap(x.badges,y.badges),journeys:earnedMap(x.journeys,y.journeys)};
+  else if(k==='faith_journey_activity_v1'){const map=new Map(y.earned.map(e=>[e.id,e]));for(const e of x.earned){const old=map.get(e.id);map.set(e.id,old?{...e,data:mergeActivity(e.data,old.data)}:e);}out[k]={...x,current:mergeActivity(x.current,y.current),earned:[...map.values()]};}
+ }return out;}
+ function apply(data,replace){const before=new Map(),all=[...keys,'verse_streak_count','last_verse_visit_date','holy_bible_reader_v1'];for(const k of all)before.set(k,localStorage.getItem(k));
+  try{for(const k of keys){if(Object.hasOwn(data,k))localStorage.setItem(k,k==='daily_scripture_tour_seen_v1'?data[k]:JSON.stringify(data[k]));else if(replace)localStorage.removeItem(k);}if(replace)localStorage.removeItem('holy_bible_reader_v1');const state=data.scripture_growth_v1;if(state){localStorage.setItem('verse_streak_count',String(state.current));localStorage.setItem('last_verse_visit_date',state.last);}else if(replace){localStorage.removeItem('verse_streak_count');localStorage.removeItem('last_verse_visit_date');}}
+  catch(error){let rollback=true;for(const [k,v]of before)try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch{rollback=false;}throw Error(rollback?'Your browser could not save the restore. Your previous data was kept.':'Storage failed during restore. Keep your backup file and free browser storage before trying again.');}
+ }
+ let pending=null,sequence=0;
+ const status=t=>$('backup-status').textContent=t;
+ function open(){pending=null;sequence++;$('backup-preview').hidden=true;$('backup-file').value='';$('backup-confirm').checked=false;$('backup-mode').value='merge';$('backup-replace-warning').hidden=true;status('');const stamp=get('scripture_last_backup_v1');$('backup-last').textContent=stamp?'Last backup download requested: '+new Date(stamp).toLocaleString():'No backup downloaded on this device yet.';showDialog('backup-dialog');}
+ function download(){try{window.Lifetime.capture();const data=collect(),createdAt=new Date().toISOString(),blob=new Blob([JSON.stringify({app:'daily-scripture',format:1,createdAt,data},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Daily-Scripture-Backup-'+dayKey()+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);put('scripture_last_backup_v1',createdAt);$('backup-last').textContent='Last backup download requested: '+new Date(createdAt).toLocaleString();status('Backup download requested. Check your Downloads folder or your browser’s save prompt.');}catch(e){status('Backup could not be created. '+e.message);}}
+ async function select(file){const token=++sequence;pending=null;$('backup-preview').hidden=true;$('backup-confirm').checked=false;if(!file)return;try{check(file.size<=10000000);const p=parse(await file.text());if(token!==sequence)return;pending=p;const d=p.data,g=d.scripture_growth_v1,l=d.scripture_lifetime_v1;const badgeCount=new Set([...(g?.badges||[]),...Object.keys(l?.badges||{}).map(Number)]).size;$('backup-summary').textContent='Created '+new Date(p.createdAt).toLocaleString()+' • '+badgeCount+' badges • '+(d.favorite_verses?.length||0)+' saved verses • '+(d.saved_prayers_v1?.length||0)+' saved prayers';$('backup-preview').hidden=false;status('Review the backup and choose how to restore it.');}catch(e){if(token===sequence)status(e instanceof SyntaxError?'This is not a valid backup JSON file. Nothing was changed.':e.message);}}
+ function restore(){if(!pending)return;const replace=$('backup-mode').value==='replace';if(replace&&!$('backup-confirm').checked){status('Confirm replacement before restoring. Download a backup first if you want to keep your current data.');return;}try{const data=replace?pending.data:merge(collect(),pending.data);for(const [k,v]of Object.entries(data))validate(k,v);window.scriptureRestoring=true;apply(data,replace);location.reload();}catch(e){window.scriptureRestoring=false;status(e.message);}}
+ return {open,download,select,restore,parse,merge,apply,validate,collect};
+})();
+const Lifetime=(()=>{
+ const key='scripture_lifetime_v1';
+ const extra=[{id:'psalms14',name:'Walking Through the Psalms',days:14},{id:'jesus30',name:'Walking with Jesus',days:30}];
+ function capture(){const old=readJSON(key,{version:1,badges:{},journeys:{}}),data={version:1,badges:{...old.badges},journeys:{...old.journeys}};
+ for(const n of state.badges)if(!(n in data.badges))data.badges[n]=window.pendingBadgeDates?.[n]||null;
+ for(const t of TOPICS)if(state.journeys[t.id]?.completed===7&&!(t.id in data.journeys))data.journeys[t.id]=state.journeys[t.id].last||null;
+ const progress=readJSON('extended_scripture_journeys_v1',{});for(const t of extra)if(progress[t.id]?.done===t.days&&!(t.id in data.journeys))data.journeys[t.id]=progress[t.id].last||null;
+ if(JSON.stringify(old)!==JSON.stringify(data))put(key,JSON.stringify(data));return data;
+ }
+ function badgeEarned(n){const data=capture();data.badges[n]=dayKey();put(key,JSON.stringify(data));}
+ function card(name,detail,date,locked=false){const c=element('div','lifetime-card'+(locked?' upcoming':''));c.append(faithIcon('award'),element('strong','',name),element('span','tiny',detail));if(!locked)c.append(element('small','',date?'Earned '+new Date(dayNumber(date)*86400000).toLocaleDateString(undefined,{timeZone:'UTC'}):'Earned • date not recorded'));return c;}
+ function open(){updateVisit();const d=capture(),root=$('lifetime-earned');root.replaceChildren();for(const [n,icon,name]of MILESTONES)if(n in d.badges)root.append(card(name,n+'-day streak',d.badges[n]));
+ const completed=[...TOPICS.map(t=>({id:t.id,name:t.name,days:7})),...extra].filter(t=>t.id in d.journeys);$('lifetime-stats').textContent=state.longest+' days • Longest streak   |   '+state.total+' known reading days   |   '+completed.length+' journeys completed';
+ const journeys=$('lifetime-journeys');journeys.replaceChildren();for(const t of completed)journeys.append(card(t.name,t.days+'-day journey',d.journeys[t.id]));if(!completed.length)journeys.append(element('p','tiny','Complete a Scripture journey to earn your first journey badge.'));
+ const next=MILESTONES.find(([n])=>!(n in d.badges));$('lifetime-next').textContent=next?'Next: '+next[2]+' — '+state.current+' of '+next[0]+' consecutive days.':'You have earned every streak badge.';
+ const upcoming=$('lifetime-upcoming');upcoming.replaceChildren();for(const [n,icon,name]of MILESTONES)if(!(n in d.badges))upcoming.append(card(name,n+' consecutive days',null,true));$('lifetime-future').hidden=!next;$('lifetime-future').open=false;showDialog('lifetime-dialog');
+ }
+ return {open,capture,badgeEarned};
+})();
+window.Lifetime=Lifetime;Lifetime.capture();
+$('backup-file').addEventListener('change',e=>ProgressBackup.select(e.target.files[0]));
+$('backup-mode').addEventListener('change',()=>{$('backup-replace-warning').hidden=$('backup-mode').value!=='replace';$('backup-confirm').checked=false;});
+
+</script>
 </body>
 </html>
 
