@@ -1111,6 +1111,34 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
   }
 }
 
+/* Gold celebrations stay small and never capture taps. */
+.fx-celebration{position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;overflow:hidden;min-height:142px;padding:22px 20px;border:1px solid #e8c887aa;border-radius:18px;background:linear-gradient(145deg,#23364b,#142337);color:#f5e6c9;text-align:center;box-shadow:0 8px 30px #0004;pointer-events:none}
+.fx-celebration>.faith-icon{width:40px;height:40px;color:#e8c887}.fx-celebration strong{font-size:20px}.fx-celebration .tiny{margin:0}.fx-celebration>*:not(.fx-particle){position:relative;z-index:1}
+.fx-toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(320px,calc(100vw - 32px));box-sizing:border-box;z-index:10001}
+.fx-new{display:inline-block;border:1px solid #e8c88780;border-radius:20px;padding:3px 10px;font:600 11px/1.4 system-ui,sans-serif;color:#f6dda3;background:#e8c88715}
+.fx-badge-reveal{position:relative;overflow:hidden}.fx-badge-reveal::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 25%,#fff2cf30 50%,transparent 75%);opacity:0}
+.fx-reading-done{position:relative}.fx-reading-done::after{content:'';position:absolute;inset:-3px;border:1px solid #e8c887;border-radius:inherit;pointer-events:none;opacity:0}
+.fx-particle{position:absolute;left:50%;top:48%;width:4px;height:4px;border-radius:50%;background:#f5d690;opacity:0;pointer-events:none}
+#fx-preview-stage{border:1px solid #e8c88755;border-radius:18px;padding:20px 16px;min-height:215px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:16px 0;overflow:hidden;text-align:center}
+#fx-preview-stage>.fx-celebration{width:100%}.fx-preview-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fx-preview-buttons button{min-height:48px;white-space:normal}.fx-demo-path{display:flex;justify-content:space-between;gap:6px;width:100%}.fx-demo-path .journey-day-dot{display:grid;place-items:center;width:30px;height:30px;flex-shrink:0;border:1px solid #e8c88788;border-radius:50%;background:#142337;color:#f5e6c9;font:600 12px system-ui,sans-serif}.fx-demo-current{outline:2px solid #e8c887;outline-offset:3px}
+@media(prefers-reduced-motion:no-preference){
+ .fx-path-step{animation:fx-light-path 850ms ease-in-out var(--fx-delay,0ms)}
+ .fx-dot-done{animation:fx-light-path 800ms ease-in-out}
+ .fx-reading-done::after{animation:fx-ripple 700ms ease-out}
+ .fx-badge-reveal>.faith-icon{animation:fx-medal-in 550ms ease-out}
+ .fx-badge-reveal::after{animation:fx-shimmer 1100ms ease-in-out 250ms}
+ .fx-particle{animation:fx-spark 1000ms ease-out var(--fx-delay,0ms) forwards}
+ .fx-welcome{animation:fx-border-welcome 1300ms ease-out!important}
+ @keyframes fx-light-path{0%,100%{box-shadow:0 0 0 0 #e8c88700}40%{box-shadow:0 0 14px 3px #e8c88766;background-color:#e8c887;color:#142337}}
+ @keyframes fx-ripple{0%{opacity:.8;scale:1}100%{opacity:0;scale:1.15}}
+ @keyframes fx-medal-in{from{opacity:0;scale:.86}to{opacity:1;scale:1}}
+ @keyframes fx-shimmer{0%{opacity:0;translate:-100% 0}30%{opacity:1}100%{opacity:0;translate:100% 0}}
+ @keyframes fx-spark{0%{opacity:0;translate:0 0}15%{opacity:.85}100%{opacity:0;translate:var(--fx-x) var(--fx-y)}}
+ @keyframes fx-border-welcome{0%,100%{border-color:#e8c88755}35%{border-color:#fff0bd;box-shadow:0 0 22px #e8c88745}}
+}
+@media(prefers-reduced-motion:reduce){.fx-particle,.fx-badge-reveal::after,.fx-reading-done::after{display:none}.fx-reading-done,.fx-welcome{outline:1px solid #e8c887;outline-offset:-2px}}
+@media(max-width:350px){.fx-demo-path{gap:3px}.fx-demo-path .journey-day-dot{width:25px;height:25px}.fx-preview-buttons{grid-template-columns:1fr}}
+
 </style>
 </head>
 
@@ -1406,8 +1434,14 @@ dialog .undo-notice{position:sticky;top:12px;bottom:auto;left:auto;transform:non
 
 <dialog id="lifetime-dialog" aria-labelledby="lifetime-title">
 <header class="dialog-head"><h2 id="lifetime-title">Lifetime Achievements</h2><button class="close" type="button" onclick="closeDialog('lifetime-dialog')" aria-label="Close lifetime achievements">×</button></header>
-<div class="dialog-body"><p id="lifetime-stats" class="tiny"></p><div class="backup-actions"><button id="lifetime-backup" class="secondary" type="button" onclick="ProgressBackup.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v5h16v-5"/></svg> Backup &amp; Restore</button></div><h3>Earned badges</h3><div id="lifetime-earned" class="lifetime-grid"></div><p id="lifetime-next"></p><details id="lifetime-future"><summary>View upcoming badges</summary><div id="lifetime-upcoming" class="lifetime-grid"></div></details><h3>Completed journeys</h3><div id="lifetime-journeys" class="lifetime-grid"></div><p class="tiny">Earned achievements stay with you after a missed day. Your history is saved only in this browser. Use Backup &amp; Restore above to keep a copy.</p></div>
+<div class="dialog-body"><p id="lifetime-stats" class="tiny"></p><div class="backup-actions"><button id="lifetime-backup" class="secondary" type="button" onclick="ProgressBackup.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v5h16v-5"/></svg> Backup &amp; Restore</button></div><h3>Earned badges</h3><div id="lifetime-earned" class="lifetime-grid"></div><p id="lifetime-next"></p><details id="lifetime-future"><summary>View upcoming badges</summary><div id="lifetime-upcoming" class="lifetime-grid"></div></details><h3>Completed journeys</h3><div id="lifetime-journeys" class="lifetime-grid"></div><details class="fx-preview-details"><summary>Preview visual effects</summary><p class="tiny">Try the celebrations without changing your real progress.</p><button class="secondary" type="button" onclick="VisualEffects.openPreview()">Open Effect Previews</button></details><p class="tiny">Earned achievements stay with you after a missed day. Your history is saved only in this browser. Use Backup &amp; Restore above to keep a copy.</p></div>
 </dialog>
+
+<dialog id="fx-preview-dialog" aria-labelledby="fx-preview-title">
+<header class="dialog-head"><h2 id="fx-preview-title">Visual Effect Previews</h2><button class="close" type="button" onclick="closeDialog('fx-preview-dialog')" aria-label="Close effect previews">×</button></header>
+<div class="dialog-body"><p class="tiny">These examples do not change your streak, badges, saved items, or journey progress. Reduced-motion settings apply here too.</p><div id="fx-preview-stage"></div><div class="fx-preview-buttons"><button type="button" class="secondary" onclick="VisualEffects.preview('start')">1. Start a Journey</button><button type="button" class="secondary" onclick="VisualEffects.preview('reading')">2. Complete a Reading</button><button type="button" class="secondary" onclick="VisualEffects.preview('journey')">3. Finish a Journey</button><button type="button" class="secondary" onclick="VisualEffects.preview('badge')">4. Earn a Badge</button><button type="button" class="secondary" onclick="VisualEffects.preview('welcome')">5. First Visit Glow</button></div><p id="fx-preview-status" class="tiny" role="status"></p><button type="button" class="secondary" onclick="Lifetime.open()">← Back to Lifetime Achievements</button></div>
+</dialog>
+
 <dialog id="backup-dialog" aria-labelledby="backup-title">
 <header class="dialog-head"><h2 id="backup-title">Backup &amp; Restore</h2><button class="close" type="button" onclick="closeDialog('backup-dialog')" aria-label="Close backup and restore">×</button></header>
 <div class="dialog-body"><div class="backup-actions"><button type="button" class="secondary" onclick="Lifetime.open(); document.getElementById('lifetime-backup').focus({preventScroll:true});">← Back to Lifetime Achievements</button></div><p>Keep a private copy of your achievements, reading progress, saved verses and prayers, highlights, bookmarks, and preferences.</p><p class="tiny">The file stays on your device. No account or upload is needed. Audio and photographs are not included; saved prayers link to the recordings on this site.</p>
@@ -2287,6 +2321,7 @@ function renderJourneyList() {
 }
 
 function startJourney(id) {
+    const isNewJourney=!state.journeys[id];
     selectedTopic = TOPICS.find(topic => topic.id === id);
 
     if (!state.journeys[id]) {
@@ -2311,6 +2346,7 @@ function startJourney(id) {
     renderJourney();
     showDialog("reader-dialog");
     renderResume();
+    if(isNewJourney)window.VisualEffects?.journeyStart(id,$("day-nav"));
 }
 
 function renderJourney() {
@@ -2414,6 +2450,7 @@ function completeJourneyDay() {
     updateVisit();
     renderJourney();
     renderResume();
+    window.VisualEffects?.complete($("complete-button"),$("day-nav").querySelectorAll(".journey-day-dot")[journey.completed-1],journey.completed===7,selectedTopic.name);
 
     notify(
         journey.completed === 7
@@ -3580,7 +3617,7 @@ const ExtraJourneys=(()=>{
  function unlocked(plan){return Number(state.longest)>=plan.unlock;}
  function available(p,plan){return p.done>=plan.readings.length?plan.readings.length-1:p.last===dayKey()?Math.max(0,p.done-1):p.done;}
  function list(){const root=$('extended-journeys');root.replaceChildren();for(const plan of plans){const p=item(plan),b=element('button','secondary journey-choice',plan.name);b.type='button';b.disabled=!unlocked(plan);b.append(element('span','tiny',!unlocked(plan)?'Unlocks with a '+plan.unlock+'-day streak':p.done===plan.readings.length?'Completed • Revisit all '+p.done+' readings':plan.readings.length+' days • '+p.done+' complete'));b.onclick=()=>open(plan.id);root.append(b);}}
- function open(id){const plan=plans.find(x=>x.id===id);if(!plan||!unlocked(plan))return;selected=plan;view=available(item(plan),plan);showDialog('extended-dialog');paint();}
+ function open(id){const plan=plans.find(x=>x.id===id);if(!plan||!unlocked(plan))return;selected=plan;view=available(item(plan),plan);showDialog('extended-dialog');paint();if(item(plan).done===0)window.VisualEffects?.journeyStart(plan.id,$('extended-days'));}
  async function paint(){const token=++request;ready=false;const plan=selected,p=item(plan);view=Math.min(view,available(p,plan));const [book,chapter]=plan.readings[view];$('extended-title').textContent=plan.name;$('extended-progress').textContent='Day '+(view+1)+' of '+plan.readings.length+' • '+book+' '+chapter+' • WEB';$('extended-text').replaceChildren();$('extended-status').textContent='Opening your reading…';$('extended-complete').disabled=true;$('extended-retry').hidden=true;
   const days=$('extended-days');days.replaceChildren();plan.readings.forEach((_,i)=>{const b=element('button','secondary',String(i+1)+(i<p.done?' ✓':''));b.type='button';b.disabled=i>available(p,plan);b.setAttribute('aria-label','Day '+(i+1)+(i<p.done?', completed':''));b.setAttribute('aria-current',String(i===view));b.onclick=()=>{view=i;paint();};days.append(b);});
   let timer;try{let data=cache.get(book);if(!data){const controller=new AbortController();timer=setTimeout(()=>controller.abort(),15000);const response=await fetch(new URL('bible-data/web/'+encodeURIComponent(book)+'.json',document.baseURI),{signal:controller.signal});if(!response.ok)throw Error('unavailable');data=await response.json();cache.set(book,data);}if(token!==request||!$('extended-dialog').open)return;const entries=Object.entries(data[String(chapter)]||{});if(!entries.length||entries.some(([n,t])=>!/^\d+$/.test(n)||typeof t!=='string'))throw Error('invalid chapter');
@@ -3588,7 +3625,7 @@ const ExtraJourneys=(()=>{
   }catch{cache.delete(book);if(token===request&&$('extended-dialog').open){$('extended-status').textContent='This reading could not load. Please check your connection and try again.';$('extended-retry').hidden=false;}}finally{clearTimeout(timer);}
  }
  function controls(){const p=item(selected),total=selected.readings.length;const can=ready&&view===p.done&&p.done<total&&p.last!==dayKey();$('extended-complete').disabled=!can;$('extended-complete').textContent=p.done===total?'Journey completed':'Mark today’s reading complete';$('extended-status').textContent=p.done===total?'You completed this journey. Every reading remains available to revisit.':p.last===dayKey()?p.done+' of '+total+' complete. Your next reading opens tomorrow.':p.done+' of '+total+' complete. Missed days do not erase your progress.';}
- function complete(){if(!selected||!ready)return;const p=item(selected);if(view!==p.done||p.done>=selected.readings.length||p.last===dayKey()||!unlocked(selected))return;const data=progress(),before=JSON.stringify(data);data[selected.id]={done:p.done+1,last:dayKey()};if(!put(key,JSON.stringify(data))){memory[key]=before;$('extended-status').textContent='This browser could not save your progress. Please try again.';return;}window.Lifetime?.capture();window.FaithJourney?.record('readings',selected.id+':'+(p.done+1),selected.name+' • Day '+(p.done+1));paint();}
+ function complete(){if(!selected||!ready)return;const p=item(selected);if(view!==p.done||p.done>=selected.readings.length||p.last===dayKey()||!unlocked(selected))return;const data=progress(),before=JSON.stringify(data);data[selected.id]={done:p.done+1,last:dayKey()};if(!put(key,JSON.stringify(data))){memory[key]=before;$('extended-status').textContent='This browser could not save your progress. Please try again.';return;}window.Lifetime?.capture();window.FaithJourney?.record('readings',selected.id+':'+(p.done+1),selected.name+' • Day '+(p.done+1));paint();window.VisualEffects?.complete($('extended-complete'),$('extended-days').children[p.done],p.done+1===selected.readings.length,selected.name);}
  function badges(){for(const plan of plans){if(item(plan).done===plan.readings.length){const row=element('div','badge earned');row.append(element('strong','',plan.name),element('span','badge-status',plan.readings.length+'-day journey ✓'));$('journey-badges').append(row);}}}
  $('extended-complete').addEventListener('click',complete);$('extended-retry').addEventListener('click',paint);$('extended-dialog').addEventListener('close',()=>{request++;ready=false;});
  return {list,open,badges};
@@ -3693,19 +3730,62 @@ const Lifetime=(()=>{
  const progress=readJSON('extended_scripture_journeys_v1',{});for(const t of extra)if(progress[t.id]?.done===t.days&&!(t.id in data.journeys))data.journeys[t.id]=progress[t.id].last||null;
  if(JSON.stringify(old)!==JSON.stringify(data))put(key,JSON.stringify(data));return data;
  }
- function badgeEarned(n){const data=capture();data.badges[n]=dayKey();put(key,JSON.stringify(data));}
+ function badgeEarned(n){const data=capture();data.badges[n]=dayKey();put(key,JSON.stringify(data));window.VisualEffects?.milestone(n);}
  function card(name,detail,date,locked=false){const c=element('div','lifetime-card'+(locked?' upcoming':''));c.append(faithIcon('award'),element('strong','',name),element('span','tiny',detail));if(!locked)c.append(element('small','',date?'Earned '+new Date(dayNumber(date)*86400000).toLocaleDateString(undefined,{timeZone:'UTC'}):'Earned • date not recorded'));return c;}
- function open(){updateVisit();const d=capture(),root=$('lifetime-earned');root.replaceChildren();for(const [n,icon,name]of MILESTONES)if(n in d.badges)root.append(card(name,n+'-day streak',d.badges[n]));
+ function open(){updateVisit();const d=capture(),root=$('lifetime-earned');root.replaceChildren();for(const [n,icon,name]of MILESTONES)if(n in d.badges){const earnedCard=card(name,n+'-day streak',d.badges[n]);earnedCard.dataset.milestone=String(n);root.append(earnedCard);}
  const completed=[...TOPICS.map(t=>({id:t.id,name:t.name,days:7})),...extra].filter(t=>t.id in d.journeys);$('lifetime-stats').textContent=state.longest+' days • Longest streak   |   '+state.total+' known reading days   |   '+completed.length+' journeys completed';
  const journeys=$('lifetime-journeys');journeys.replaceChildren();for(const t of completed)journeys.append(card(t.name,t.days+'-day journey',d.journeys[t.id]));if(!completed.length)journeys.append(element('p','tiny','Complete a Scripture journey to earn your first journey badge.'));
  const next=MILESTONES.find(([n])=>!(n in d.badges));$('lifetime-next').textContent=next?'Next: '+next[2]+' — '+state.current+' of '+next[0]+' consecutive days.':'You have earned every streak badge.';
- const upcoming=$('lifetime-upcoming');upcoming.replaceChildren();for(const [n,icon,name]of MILESTONES)if(!(n in d.badges))upcoming.append(card(name,n+' consecutive days',null,true));$('lifetime-future').hidden=!next;$('lifetime-future').open=false;showDialog('lifetime-dialog');
+ const upcoming=$('lifetime-upcoming');upcoming.replaceChildren();for(const [n,icon,name]of MILESTONES)if(!(n in d.badges))upcoming.append(card(name,n+' consecutive days',null,true));$('lifetime-future').hidden=!next;$('lifetime-future').open=false;showDialog('lifetime-dialog');window.VisualEffects?.decorateBadges(root);
  }
  return {open,capture,badgeEarned};
 })();
 window.Lifetime=Lifetime;Lifetime.capture();
 $('backup-file').addEventListener('change',e=>ProgressBackup.select(e.target.files[0]));
 $('backup-mode').addEventListener('change',()=>{$('backup-replace-warning').hidden=$('backup-mode').value!=='replace';$('backup-confirm').checked=false;});
+
+</script>
+<script>
+/* Small celebrations; cosmetic history is separate from earned progress. */
+const VisualEffects=(()=>{
+ const key='scripture_visual_effects_v1',motion=matchMedia('(prefers-reduced-motion: reduce)');
+ const stored=readJSON(key,null),initialBadges=Object.keys(Lifetime.capture().badges);
+ const flags=stored&&stored.version===1?stored:{version:1,welcomed:[],started:[],seenBadges:initialBadges.filter(n=>!window.pendingBadgeDates?.[n])};
+ for(const k of ['welcomed','started','seenBadges'])if(!Array.isArray(flags[k]))flags[k]=[];
+ const save=()=>put(key,JSON.stringify(flags));save();
+ const cleanup=new Map();let toast=null,toastTimer;
+ function play(node,cls,ms=1600){if(!node)return;const prior=cleanup.get(node);if(prior){clearTimeout(prior.timer);node.classList.remove(prior.cls);}node.classList.remove(cls);void node.offsetWidth;node.classList.add(cls);const timer=setTimeout(()=>{node.classList.remove(cls);cleanup.delete(node);},ms);cleanup.set(node,{cls,timer});}
+ function path(root){if(!root)return;const dots=[...root.querySelectorAll('.journey-day-dot')];const targets=dots.length?dots:[...root.querySelectorAll('button')];targets.forEach((node,i)=>{node.style.setProperty('--fx-delay',Math.min(i,6)*85+'ms');play(node,'fx-path-step',1800);});}
+ function ripple(button,dot){play(button,'fx-reading-done',1000);play(dot,'fx-dot-done',1000);}
+ function particles(card){if(motion.matches)return;for(let i=0;i<12;i++){const p=document.createElement('span');p.className='fx-particle';p.setAttribute('aria-hidden','true');const a=i*Math.PI/6;p.style.setProperty('--fx-x',Math.round(Math.cos(a)*88)+'px');p.style.setProperty('--fx-y',Math.round(Math.sin(a)*50)+'px');p.style.setProperty('--fx-delay',(i%3)*50+'ms');card.append(p);}}
+ function badgeCard(title,detail,burst=false){const card=element('div','fx-celebration');card.append(faithIcon('award'),element('strong','',title),element('span','tiny',detail));if(burst)particles(card);play(card,'fx-badge-reveal',1900);return card;}
+ function announce(title,detail,burst=false){if(toast){toast.remove();clearTimeout(toastTimer);}const host=[...document.querySelectorAll('dialog[open]')].filter(d=>d.id!=='site-tour').pop()||document.body;toast=badgeCard(title,detail,burst);toast.classList.add('fx-toast');toast.setAttribute('role','status');host.append(toast);const current=toast;toastTimer=setTimeout(()=>{current.remove();if(toast===current)toast=null;},3500);}
+ function journeyStart(id,root){if(flags.started.includes(id))return;flags.started.push(id);save();path(root);}
+ function complete(button,dot,finished,title){ripple(button,dot);if(finished)announce('Journey Complete',title,true);}
+ function milestone(n){const name=MILESTONES.find(m=>m[0]===n)?.[2];if(name)announce(name,n+'-day milestone earned');}
+ let badgeObserver=null;
+ function decorateBadges(root){badgeObserver?.disconnect();badgeObserver=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting&&entry.intersectionRatio>=.25){const n=entry.target.dataset.milestone;if(!flags.seenBadges.includes(n)){flags.seenBadges.push(n);save();}}},{root:$('lifetime-dialog'),threshold:.25});for(const card of root.querySelectorAll('[data-milestone]')){const n=card.dataset.milestone;if(flags.seenBadges.includes(n))continue;const marker=element('span','fx-new','New');card.append(marker);play(card,'fx-badge-reveal',1900);badgeObserver.observe(card);}}
+ function markBadgesViewed(){badgeObserver?.disconnect();badgeObserver=null;}
+ function welcome(dialog){if(!dialog.open||flags.welcomed.includes(dialog.id))return;flags.welcomed.push(dialog.id);save();play(dialog,'fx-welcome',1400);}
+ const welcomed=['bible-dialog','prayer-dialog','lifetime-dialog'];
+ for(const id of welcomed){const dialog=$(id);new MutationObserver(()=>{if(dialog.open)welcome(dialog);}).observe(dialog,{attributes:true,attributeFilter:['open']});}
+ $('lifetime-dialog').addEventListener('close',markBadgesViewed);
+ document.querySelectorAll('dialog').forEach(d=>d.addEventListener('close',()=>{for(const [node,entry]of cleanup)if(node===d||d.contains(node)){clearTimeout(entry.timer);node.classList.remove(entry.cls);cleanup.delete(node);}if(toast&&d.contains(toast)){toast.remove();toast=null;clearTimeout(toastTimer);}}));
+ function preview(kind){const stage=$('fx-preview-stage');for(const [node,entry]of cleanup)if(stage===node||stage.contains(node)){clearTimeout(entry.timer);node.classList.remove(entry.cls);cleanup.delete(node);}stage.replaceChildren();stage.classList.remove('fx-welcome');
+  const labels={start:'Starting a journey',reading:'Completing today’s reading',journey:'Finishing an entire journey',badge:'Earning a milestone',welcome:'Opening a feature for the first time'};$('fx-preview-status').textContent=labels[kind]+' — preview only. Your progress is unchanged.';
+  if(kind==='start'){const row=element('div','fx-demo-path');row.setAttribute('aria-label','Example seven-day journey');for(let i=1;i<=7;i++)row.append(element('span','journey-day-dot'+(i===1?' fx-demo-current':''),String(i)));stage.append(row);path(stage);}
+  else if(kind==='reading'){const button=element('button','secondary','✓ Reading Completed');button.type='button';button.disabled=true;stage.append(button);ripple(button);}
+  else if(kind==='journey')stage.append(badgeCard('Journey Complete','Example seven-day journey',true));
+  else if(kind==='badge'){const card=badgeCard('Devoted','Example 7-day milestone');card.append(element('span','fx-new','New'));stage.append(card);}
+  else if(kind==='welcome'){stage.append(element('strong','','Welcome to your Bible reader'));play(stage,'fx-welcome',1400);}
+ }
+ function openPreview(){showDialog('fx-preview-dialog');$('fx-preview-stage').replaceChildren(element('p','tiny','Choose an effect below to preview it.'));$('fx-preview-status').textContent='Previews do not earn badges, finish readings, or mark features as visited.';}
+ motion.addEventListener('change',()=>{if(motion.matches)document.querySelectorAll('.fx-particle').forEach(p=>p.remove());});
+ // A milestone earned during page startup can be announced after the page initializes.
+ const pending=Object.keys(window.pendingBadgeDates||{}).map(Number);if(pending.length)setTimeout(()=>{if(!$('site-tour').open)milestone(Math.max(...pending));},650);
+ return {journeyStart,complete,milestone,decorateBadges,openPreview,preview};
+})();
+window.VisualEffects=VisualEffects;
 
 </script>
 </body>
