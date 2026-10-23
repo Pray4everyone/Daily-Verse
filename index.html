@@ -1335,6 +1335,13 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 .active-traditional-path .active-journey-actions button{width:auto;max-width:100%;flex:0 1 auto}
 @media(max-width:400px){.traditional-path-card{padding:17px 14px}.traditional-path-heading{gap:11px}.traditional-path-heading h3{font-size:18px}.traditional-path-actions{flex-direction:column}.traditional-path-actions button{width:100%}.traditional-scripture{padding:18px 13px;font-size:22px}.traditional-reading-section{font-size:19px}.traditional-reader-actions button{flex:1 1 100%}#traditional-next{margin-left:0;width:100%}}
 
+
+/* A steady readable label with a soft glow when another day can earn credit. */
+:root button.secondary.journey-ready{border-color:var(--gold);color:var(--gold);background:var(--gold-wash);box-shadow:0 0 0 1px var(--gold-line),0 0 12px var(--gold-wash)}
+.journey-availability.is-ready{color:var(--gold);font-weight:650}
+@keyframes journey-ready-pulse{0%,100%{box-shadow:0 0 0 1px var(--gold-line),0 0 4px var(--gold-wash)}50%{box-shadow:0 0 0 1px var(--gold),0 0 18px var(--gold-line)}}
+@media(prefers-reduced-motion:no-preference){:root button.secondary.journey-ready{animation:journey-ready-pulse 2.8s ease-in-out infinite}}
+
 </style>
 </head>
 
@@ -2547,12 +2554,30 @@ function activeJourneys(){return [...JourneyRuns.cards(),...(window.TraditionalP
 function confirmJourneyRemoval(journey){
     DeleteConfirmation.open(journey.kind==='path'?'Delete your '+journey.name+' path and this walk’s progress? Starting it again begins at Day 1. Your earned Signet and other journeys stay saved.':'Delete your '+journey.name+' journey and its progress? Starting it again will begin at Day 1. Your other journeys and earned achievements will stay saved.',journey.remove);
 }
+function journeyDayReady(completed,total,last){return completed<total&&last!==dayKey();}
+let journeyAvailabilityDate=dayKey(),journeyAvailabilityTimer=null;
+function scheduleJourneyAvailability(){
+    clearTimeout(journeyAvailabilityTimer);
+    const now=new Date(),midnight=new Date(now);
+    midnight.setHours(24,0,0,0);
+    journeyAvailabilityTimer=setTimeout(refreshJourneyAvailability,Math.max(100,midnight-now+25));
+}
+function refreshJourneyAvailability(){
+    const today=dayKey();
+    if(today!==journeyAvailabilityDate){
+        journeyAvailabilityDate=today;
+        renderResume();
+        window.TraditionalPaths?.refreshAvailability();
+    }
+    scheduleJourneyAvailability();
+}
 function renderResume() {
     const journeys = activeJourneys(), list = $('active-journeys-list');
     $('resume-card').hidden = journeys.length === 0;
     list.replaceChildren();
     for (const journey of journeys) {
-        const waiting = journey.last === dayKey();
+        const ready = journeyDayReady(journey.completed,journey.total,journey.last);
+        const waiting = !ready;
         const day = waiting ? Math.max(1,journey.completed) : journey.completed + 1;
         const card = element('article','resume-card glass active-journey-card');
         const details = element('div','');
@@ -2562,10 +2587,13 @@ function renderResume() {
         card.setAttribute('aria-labelledby',title.id);
         const isPath=journey.kind==='path';
         const progress = element('p','tiny',`Day ${day} of ${journey.total} • ${journey.completed} of ${journey.total} ${isPath?'sessions':'readings'} complete`);
-        const availability = element('span','tiny journey-availability',waiting
-            ? `Day ${journey.completed + 1} opens tomorrow`
-            : (isPath?'Your next session is ready':'Your next reading is ready'));
-        const button = element('button','secondary',isPath?'Continue Path →':'Continue Journey →');
+        const availability = element('span','tiny journey-availability'+(ready?' is-ready':''),waiting
+            ? `Day ${journey.completed + 1} opens tomorrow at 12:00 AM (local time)`
+            : `Ready for today’s ${isPath?'session':'reading'} • Day ${journey.completed + 1}`);
+        availability.id = 'active-journey-status-' + journey.id;
+        const button = element('button','secondary'+(ready?' journey-ready':''),isPath?'Continue Path →':'Continue Journey →');
+        button.dataset.progressReady = String(ready);
+        button.setAttribute('aria-describedby',availability.id);
         button.type = 'button';
         button.setAttribute('aria-label','Continue ' + journey.name + (isPath?' path':' journey'));
         button.onclick = journey.open;
@@ -2768,18 +2796,11 @@ function openFavorites(fromBible = false) {
 async function shareVerse(verse) {
     if (!verse) return;
 
-    const text =
-        `${verse.text}\n${verse.ref}` +
-        `${verse.version ? " (" + verse.version + ")" : ""}` +
-        "\nShared via Daily Scripture";
+    const text = `${verse.text}\n${verse.ref}`;
 
     if (navigator.share) {
         try {
-            await navigator.share({
-                title: "Daily Scripture",
-                text,
-                url: location.href
-            });
+            await navigator.share({ text });
             return;
         } catch (error) {
             if (error.name === "AbortError") return;
@@ -3042,6 +3063,7 @@ function loadDaily() {
 }
 
 function checkDay() {
+    if(!document.hidden)refreshJourneyAvailability();
     if(document.hidden || (window.FaithJourney && !window.FaithJourney.isEngaged())) return;
     const today = dayKey();
 
@@ -3062,12 +3084,15 @@ document.addEventListener("visibilitychange", () => {
     if (!document.hidden) checkDay();
 });
 
+window.addEventListener('focus',checkDay);
+window.addEventListener('pageshow',checkDay);
 setInterval(checkDay, 60000);
 
 /* Start the page. */
 updateVisit();
 paintDaily();
 renderResume();
+scheduleJourneyAvailability();
 
 imageIndex = Math.floor(Math.random() * SCENES.length);
 loadScene(imageIndex, 0, ++imageRequest);
@@ -3407,12 +3432,12 @@ const SiteTour=(()=>{
         {
                 "target": "#grow-toggle",
                 "title": "Scripture Journeys",
-                "text": "Choose 7, 14 or 30 days. Opening once each day counts a reading; extend without losing progress."
+                "text": "Pick 7, 14 or 30 days; opening counts today’s reading. Continue buttons glow when ready; extend without losing progress."
         },
         {
                 "target": "#grow-toggle",
                 "title": "Traditional Paths",
-                "text": "Use Next Step, then Complete Today’s Session; four daily sessions earn one permanent Signet. Resume under Your Journeys; × asks before removing a path."
+                "text": "Continue glows when today’s session is ready. Use Next Step, then Complete Today’s Session; four daily sessions earn one permanent Signet."
         },
         {
                 "target": "#bible-launch",
@@ -3868,14 +3893,23 @@ const TraditionalPaths=(()=>{
   const data=load(),root=$('traditional-path-list');root.replaceChildren();
   for(const item of plans){
    const p=data.paths[item.id],lit=earned(item.id,data),running=p&&!p.removed&&p.completed<4;
+   const canProgress=!!running&&journeyDayReady(p.completed,4,p.last);
    const card=element('article','traditional-path-card'+(lit?' is-earned':' is-unfinished'));card.dataset.path=item.id;
    const head=element('div','traditional-path-heading'),title=element('h3','',item.name);title.id='traditional-title-'+item.id;card.setAttribute('aria-labelledby',title.id);
    const emblem=journeySignet(item.id);emblem.classList.add('traditional-path-symbol');head.append(emblem,title);card.append(head,element('p','traditional-path-focus',item.focus),element('p','tiny traditional-path-length','4 daily sessions • About '+item.minutes+' minutes overall'));
-   const status=element('p','tiny traditional-path-state');
-   status.textContent=running?'Day '+Math.min(4,p.completed+1)+' of 4 • '+p.completed+' sessions complete'+(lit?' • Signet earned':''):lit?'Completed • Signet earned':'Not completed yet';card.append(status);
-   const actions=element('div','traditional-path-actions'),button=element('button','secondary',running?'Continue Path →':lit?'Revisit Readings':'Begin Path →');button.type='button';button.setAttribute('aria-label',(running?'Continue ':lit?'Revisit ':'Begin ')+item.name);button.onclick=()=>open(item.id,lit&&!running);actions.append(button);
+   const status=element('p','tiny traditional-path-state');status.id='traditional-status-'+item.id;
+   status.textContent=running?'Day '+Math.min(4,p.completed+1)+' of 4 • '+p.completed+' '+(p.completed===1?'session':'sessions')+' complete • '+(canProgress?'Ready for today’s session':'Next session opens at 12:00 AM (local time)')+(lit?' • Signet earned':''):lit?'Completed • Signet earned':'Not completed yet';card.append(status);
+   const actions=element('div','traditional-path-actions'),button=element('button','secondary'+(canProgress?' journey-ready':''),running?'Continue Path →':lit?'Revisit Readings':'Begin Path →');button.type='button';button.dataset.progressReady=String(canProgress);button.setAttribute('aria-describedby',status.id);button.setAttribute('aria-label',(running?'Continue ':lit?'Revisit ':'Begin ')+item.name);button.onclick=()=>open(item.id,lit&&!running);actions.append(button);
    if(lit&&!running){const again=element('button','secondary','Walk This Path Again');again.type='button';again.setAttribute('aria-label','Walk '+item.name+' again');again.onclick=()=>startAgain(item.id);actions.append(again);}
    card.append(actions);root.append(card);
+  }
+ }
+ function refreshAvailability(){
+  if($('traditional-paths-dialog').open)render();
+  if(reader.open&&selected){
+   const p=load().paths[selected.id];if(!p)return;
+   $('traditional-days').querySelectorAll('button').forEach((b,i)=>{b.disabled=!review&&i>available(p);});
+   controls();
   }
  }
  function openList(){flushPosition();render();showDialog('traditional-paths-dialog');$('traditional-paths-dialog').scrollTop=0;}
@@ -3986,7 +4020,7 @@ const TraditionalPaths=(()=>{
  reader.addEventListener('scroll',()=>{if(!ready||painting)return;clearTimeout(scrollTimer);scrollTimer=setTimeout(flushPosition,160);},{passive:true});
  reader.addEventListener('close',()=>{flushPosition();request++;ready=false;painting=false;});window.addEventListener('pagehide',flushPosition);
  window.addEventListener('storage',e=>{if([key,'extended_scripture_journeys_v1','scripture_lifetime_v1',null].includes(e.key)){delete memory[key];renderResume();if($('traditional-paths-dialog').open)render();if(reader.open&&selected){const p=load().paths[selected.id];if(!p||p.removed){reader.close();return;}view=review?view:available(p);stage=currentPending(p)?p.step:0;paint(false);}}});
- load();return {key,plans,valid,snapshot,merge,load,save,active,icon,render,openList,open,startAgain,advance,back,complete,selectDay,remove,history,showHistory,flushPosition};
+ load();return {key,plans,valid,snapshot,merge,load,save,active,icon,render,refreshAvailability,openList,open,startAgain,advance,back,complete,selectDay,remove,history,showHistory,flushPosition};
 })();
 window.TraditionalPaths=TraditionalPaths;renderResume();
 
