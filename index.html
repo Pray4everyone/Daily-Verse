@@ -1227,6 +1227,69 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 @media(prefers-reduced-motion:reduce){.gold-confetti{display:none}}
 @media(max-width:600px){.active-journey-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.active-journey-actions button{min-width:0;width:100%;padding:10px 6px}.active-journey-actions button:only-child{grid-column:1/-1;justify-self:end;width:auto}}
 @media(max-width:360px){.signet-history-row{gap:12px}.signet-group{padding:12px;gap:9px;font-size:13px}.unlock-copy{padding:20px 16px}.unlock-copy .extra-actions{flex-direction:column}}
+/* A labelled save toggle lives in the prayer player's own top row. */
+.prayer-player-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:0 0 16px}
+.prayer-player-top .prayer-category-icon{margin:0;flex:0 0 42px}
+#prayer-save{align-self:flex-start;flex:0 0 auto;width:auto;min-width:112px;min-height:44px;height:auto;margin:0;padding:10px 13px;border:1px solid var(--gold);border-radius:11px;background:#ffffff06;color:var(--ink);font:600 13px/1.4 var(--ui-font);white-space:nowrap}
+#prayer-save.is-saved{background:#f1d594;border-color:#f1d594;color:#172135}
+#prayer-save .faith-icon{width:17px;height:17px;flex:0 0 17px;color:inherit}
+#prayer-save:hover{border-color:var(--gold)}
+#theme-dialog{width:min(620px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
+#theme-dialog h2{font-size:20px;overflow-wrap:anywhere}
+.theme-options{border:0;padding:0;margin:24px 0;min-width:0}
+.theme-options legend{font:650 14px/1.5 var(--ui-font);color:var(--gold);margin-bottom:12px}
+.theme-option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.theme-choice{position:relative;display:grid;grid-template-columns:20px minmax(0,1fr);align-items:center;gap:8px;padding:12px;min-height:90px;min-width:0;border:1px solid var(--gold-line);border-radius:12px;background:#ffffff04;cursor:pointer;font:600 12px/1.5 var(--ui-font)}
+.theme-choice:has(input:checked){border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);background:var(--gold-wash)}
+.theme-choice:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:3px}
+.theme-choice input{width:18px;height:18px;margin:0;accent-color:var(--gold)}
+.theme-choice-name{grid-column:1/-1;overflow-wrap:anywhere}
+.theme-color-swatch{display:flex;height:27px;border:1px solid #ffffff66;border-radius:6px;overflow:hidden}
+.theme-color-swatch>span{flex:1}
+.theme-border-swatch{display:block;height:30px;border:1px solid var(--gold);border-radius:5px;background:#142337}
+.theme-border-swatch[data-border=double]{border:3px double var(--gold)}
+.theme-border-swatch[data-border=halo]{box-shadow:0 0 10px var(--gold)}
+.theme-border-swatch[data-border=corners]{border:1px solid var(--gold-line);outline:1px solid var(--gold);outline-offset:-5px;border-radius:2px}
+.theme-border-swatch[data-border=engraved]{outline:1px solid var(--gold-line);outline-offset:-5px}
+.theme-example{position:relative;padding:24px 22px;border:1px solid var(--gold-line);border-radius:16px;background:var(--glass);margin:16px 0;text-align:center}
+.theme-example h3{font-size:18px;margin-bottom:10px;color:var(--gold)}
+.theme-example p{font:14px/1.6 var(--ui-font)}
+#theme-current,#theme-status{margin:12px 0;line-height:1.6}
+#theme-status:empty{display:none}
+#theme-dialog .extra-actions{justify-content:space-between}
+#theme-dialog .extra-actions button{min-height:44px;white-space:normal}
+#theme-unlock-dialog{position:fixed;inset:0;overflow:hidden;width:min(470px,calc(100vw - 28px));max-height:calc(100dvh - 28px);border:1px solid var(--gold);background:radial-gradient(ellipse at top,#ac82352b,transparent 65%),#17263b}
+#theme-unlock-confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+@media(max-width:360px){.theme-choice{padding:10px 8px;gap:6px;font-size:11px}.theme-option-grid{gap:8px}}
+/* Every color preset is opaque enough to stay readable over any photo. */
+:root[data-card-theme]{--ink:#fff9ed;--gold:var(--theme-accent);--soft:var(--theme-soft);--muted:var(--theme-soft);--line:var(--theme-line);--gold-line:var(--theme-line);--gold-wash:var(--theme-wash);--surface-border:var(--theme-line);--glass:var(--theme-surface)}
+:root[data-card-theme] :is(.glass,.site-header .pill,.drop,.audio-button,.window-scroll-cue){background:var(--theme-panel);border-color:var(--theme-line)}
+:root[data-card-theme] :is(dialog,.dialog-head,.faith-overview,.faith-metric,.prayer-now,.saved-prayers,.lifetime-card,#favorites-list .saved-entry,.prayer-name-row input,.prayer-name-row textarea,#earned-style-section,#earned-style-select){background:var(--theme-panel);color:var(--ink);border-color:var(--theme-line)}
+:root[data-card-theme] :is(.verse-card,.resume-card,.prayer-now,.faith-overview,.faith-metric,.lifetime-card,.saved-prayers,.theme-example,#favorites-list .saved-entry){position:relative;background:var(--theme-surface);border:1px solid var(--theme-accent);box-shadow:0 12px 32px #0004}
+:root[data-card-theme] :is(.tag,.reference,.drop-label,.prayer-menu-link,.audio-button,.bookmark,.faith-icon){color:var(--gold)}
+:root[data-card-theme] :is(.verse,.prayer-intro,.menu-item,.pill,.save-toggle){color:var(--ink)}
+:root[data-card-theme] :is(.feed-status,#daily-version,.prayer-duration,.site-footer){color:var(--soft)}
+:root[data-card-theme] :is(.primary,.backup-primary){background:var(--gold);border-color:var(--gold);color:#101b2a}
+:root[data-card-theme] .secondary{color:var(--ink);border-color:var(--theme-line)}
+:root[data-card-theme] :is(.primary,.backup-primary) .faith-icon{color:inherit}
+:root[data-card-theme] :is(select,.prayer-name-row input,.prayer-name-row textarea,#day-nav .journey-day-dot,.theme-border-swatch){background:var(--theme-deep);color:var(--ink)}
+:root[data-card-theme] :is(.prayer-category-button[aria-pressed=true],#day-nav button.done .journey-day-dot){background:var(--gold);color:#101b2a;border-color:var(--gold)}
+:root[data-card-theme] .prayer-category-button[aria-pressed=true] .faith-icon{color:inherit}
+:root[data-card-theme] .verse-card::after{content:none}
+:root[data-card-theme][data-card-border=double] :is(.verse-card,.resume-card,.prayer-now,.faith-overview,.faith-metric,.lifetime-card,.saved-prayers,.theme-example,#favorites-list .saved-entry){border:3px double var(--theme-accent)}
+:root[data-card-theme][data-card-border=halo] :is(.verse-card,.resume-card,.prayer-now,.faith-overview,.faith-metric,.lifetime-card,.saved-prayers,.theme-example,#favorites-list .saved-entry){box-shadow:0 12px 32px #0004,0 0 22px var(--theme-glow),inset 0 0 18px var(--theme-wash)}
+:root[data-card-theme][data-card-border=corners] :is(.verse-card,.resume-card,.prayer-now,.faith-overview,.faith-metric,.lifetime-card,.saved-prayers,.theme-example,#favorites-list .saved-entry)::after{content:'';position:absolute;inset:9px;border-radius:2px;pointer-events:none;background:linear-gradient(var(--theme-accent),var(--theme-accent)) left top/18px 1px no-repeat,linear-gradient(var(--theme-accent),var(--theme-accent)) left top/1px 18px no-repeat,linear-gradient(var(--theme-accent),var(--theme-accent)) right top/18px 1px no-repeat,linear-gradient(var(--theme-accent),var(--theme-accent)) right top/1px 18px no-repeat,linear-gradient(var(--theme-accent),var(--theme-accent)) left bottom/18px 1px no-repeat,linear-gradient(var(--theme-accent),var(--theme-accent)) left bottom/1px 18px no-repeat,linear-gradient(var(--theme-accent),var(--theme-accent)) right bottom/18px 1px no-repeat,linear-gradient(var(--theme-accent),var(--theme-accent)) right bottom/1px 18px no-repeat}
+:root[data-card-theme][data-card-border=engraved] :is(.verse-card,.resume-card,.prayer-now,.faith-overview,.faith-metric,.lifetime-card,.saved-prayers,.theme-example,#favorites-list .saved-entry){outline:1px solid var(--theme-line);outline-offset:-6px;box-shadow:0 12px 32px #0004,inset 0 0 0 9px var(--theme-deep),inset 0 0 0 10px var(--theme-line)}
+:root[data-card-theme] #prayer-save{color:var(--ink);background:var(--theme-deep)}
+:root[data-card-theme] #prayer-save.is-saved{color:#172135;background:#f1d594;border-color:#f1d594}
+:root[data-card-theme] #prayer-save .faith-icon{color:inherit}
+
+:root[data-card-theme=midnight]{--theme-surface:#192b43;--theme-panel:#112136;--theme-deep:#0e1a2b;--theme-accent:#f0d49a;--theme-soft:#cbd4df;--theme-line:#f0d49a88;--theme-wash:#f0d49a18;--theme-glow:#f0d49a35;}
+:root[data-card-theme=forest]{--theme-surface:#15362b;--theme-panel:#10291f;--theme-deep:#0b2018;--theme-accent:#e7d09a;--theme-soft:#c9d8cf;--theme-line:#e7d09a88;--theme-wash:#e7d09a18;--theme-glow:#e7d09a35;}
+:root[data-card-theme=plum]{--theme-surface:#32243f;--theme-panel:#261b31;--theme-deep:#1e1529;--theme-accent:#eed3ab;--theme-soft:#d8cddd;--theme-line:#eed3ab88;--theme-wash:#eed3ab18;--theme-glow:#eed3ab35;}
+:root[data-card-theme=burgundy]{--theme-surface:#40222c;--theme-panel:#301923;--theme-deep:#27131b;--theme-accent:#f3d0b3;--theme-soft:#e0cdd2;--theme-line:#f3d0b388;--theme-wash:#f3d0b318;--theme-glow:#f3d0b335;}
+:root[data-card-theme=ocean]{--theme-surface:#153343;--theme-panel:#102735;--theme-deep:#0b1e2b;--theme-accent:#aedfeb;--theme-soft:#c7d9e2;--theme-line:#aedfeb88;--theme-wash:#aedfeb18;--theme-glow:#aedfeb35;}
+:root[data-card-theme=slate]{--theme-surface:#2a303c;--theme-panel:#1d2430;--theme-deep:#161c27;--theme-accent:#e0e5ef;--theme-soft:#ccd2df;--theme-line:#e0e5ef88;--theme-wash:#e0e5ef18;--theme-glow:#e0e5ef35;}
 </style>
 </head>
 
@@ -1307,10 +1370,11 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
             <button class="menu-item" onclick="nextTrack()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 4 11 8-11 8z M19 4v16"/></svg> Next Track</button>
             <button class="menu-item" onclick="changeScene()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6h3c5 0 7 12 12 12h3 M18 15l3 3-3 3 M3 18h3c2 0 3-2 4-4 M14 9c1-2 2-3 4-3h3 M18 3l3 3-3 3"/></svg> Shuffle Scene</button>
                 <button id="custom-background-menu" class="menu-item" type="button" onclick="CustomBackground.open()" hidden><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h18v18H3z M3 17l6-7 5 6 3-3 4 5 M17 7h.01"/></svg>Customize Background</button>
+            <button id="custom-theme-menu" class="menu-item" type="button" onclick="CardThemes.open()" hidden><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18h2a2 2 0 0 0 0-4h-1a2 2 0 0 1 0-4h3a5 5 0 0 0 5-5c0-3-4-5-9-5Z M7 8h.01 M11 6h.01 M6 13h.01 M16 7h.01"/></svg>Customize Theme</button>
             <button class="menu-item" onclick="openFavorites()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15"/></svg> View Favorites</button>
             <button class="menu-item" type="button" onclick="Lifetime.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="m8 12-2 9 6-3 6 3-2-9"/></svg> Lifetime Achievements</button>
             <a class="menu-item"
-               href="https://localchurches.org/"
+               href="https://www.google.com/maps/search/?api=1&amp;query=churches%20near%20me"
                target="_blank"
                rel="noopener noreferrer">
                 <svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 2v6 M9 5h6 M4 21V12l8-5 8 5v9z M10 21v-7h4v7"/></svg> Find a Church
@@ -1388,14 +1452,14 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
   <div id="prayer-controls" hidden>
    <p id="prayer-topics-label" class="prayer-label">Prayer topic</p><select id="prayer-category" hidden aria-label="Prayer topic"></select><div id="prayer-categories" class="prayer-categories" role="group" aria-labelledby="prayer-topics-label"></div>
    <section id="prayer-now" class="prayer-now" hidden aria-labelledby="prayer-track-title">
-    <div id="prayer-category-icon" class="prayer-category-icon"></div><div class="prayer-title-row"><h3 id="prayer-track-title"></h3></div><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
+    <div class="prayer-player-top"><div id="prayer-category-icon" class="prayer-category-icon"></div><button id="prayer-save" class="secondary save-toggle" type="button" aria-label="Save prayer" aria-pressed="false" hidden>Save Prayer</button></div><div class="prayer-title-row"><h3 id="prayer-track-title"></h3></div><p id="prayer-duration" class="prayer-duration" role="status">Loading recording length…</p>
     <audio id="prayer-audio" controls controlsList="nodownload" preload="metadata" aria-label="Prayer audio player"></audio>
     <p class="tiny">Press Play when you’re ready. Closing this window pauses the prayer.</p>
     <button id="prayer-another" class="secondary" type="button" hidden>↻ Another Prayer</button>
     <p class="tiny prayer-credit">AI-generated prayer narration.</p>
    </section>
   </div>
-  <div class="prayer-window-actions"><button id="prayer-back" class="secondary" type="button" hidden>← Back to Your Reading</button><button id="prayer-save" class="secondary save-toggle" type="button" aria-label="Save prayer" aria-pressed="false" hidden>☆</button></div>
+  <div class="prayer-window-actions"><button id="prayer-back" class="secondary" type="button" hidden>← Back to Your Reading</button></div>
  </div>
 </dialog>
 
@@ -1510,10 +1574,10 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
         <section id="faith-overview" aria-label="Your streak activity overview"></section>
         <div id="badge-list" class="badges"></div>
 
-        <p class="tiny">Find your earned signets and completed journeys in Menu → Lifetime Achievements.</p>
+        <p class="tiny">Find your earned milestones and journey signets in Menu → Lifetime Achievements.</p>
 
         <p class="tiny storage-note">
-            Saved in this browser on this device. Earned signets survive
+            Saved in this browser on this device. Earned milestones survive
             missed days; clearing browser data removes them.
         </p>
     </div>
@@ -1522,7 +1586,7 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 
 <dialog id="lifetime-dialog" aria-labelledby="lifetime-title">
 <header class="dialog-head"><h2 id="lifetime-title">Lifetime Achievements</h2><button class="close" type="button" onclick="closeDialog('lifetime-dialog')" aria-label="Close lifetime achievements">×</button></header>
-<div class="dialog-body"><p id="lifetime-stats" class="tiny"></p><div class="backup-actions"><button id="lifetime-backup" class="secondary" type="button" onclick="ProgressBackup.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v5h16v-5"/></svg> Backup &amp; Restore</button></div><h3>Earned Streak Signets</h3><div id="lifetime-earned" class="lifetime-grid"></div><section id="earned-style-section" hidden aria-labelledby="earned-style-title"><h3 id="earned-style-title">Your Earned Styles</h3><label for="earned-style-select">Appearance</label><select id="earned-style-select"></select><p id="earned-style-current" class="tiny" role="status"></p></section><h3>Journey Signets</h3><div id="lifetime-journeys" class="signet-groups"></div><p class="tiny">Earned achievements stay with you after a missed day. Your history is saved only in this browser. Use Backup &amp; Restore above to keep a copy.</p></div>
+<div class="dialog-body"><p id="lifetime-stats" class="tiny"></p><div class="backup-actions"><button id="lifetime-backup" class="secondary" type="button" onclick="ProgressBackup.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12 m-4-4 4 4 4-4 M4 16v5h16v-5"/></svg> Backup &amp; Restore</button></div><h3>Earned Milestones</h3><div id="lifetime-earned" class="lifetime-grid"></div><section id="earned-style-section" hidden aria-labelledby="earned-style-title"><h3 id="earned-style-title">Your Earned Styles</h3><label for="earned-style-select">Appearance</label><select id="earned-style-select"></select><p id="earned-style-current" class="tiny" role="status"></p></section><h3>Journey Signets</h3><div id="lifetime-journeys" class="signet-groups"></div><p class="tiny">Earned achievements stay with you after a missed day. Your history is saved only in this browser. Use Backup &amp; Restore above to keep a copy.</p></div>
 </dialog>
 
 
@@ -1622,6 +1686,18 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 </dialog>
 <dialog id="background-unlock-dialog" aria-labelledby="background-unlock-title" aria-describedby="background-unlock-message">
  <div id="unlock-confetti" aria-hidden="true"></div><div class="unlock-copy"><svg class="unlock-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1Z"/></svg><p class="eyebrow">30-day streak complete</p><h2 id="background-unlock-title">Congratulations!! You've unlocked a new feature!</h2><p id="background-unlock-message">Background customization is yours permanently. Upload your own photo from <strong>Menu → Customize Background</strong>.</p><div class="extra-actions"><button id="background-unlock-customize" type="button" class="primary">Customize Background</button><button id="background-unlock-done" type="button" class="secondary">Got It</button></div></div>
+</dialog>
+
+<dialog id="theme-dialog" aria-labelledby="theme-title">
+ <header class="dialog-head"><h2 id="theme-title">Customize Theme</h2><button class="close" type="button" onclick="closeDialog('theme-dialog')" aria-label="Close theme customization">×</button></header>
+ <div class="dialog-body"><p class="tiny">Your permanent 180-day milestone reward. Mix your favorite colors and border; your background photo stays yours.</p><p id="theme-current" class="tiny"></p>
+ <fieldset class="theme-options"><legend>Choose a color scheme</legend><div id="theme-color-options" class="theme-option-grid"></div></fieldset>
+ <fieldset class="theme-options"><legend>Choose a border</legend><div id="theme-border-options" class="theme-option-grid"></div></fieldset>
+ <section class="theme-example" aria-label="Your card appearance"><h3>A space to grow in faith</h3><p>Your colors and border, together.</p></section>
+ <p id="theme-status" class="tiny" role="status" aria-live="polite"></p><div class="extra-actions"><button id="theme-regular" class="secondary" type="button">Use Regular Appearance</button><button id="theme-done" class="secondary" type="button">Done</button></div></div>
+</dialog>
+<dialog id="theme-unlock-dialog" aria-labelledby="theme-unlock-title" aria-describedby="theme-unlock-message">
+ <div id="theme-unlock-confetti" aria-hidden="true"></div><div class="unlock-copy"><svg class="unlock-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2-6.2 3.2L7 14.2 2 9.3l6.9-1Z"/></svg><p class="eyebrow">180-day milestone reached</p><h2 id="theme-unlock-title">Congratulations!! You've unlocked a new feature!</h2><p id="theme-unlock-message">Six color schemes and five card borders are now yours permanently. Make this space your own from <strong>Menu → Customize Theme</strong>.</p><div class="extra-actions"><button id="theme-unlock-customize" class="primary" type="button">Customize Theme</button><button id="theme-unlock-done" class="secondary" type="button">Got It</button></div></div>
 </dialog>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -2259,6 +2335,7 @@ function updateVisit(today = dayKey()) {
     });
 
     persist();
+    if(window.CardThemes){window.CardThemes.sync();requestAnimationFrame(()=>window.CardThemes.maybeCelebrate());}
 
     $("streak-display").replaceChildren(faithIcon("flame"),document.createTextNode(` ${state.current} ${state.current === 1 ? "Day" : "Days"} Streak`));
 }
@@ -3266,22 +3343,22 @@ const SiteTour=(()=>{
         {
                 "target": "#main-toggle",
                 "title": "Your Menu",
-                "text": "Play music or change your background. Open Lifetime Achievements for signets and Backup & Restore."
+                "text": "Play music or change your background. Find milestones, journey signets, and backups in Lifetime Achievements."
         },
         {
                 "target": "#streak-button",
                 "title": "Your Streak",
-                "text": "Visit daily to build your streak. Tap here to see your progress and rewards."
+                "text": "Visit daily to build your streak and earn milestones. Tap here to see your progress."
         },
         {
                 "target": "#grow-toggle",
                 "title": "Listen to a Prayer",
-                "text": "Choose Find a Prayer, pick a topic, and press Play. Tap the star to save it."
+                "text": "Pick a prayer topic and press Play. Tap Save Prayer at the player’s top right."
         },
         {
                 "target": "#grow-toggle",
                 "title": "Your Journeys",
-                "text": "Choose 7, 14 or 30 days. Read daily; extend your journey from its homepage card."
+                "text": "Choose 7, 14 or 30 days to earn a signet. Extend from your journey’s homepage card."
         },
         {
                 "target": "#bible-launch",
@@ -3479,18 +3556,18 @@ const PrayerPlayer=(()=>{
   return data.filter(t=>t&&typeof t.id==='string'&&typeof t.category==='string'&&prayerPrefixes[t.category]&&typeof t.file==='string'&&new RegExp('^'+prayerPrefixes[t.category]+'-([1-9]|[1-4][0-9]|50)\\.mp3$').test(t.file));
  }
  function prayerIsSaved(){const c=selectedCategory();return !!c&&!!currentTrack&&savedPrayers().some(t=>t.category===c.id&&t.file===currentTrack.file);}
- function updatePrayerSave(){const saved=prayerIsSaved();saveButton.textContent=saved?'★':'☆';saveButton.classList.toggle('is-saved',saved);saveButton.setAttribute('aria-pressed',String(saved));saveButton.setAttribute('aria-label',saved?'Remove prayer from saved prayers':'Save prayer');saveButton.title=saved?'Remove saved prayer':'Save prayer';}
+ function updatePrayerSave(){const saved=prayerIsSaved();saveButton.textContent=saved?'Saved':'Save Prayer';if(saved){const check=faithIcon('spark');check.querySelector('path').setAttribute('d','m5 12 4 4L19 6');saveButton.prepend(check);}saveButton.classList.toggle('is-saved',saved);saveButton.setAttribute('aria-pressed',String(saved));saveButton.setAttribute('aria-label',saved?'Remove prayer from saved prayers':'Save prayer');saveButton.title=saved?'Remove saved prayer':'Save prayer';}
  function removeSavedPrayer(item,after){
   const target={...item};
   DeleteConfirmation.open('Delete this '+(catalog?.find(c=>c.id===target.category)?.label||'saved')+' prayer from Saved Prayers?',()=>{
    if(writeSavedPrayers(savedPrayers().filter(t=>!(t.category===target.category&&t.file===target.file)))){after?.();notify('Saved prayer deleted.');}
   });
  }
- function writeSavedPrayers(items){if(!put(prayerFavoritesKey,JSON.stringify(items)))return false;renderSavedPrayers();updatePrayerSave();return true;}
+ function writeSavedPrayers(items){const before=get(prayerFavoritesKey);if(!put(prayerFavoritesKey,JSON.stringify(items))){if(before===null||before===undefined)delete memory[prayerFavoritesKey];else memory[prayerFavoritesKey]=before;status.textContent='This change could not be saved. Please try again.';return false;}renderSavedPrayers();updatePrayerSave();return true;}
  function renderSavedPrayers(){
   const list=savedPrayers(),root=document.getElementById('saved-prayers-list');root.replaceChildren();
   document.getElementById('saved-prayers-summary').textContent='Saved Prayers ('+list.length+')';
-  if(!list.length){root.append(element('p','tiny','Choose a prayer, then tap the star at the bottom right of this window to save it here.'));return;}
+  if(!list.length){root.append(element('p','tiny','Choose a prayer, then tap Save Prayer at the top right of its player card.'));return;}
   for(const item of list.slice().reverse()){
    const c=catalog?.find(c=>c.id===item.category);if(!c)continue;
    const row=element('div','saved-prayer-row'),heading=element('p','',c.label+' Prayer');
@@ -3507,7 +3584,7 @@ const PrayerPlayer=(()=>{
  saveButton.addEventListener('click',()=>{
   const c=selectedCategory();if(!c||!currentTrack)return;
   const removing=prayerIsSaved(),list=savedPrayers();
-  if(removing){removeSavedPrayer({category:c.id,file:currentTrack.file});return;}
+  if(removing){if(writeSavedPrayers(list.filter(t=>!(t.category===c.id&&t.file===currentTrack.file))))notify('Prayer removed from Saved Prayers.');return;}
   const next=[...list,{category:c.id,id:currentTrack.id,file:currentTrack.file,duration:Number.isFinite(audio.duration)?audio.duration:null}];
   if(writeSavedPrayers(next))notify('Prayer saved.');
  });
@@ -3727,7 +3804,7 @@ window.ExtraJourneys=ExtraJourneys;renderResume();
 <script>
 /* Portable, private progress. Only this site's explicitly listed keys are read. */
 const ProgressBackup=(()=>{
- const keys=['scripture_journey_runs_v2','scripture_background_v1','scripture_prayer_names_v1','scripture_growth_v1','favorite_verses','saved_prayers_v1','holy_bible_reader_v2','holy_bible_highlights_v1','faith_journey_activity_v1','extended_scripture_journeys_v1','scripture_music_preferences_v1','daily_scripture_tour_seen_v1','scripture_lifetime_v1','scripture_earned_style_v1'];
+ const keys=['scripture_card_theme_v1','scripture_journey_runs_v2','scripture_background_v1','scripture_prayer_names_v1','scripture_growth_v1','favorite_verses','saved_prayers_v1','holy_bible_reader_v2','holy_bible_highlights_v1','faith_journey_activity_v1','extended_scripture_journeys_v1','scripture_music_preferences_v1','daily_scripture_tour_seen_v1','scripture_lifetime_v1','scripture_earned_style_v1'];
  const obj=x=>!!x&&typeof x==='object'&&!Array.isArray(x);
  const integer=x=>Number.isSafeInteger(x)&&x>=0&&x<=1000000;
  const date=x=>typeof x==='string'&&/^\d{4}-\d{1,2}-\d{1,2}$/.test(x)&&Number.isFinite(dayNumber(x))&&(()=>{const [y,m,d]=x.split('-').map(Number),v=new Date(Date.UTC(y,m-1,d));return v.getUTCFullYear()===y&&v.getUTCMonth()===m-1&&v.getUTCDate()===d;})();
@@ -3739,6 +3816,7 @@ const ProgressBackup=(()=>{
  function activity(c){check(obj(c)&&past(c.start)&&past(c.last)&&integer(c.days)&&c.days>=1&&typeof c.seconds==='number'&&c.seconds>=0&&Number.isFinite(c.seconds));for(const k of ['chapters','verses','prayers','readings','passages'])check(obj(c[k])&&Object.values(c[k]).every(text));}
  function validate(k,x){if(k==='scripture_background_v1'){check(CustomBackground.valid(x));return x;}safe(x);
   if(k==='scripture_growth_v1'){check(obj(x)&&x.version===1&&['current','longest','total'].every(k=>integer(x[k]))&&x.longest>=x.current&&x.total>=x.longest&&past(x.last)&&Array.isArray(x.badges)&&x.badges.every(n=>MILESTONES.some(m=>m[0]===n))&&obj(x.journeys)&&(x.active===null||TOPICS.some(t=>t.id===x.active)));for(const [id,j]of Object.entries(x.journeys))check(TOPICS.some(t=>t.id===id)&&obj(j)&&integer(j.completed)&&j.completed<=7&&(j.last===null||past(j.last)));}
+  else if(k==='scripture_card_theme_v1')check(CardThemes.valid(x));
   else if(k==='scripture_journey_runs_v2')check(JourneyRuns.valid(x));
   else if(k==='favorite_verses')check(Array.isArray(x)&&x.every(v=>obj(v)&&text(v.ref)&&text(v.text)&&(v.version===undefined||['KJV','WEB','NIV'].includes(v.version))&&(!v.bible||(obj(v.bible)&&['kjv','web'].includes(v.bible.version)&&position({...v.bible,offset:v.bible.offset||0})))));
   else if(k==='scripture_prayer_names_v1')check(PrayerNameList.valid(x));
@@ -3762,7 +3840,7 @@ const ProgressBackup=(()=>{
  function merge(a,b){a={...a,scripture_journey_runs_v2:JourneyRuns.snapshot(a)};b={...b,scripture_journey_runs_v2:JourneyRuns.snapshot(b)};const out={...b,...a};for(const k of keys){const x=a[k],y=b[k];if(x===undefined||y===undefined)continue;
   if(k==='scripture_growth_v1'){const gap=dayNumber(x.last)-dayNumber(y.last),newest=gap>0?x:gap<0?y:x.current>=y.current?x:y;out[k]={...newest,longest:Math.max(x.longest,y.longest),total:Math.max(x.total,y.total),badges:[...new Set([...x.badges,...y.badges])],journeys:journeyMap(x.journeys,y.journeys,'completed')};}
   else if(k==='scripture_journey_runs_v2')out[k]=JourneyRuns.merge(x,y);
-  else if(k==='scripture_background_v1')out[k]={...y,...x,announced:x.announced||y.announced};
+  else if(k==='scripture_background_v1'||k==='scripture_card_theme_v1')out[k]={...y,...x,announced:x.announced||y.announced};
   else if(k==='favorite_verses')out[k]=union(x,y,v=>(v.version||'NIV')+':'+normalizeRef(v.ref));
   else if(k==='scripture_prayer_names_v1')out[k]=PrayerNameList.merge(x,y);
   else if(k==='saved_prayers_v1')out[k]=union(x,y,v=>v.category+':'+v.file);
@@ -3780,7 +3858,7 @@ const ProgressBackup=(()=>{
  const status=t=>$('backup-status').textContent=t;
  function open(){pending=null;sequence++;$('backup-preview').hidden=true;$('backup-file').value='';$('backup-confirm').checked=false;$('backup-mode').value='merge';$('backup-replace-warning').hidden=true;status('');const stamp=get('scripture_last_backup_v1');$('backup-last').textContent=stamp?'Last backup download requested: '+new Date(stamp).toLocaleString():'No backup downloaded on this device yet.';showDialog('backup-dialog');}
  function download(){try{window.Lifetime.capture();const data=collect(),createdAt=new Date().toISOString(),blob=new Blob([JSON.stringify({app:'daily-scripture',format:1,createdAt,data},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Daily-Scripture-Backup-'+dayKey()+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);put('scripture_last_backup_v1',createdAt);$('backup-last').textContent='Last backup download requested: '+new Date(createdAt).toLocaleString();status('Backup download requested. Check your Downloads folder or your browser’s save prompt.');}catch(e){status('Backup could not be created. '+e.message);}}
- async function select(file){const token=++sequence;pending=null;$('backup-preview').hidden=true;$('backup-confirm').checked=false;if(!file)return;try{check(file.size<=10000000);const p=parse(await file.text());if(token!==sequence)return;pending=p;const d=p.data,g=d.scripture_growth_v1,l=d.scripture_lifetime_v1;const badgeCount=new Set([...(g?.badges||[]),...Object.keys(l?.badges||{}).map(Number)]).size;$('backup-summary').textContent='Created '+new Date(p.createdAt).toLocaleString()+' • '+badgeCount+' streak signets • '+(d.scripture_journey_runs_v2?.signets.length||0)+' journey signets • '+(d.favorite_verses?.length||0)+' saved verses • '+(d.saved_prayers_v1?.length||0)+' saved prayers • '+(d.scripture_prayer_names_v1?.names.filter((n,i)=>n.trim()||d.scripture_prayer_names_v1.reasons?.[i]?.trim()).length||0)+' prayer entries';$('backup-preview').hidden=false;status('Review the backup and choose how to restore it.');}catch(e){if(token===sequence)status(e instanceof SyntaxError?'This is not a valid backup JSON file. Nothing was changed.':e.message);}}
+ async function select(file){const token=++sequence;pending=null;$('backup-preview').hidden=true;$('backup-confirm').checked=false;if(!file)return;try{check(file.size<=10000000);const p=parse(await file.text());if(token!==sequence)return;pending=p;const d=p.data,g=d.scripture_growth_v1,l=d.scripture_lifetime_v1;const badgeCount=new Set([...(g?.badges||[]),...Object.keys(l?.badges||{}).map(Number)]).size;$('backup-summary').textContent='Created '+new Date(p.createdAt).toLocaleString()+' • '+badgeCount+' milestones • '+(d.scripture_journey_runs_v2?.signets.length||0)+' journey signets • '+(d.favorite_verses?.length||0)+' saved verses • '+(d.saved_prayers_v1?.length||0)+' saved prayers • '+(d.scripture_prayer_names_v1?.names.filter((n,i)=>n.trim()||d.scripture_prayer_names_v1.reasons?.[i]?.trim()).length||0)+' prayer entries';$('backup-preview').hidden=false;status('Review the backup and choose how to restore it.');}catch(e){if(token===sequence)status(e instanceof SyntaxError?'This is not a valid backup JSON file. Nothing was changed.':e.message);}}
  function restore(){if(!pending)return;const replace=$('backup-mode').value==='replace';if(replace&&!$('backup-confirm').checked){status('Confirm replacement before restoring. Download a backup first if you want to keep your current data.');return;}try{const data=replace?pending.data:merge(collect(),pending.data);for(const [k,v]of Object.entries(data))validate(k,v);window.scriptureRestoring=true;apply(data,replace);location.reload();}catch(e){window.scriptureRestoring=false;status(e.message);}}
  return {open,download,select,restore,parse,merge,apply,validate,collect};
 })();
@@ -3824,7 +3902,7 @@ const VisualEffects=(()=>{
  function announce(title,detail,burst=false,days=null,topic=null){if(toast){toast.remove();clearTimeout(toastTimer);}const host=[...document.querySelectorAll('dialog[open]')].filter(d=>d.id!=='site-tour').pop()||document.body;toast=badgeCard(title,detail,burst);if(topic)toast.querySelector('.faith-icon')?.replaceWith(journeySignet(topic));if(days&&window.MilestoneStyle)toast.querySelector('.faith-icon')?.replaceWith(window.MilestoneStyle.emblem(days));toast.classList.add('fx-toast');toast.setAttribute('role','status');host.append(toast);const current=toast;toastTimer=setTimeout(()=>{current.remove();if(toast===current)toast=null;},3500);}
  function journeyStart(id,root){if(flags.started.includes(id))return;flags.started.push(id);save();path(root);}
  function complete(button,dot,finished,title,topic=null){ripple(button,dot);if(finished)announce('Signet Earned',title,true,null,topic);}
- function milestone(n){if(n===30&&window.CustomBackground){window.CustomBackground.maybeCelebrate();return;}const name=MILESTONES.find(m=>m[0]===n)?.[2];if(name){const style=window.MilestoneStyle?.unlockedAt(n);announce(name,n+'-day milestone earned'+(style?' • '+style.name+' unlocked':''),false,n);}}
+ function milestone(n){if(n===180&&window.CardThemes){window.CardThemes.maybeCelebrate();return;}if(n===30&&window.CustomBackground){window.CustomBackground.maybeCelebrate();return;}const name=MILESTONES.find(m=>m[0]===n)?.[2];if(name){const style=window.MilestoneStyle?.unlockedAt(n);announce(name,n+'-day milestone earned'+(style?' • '+style.name+' unlocked':''),false,n);}}
  let badgeObserver=null;
  function decorateBadges(root){badgeObserver?.disconnect();badgeObserver=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting&&entry.intersectionRatio>=.25){const n=entry.target.dataset.milestone;if(!flags.seenBadges.includes(n)){flags.seenBadges.push(n);save();}}},{root:$('lifetime-dialog'),threshold:.25});for(const card of root.querySelectorAll('[data-milestone]')){const n=card.dataset.milestone;if(flags.seenBadges.includes(n))continue;const marker=element('span','fx-new','New');card.append(marker);play(card,'fx-badge-reveal',1900);badgeObserver.observe(card);}}
  function markBadgesViewed(){badgeObserver?.disconnect();badgeObserver=null;}
@@ -3861,7 +3939,7 @@ const MilestoneStyle=(()=>{
  function selected(){const raw=readJSON(key,{choice:'auto'});return raw&&typeof raw.choice==='string'?raw.choice:'auto';}
  function resolve(choice,longest=state.longest){const unlocked=available(longest);if(choice==='original')return 'original';if(choice==='auto')return unlocked.at(-1)?.id||'original';return unlocked.find(s=>s.id===choice)?.id||'original';}
  function apply(){document.documentElement.dataset.earnedStyle=resolve(selected());}
- function render(){apply();const unlocked=available(),section=$('earned-style-section');section.hidden=!unlocked.length;if(!unlocked.length)return;const select=$('earned-style-select');select.replaceChildren();for(const [value,label]of [['auto','Automatically use newest earned style'],['original','Original'],...unlocked.map(s=>[s.id,s.name])]){const o=element('option','',label);o.value=value;select.append(o);}const choice=selected();select.value=['auto','original',...unlocked.map(s=>s.id)].includes(choice)?choice:'original';const current=styles.find(s=>s.id===resolve(choice));$('earned-style-current').textContent=current?'Active: '+current.name+' • Earned with a '+current.days+'-day streak.':'Active: Original';}
+ function render(){apply();const unlocked=available(),section=$('earned-style-section');section.hidden=!unlocked.length;if(!unlocked.length)return;const select=$('earned-style-select');select.replaceChildren();for(const [value,label]of [['auto','Automatically use newest earned style'],['original','Original'],...unlocked.map(s=>[s.id,s.name])]){const o=element('option','',label);o.value=value;select.append(o);}const choice=selected();select.value=['auto','original',...unlocked.map(s=>s.id)].includes(choice)?choice:'original';const current=styles.find(s=>s.id===resolve(choice));$('earned-style-current').textContent=(current?'Saved appearance: '+current.name+' • Earned with a '+current.days+'-day milestone.':'Saved appearance: Original')+(window.CardThemes?.isCustom()?' Your custom theme is active. Return to your saved appearance in Menu → Customize Theme.':' Active now.');}
  function setChoice(choice){if(!['auto','original',...available().map(s=>s.id)].includes(choice))return false;if(!put(key,JSON.stringify({choice})))return false;render();return true;}
  function enhance(root){for(const card of root.querySelectorAll('[data-milestone]')){const days=Number(card.dataset.milestone);if(!state.badges.includes(days)&&days>Number(state.longest))continue;card.querySelector('.faith-icon')?.replaceWith(emblem(days));card.dataset.badgeTier=days>=90?'ornate':days>=14?'halo':days>=7?'double':'simple';}}
  $('earned-style-select').addEventListener('change',e=>setChoice(e.target.value));
@@ -3906,6 +3984,52 @@ const CustomBackground=(()=>{
  return {key,valid,preferences,unlocked,isCustom,open,upload,usePhoto,useRegular,sync,maybeCelebrate};
 })();
 window.CustomBackground=CustomBackground;
+
+/* Theme choices are revealed only after the permanent 180-day visit milestone. */
+const CardThemes=(()=>{
+ const key='scripture_card_theme_v1';let celebrating=false,sessionAnnounced=false;
+ const colors=[
+  {id:'midnight',name:'Midnight Gold',surface:'#192b43',panel:'#112136',deep:'#0e1a2b',accent:'#f0d49a',soft:'#cbd4df'},
+  {id:'forest',name:'Forest Gold',surface:'#15362b',panel:'#10291f',deep:'#0b2018',accent:'#e7d09a',soft:'#c9d8cf'},
+  {id:'plum',name:'Royal Plum',surface:'#32243f',panel:'#261b31',deep:'#1e1529',accent:'#eed3ab',soft:'#d8cddd'},
+  {id:'burgundy',name:'Burgundy Rose',surface:'#40222c',panel:'#301923',deep:'#27131b',accent:'#f3d0b3',soft:'#e0cdd2'},
+  {id:'ocean',name:'Ocean Light',surface:'#153343',panel:'#102735',deep:'#0b1e2b',accent:'#aedfeb',soft:'#c7d9e2'},
+  {id:'slate',name:'Slate Silver',surface:'#2a303c',panel:'#1d2430',deep:'#161c27',accent:'#e0e5ef',soft:'#ccd2df'}
+ ];
+ const borders=[{id:'fine',name:'Fine Line'},{id:'double',name:'Double Frame'},{id:'halo',name:'Soft Halo'},{id:'corners',name:'Corner Detail'},{id:'engraved',name:'Engraved Frame'}];
+ function valid(x){return !!x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).every(k=>['version','mode','color','border','announced'].includes(k))&&x.version===1&&['regular','custom'].includes(x.mode)&&colors.some(c=>c.id===x.color)&&borders.some(b=>b.id===x.border)&&typeof x.announced==='boolean';}
+ function preferences(){const p=readJSON(key,null);return valid(p)?p:{version:1,mode:'regular',color:'midnight',border:'fine',announced:false};}
+ function unlocked(){return Number(state.longest)>=180||state.badges.includes(180)||Object.hasOwn(readJSON('scripture_lifetime_v1',{badges:{}}).badges||{},'180');}
+ function save(p){const before=get(key);if(put(key,JSON.stringify(p)))return true;if(before===null||before===undefined)delete memory[key];else memory[key]=before;return false;}
+ function isCustom(){return unlocked()&&preferences().mode==='custom';}
+ function sync(){const earned=unlocked(),p=preferences(),root=document.documentElement;$('custom-theme-menu').hidden=!earned;if(earned&&p.mode==='custom'){root.dataset.cardTheme=p.color;root.dataset.cardBorder=p.border;}else{delete root.dataset.cardTheme;delete root.dataset.cardBorder;}if(!earned)for(const id of ['theme-dialog','theme-unlock-dialog'])if($(id).open)closeDialog(id);}
+ function render(focusGroup=null,focusId=null){
+  if(!unlocked())return;const p=preferences();
+  for(const [group,choices]of [['color',colors],['border',borders]]){
+   const root=$('theme-'+group+'-options');root.replaceChildren();
+   for(const choice of choices){const label=element('label','theme-choice'),input=element('input','');input.type='radio';input.name='card-theme-'+group;input.id='theme-'+group+'-'+choice.id;input.value=choice.id;input.checked=p.mode==='custom'&&p[group]===choice.id;input.addEventListener('change',()=>setChoice(group,choice.id));
+    const swatch=element('span',group==='color'?'theme-color-swatch':'theme-border-swatch');swatch.setAttribute('aria-hidden','true');if(group==='color'){for(const color of [choice.deep,choice.surface,choice.accent]){const part=element('span','');part.style.backgroundColor=color;swatch.append(part);}}else swatch.dataset.border=choice.id;
+    label.append(input,swatch,element('span','theme-choice-name',choice.name));root.append(label);
+   }
+  }
+  const color=colors.find(c=>c.id===p.color),border=borders.find(b=>b.id===p.border);$('theme-current').textContent=isCustom()?color.name+' • '+border.name:'Your regular earned appearance is active. Choose a color or border to make it your own.';
+  $('theme-regular').disabled=!isCustom();if(focusGroup&&focusId)$('theme-'+focusGroup+'-'+focusId).focus({preventScroll:true});
+ }
+ function open(){if(!unlocked())return false;sync();render();$('theme-status').textContent='';showDialog('theme-dialog');return true;}
+ function setChoice(group,value){if(!unlocked()||!['color','border'].includes(group)||!(group==='color'?colors:borders).some(c=>c.id===value))return false;const p={...preferences(),mode:'custom',[group]:value};if(!save(p)){render(group,preferences()[group]);$('theme-status').textContent='Your theme could not be saved. Please try again.';return false;}sync();render(group,value);window.MilestoneStyle?.render();$('theme-status').textContent='Theme saved on this device.';return true;}
+ function useRegular(){if(!unlocked())return false;if(!save({...preferences(),mode:'regular'})){$('theme-status').textContent='Your appearance could not be saved. Please try again.';return false;}sync();render();window.MilestoneStyle?.render();$('theme-status').textContent='Your regular earned appearance is active. Your custom choices are kept.';return true;}
+ function confetti(){const root=$('theme-unlock-confetti');root.replaceChildren();if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;for(let i=0;i<30;i++){const piece=element('span','gold-confetti');piece.style.setProperty('--left',(3+Math.random()*94)+'%');piece.style.setProperty('--delay',(Math.random()*1.6)+'s');piece.style.setProperty('--turn',(180+Math.random()*540)+'deg');piece.style.setProperty('--drift',(-35+Math.random()*70)+'px');root.append(piece);}}
+ function maybeCelebrate(){sync();if(!unlocked()||preferences().announced||sessionAnnounced||celebrating||document.querySelector('dialog[open]'))return false;celebrating=true;sessionAnnounced=true;$('theme-unlock-dialog').showModal();save({...preferences(),announced:true});confetti();$('theme-unlock-done').focus({preventScroll:true});return true;}
+ $('theme-regular').addEventListener('click',useRegular);$('theme-done').addEventListener('click',()=>closeDialog('theme-dialog'));
+ $('theme-unlock-done').addEventListener('click',()=>closeDialog('theme-unlock-dialog'));$('theme-unlock-customize').addEventListener('click',()=>{closeDialog('theme-unlock-dialog');open();});
+ $('theme-unlock-dialog').addEventListener('close',()=>{celebrating=false;$('theme-unlock-confetti').replaceChildren();});
+ document.querySelectorAll('dialog').forEach(d=>d.addEventListener('close',()=>requestAnimationFrame(maybeCelebrate)));
+ window.addEventListener('storage',e=>{if([key,'scripture_growth_v1','scripture_lifetime_v1',null].includes(e.key)){delete memory[key];if(e.key==='scripture_growth_v1'||e.key===null)state=loadState();sync();if($('theme-dialog').open)render();if($('lifetime-dialog').open)window.MilestoneStyle?.render();requestAnimationFrame(maybeCelebrate);}});
+ sync();requestAnimationFrame(maybeCelebrate);
+ return {key,valid,preferences,unlocked,isCustom,sync,open,setChoice,useRegular,maybeCelebrate,colors,borders};
+})();
+window.CardThemes=CardThemes;
+
 
 
 </script>
