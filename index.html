@@ -1342,6 +1342,24 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 @keyframes journey-ready-pulse{0%,100%{box-shadow:0 0 0 1px var(--gold-line),0 0 4px var(--gold-wash)}50%{box-shadow:0 0 0 1px var(--gold),0 0 18px var(--gold-line)}}
 @media(prefers-reduced-motion:no-preference){:root button.secondary.journey-ready{animation:journey-ready-pulse 2.8s ease-in-out infinite}}
 
+/* Creator and contact details use the same clear lettering as the menu. */
+#contact-launch{margin-top:8px;border-top:1px solid var(--gold-line);border-radius:0 0 9px 9px;color:var(--gold)}
+#contact-dialog{width:min(520px,calc(100vw - 24px));max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);font-family:var(--ui-font);border-color:var(--gold-line)}
+#contact-dialog .dialog-body{display:grid;gap:22px;font:15px/1.65 var(--ui-font)}
+#contact-dialog p,#contact-dialog h3{margin:0}
+#contact-dialog .contact-creator{color:var(--soft);font-size:14px}
+#contact-dialog .contact-creator strong{display:block;margin-top:4px;color:var(--gold);font-size:clamp(24px,6vw,30px);line-height:1.25;font-weight:700;letter-spacing:-.5px}
+#contact-dialog .contact-mission{margin-top:14px;color:var(--ink);font-size:18px;line-height:1.55;font-weight:600}
+#contact-dialog .contact-section{display:grid;gap:8px}
+#contact-dialog h3{color:var(--gold);font:650 15px/1.5 var(--ui-font);letter-spacing:0;text-transform:none}
+#contact-dialog .contact-email{display:grid;gap:6px;min-height:44px;padding:14px 16px;border:1px solid var(--gold);border-radius:12px;background:var(--gold-wash);color:var(--ink);text-decoration:none;max-width:100%}
+#contact-dialog .contact-email:hover{background:var(--gold-wash);box-shadow:0 0 0 1px var(--gold-line)}
+#contact-dialog .contact-email-label{display:flex;align-items:center;gap:9px;color:var(--gold);font-size:13px;font-weight:650}
+#contact-dialog .contact-email-address{font-size:15px;font-weight:600;overflow-wrap:anywhere}
+#contact-dialog .contact-storage{border-top:1px solid var(--line);padding-top:20px}
+#contact-dialog .contact-online-note{color:var(--soft);font-size:13px;line-height:1.6}
+@media(max-width:360px){#contact-dialog .dialog-body{gap:19px}#contact-dialog .contact-email{padding:12px}#contact-dialog .contact-email-address{font-size:14px}}
+
 </style>
 </head>
 
@@ -1431,6 +1449,7 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
             <hr class="menu-divider">
             <div class="music-volume-control"><label for="music-volume">Music volume <output id="music-volume-value" for="music-volume">100%</output></label><input id="music-volume" type="range" min="0" max="100" step="1" value="100"><p class="tiny">Your music preference is saved on this device. Some phones use their device volume controls.</p></div>
             <button id="tour-replay" class="menu-item" type="button" onclick="SiteTour.start()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg> Replay Tour</button>
+            <button id="contact-launch" class="menu-item" type="button" onclick="closeMenus();showDialog('contact-dialog');document.getElementById('contact-dialog').scrollTop=0" aria-haspopup="dialog" aria-controls="contact-dialog"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> Contact</button>
         </div>
     <button id="bible-launch" class="pill glass bible-launch" type="button" onclick="BibleReader.open()" aria-haspopup="dialog" aria-controls="bible-choice-dialog"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 4h6a4 4 0 0 1 3 2 4 4 0 0 1 3-2h6v15h-6a4 4 0 0 0-3 2 4 4 0 0 0-3-2H3z M12 6v15"/></svg><span>Read Holy Bible</span></button>
 </div>
@@ -1475,6 +1494,16 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
     </section>
 
 </main>
+
+<dialog id="contact-dialog" aria-labelledby="contact-title" onclose="document.getElementById('main-toggle').focus({preventScroll:true})">
+ <header class="dialog-head"><h2 id="contact-title">Contact</h2><button class="close" type="button" onclick="closeDialog('contact-dialog')" aria-label="Close contact window" autofocus>×</button></header>
+ <div class="dialog-body">
+  <div><p class="contact-creator">Created by <strong>WCBAU Studios</strong></p><p class="contact-mission">Our goal is to encourage more people to build a relationship with God through Scripture.</p></div>
+  <section class="contact-section" aria-labelledby="contact-questions-title"><h3 id="contact-questions-title">We’re here to help</h3><p>Have a question about the site? You can email us at:</p><a class="contact-email" href="mailto:pray4everyone247@gmail.com"><span class="contact-email-label"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email us</span><span class="contact-email-address">pray4everyone247@gmail.com</span></a></section>
+  <section class="contact-section" aria-labelledby="contact-free-title"><h3 id="contact-free-title">100% free to use. Free to share.</h3><p>Share this website with friends, family, and anyone who could use encouragement through Scripture.</p></section>
+  <section class="contact-section contact-storage" aria-labelledby="contact-storage-title"><h3 id="contact-storage-title">Saved on your device</h3><p>Your progress, prayers, and preferences stay in this browser’s local storage. We don’t remotely access or sync your saved information.</p><p class="contact-online-note">An internet connection is used to load Scripture and media.</p></section>
+ </div>
+</dialog>
 
 <dialog id="confirm-delete-dialog" aria-labelledby="confirm-delete-title" aria-describedby="confirm-delete-message">
  <header class="dialog-head"><h2 id="confirm-delete-title">Confirm Delete</h2></header>
@@ -3417,7 +3446,7 @@ const SiteTour=(()=>{
         {
                 "target": "#main-toggle",
                 "title": "Your Menu",
-                "text": "Play music or shuffle the scene. Lifetime Achievements holds your milestones, Signets, and progress backups."
+                "text": "Play music, shuffle scenes, or view Lifetime Achievements and backups. Contact opens creator details and email support."
         },
         {
                 "target": "#streak-button",
