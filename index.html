@@ -1803,6 +1803,12 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 @media(max-width:480px){#kidz-intro-dialog .dialog-head{padding:15px}#kidz-intro-dialog .dialog-body{padding:16px}#kidz-intro-dialog .koc-intro-panel{padding:14px 15px}#kidz-intro-dialog .koc-intro-panel p{font-size:18px}#completed-paths-section{padding:16px}}
 @media(max-width:360px){#kidz-intro-dialog .dialog-head{gap:8px;padding:13px}#kidz-intro-dialog .dialog-body{padding:13px}#kidz-intro-dialog .koc-intro-panel{padding:13px 12px}#kidz-intro-dialog .koc-intro-panel p{font-size:17px}#completed-paths-section{padding:13px}#completed-path-signets{gap:18px 10px}}
 
+
+/* Keep edge swipes inside open windows instead of scrolling the page behind them. */
+html{scrollbar-gutter:stable}
+dialog,.drop{overscroll-behavior:contain}
+html:has(dialog[open]),html:has(dialog[open]) body{overflow:hidden;overscroll-behavior:none}
+
 </style>
 </head>
 
