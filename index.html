@@ -1376,6 +1376,13 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
 #daily-source-credit{margin:3px auto 0;color:var(--soft);font:400 10.5px/1.6 var(--ui-font);overflow-wrap:anywhere}
 #daily-copyright{margin:3px auto 0;color:var(--soft);font:11px/1.6 var(--ui-font);overflow-wrap:anywhere}
 
+/* Upcoming children's content stays visible without opening an unfinished feature. */
+#grow-menu #kidz-creation-launch{display:flex;align-items:center;gap:8px;opacity:1;cursor:default;color:var(--ink);background:transparent}
+#kidz-creation-launch .faith-icon{flex:none}
+#kidz-creation-launch .kidz-title{white-space:nowrap;font-size:13px}
+#kidz-creation-launch .coming-soon-label{flex:none;white-space:nowrap;border:1px solid #d6555d;border-radius:3px;padding:2px 5px;background:#a82c36;color:#fff;font:600 9.5px/1.5 var(--ui-font)}
+#earned-style-select option:disabled{color:#8693a5;opacity:.5}
+
 </style>
 </head>
 
@@ -1426,6 +1433,7 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
             <div id="grow-menu" class="drop glass" hidden>
                 <section class="faith-section faith-primary-options" aria-label="Prayer and journeys">
                   <button id="prayer-launch" class="menu-item prayer-menu-link" type="button" onclick="PrayerPlayer.open()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4c0-1-2-1-2 1l-1 6-3 4 M12 15V4c0-1 2-1 2 1l1 6 3 4 M3 18l4-4 5 3 5-3 4 4 M3 18l3 3 6-4 6 4 3-3"/></svg><span>Find a Prayer</span></button>
+                  <button id="kidz-creation-launch" class="menu-item" type="button" disabled aria-describedby="kidz-coming-soon" title="Children’s Bible stories and illustrations — coming soon"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 5h5a4 4 0 0 1 4 2 4 4 0 0 1 4-2h5v14h-5a4 4 0 0 0-4 2 4 4 0 0 0-4-2H3z M12 7v14 M6 9h3 M15 9h3 M6 13h3 M15 13h3"/></svg><span class="kidz-title">Kidz of Creation</span><span id="kidz-coming-soon" class="coming-soon-label">coming soon</span></button>
                   <button id="scripture-journeys-launch" class="menu-item" type="button" onclick="openJourneys()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 3 21 M16 3l5 18 M12 3v3 M12 10v4 M12 18v3"/></svg><span>Explore Scripture Journeys</span></button>
                   <button id="traditional-paths-launch" class="menu-item" type="button" onclick="TraditionalPaths.openList()"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l3 3 3-4 3 4 3-3v6a6 6 0 0 1-12 0Z M12 15v7 M12 21c-4 0-7-2-7-5 4 0 7 2 7 5 M12 19c4 0 7-2 7-5-4 0-7 2-7 5"/></svg><span>Traditional Paths</span></button>
                 </section>
@@ -1519,7 +1527,7 @@ button[aria-pressed="true"]:not(.bookmark):not(.save-toggle){border-color:var(--
   <div><p class="contact-creator">Created by <strong>WCBAU Studios</strong></p><p class="contact-mission">Our goal is to encourage more people to build a relationship with God through Scripture.</p></div>
   <section class="contact-section" aria-labelledby="contact-questions-title"><h3 id="contact-questions-title">We’re here to help</h3><p>Have a question about the site? You can email us at:</p><a class="contact-email" href="mailto:pray4everyone247@gmail.com"><span class="contact-email-label"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email us</span><span class="contact-email-address">pray4everyone247@gmail.com</span></a></section>
   <section class="contact-section" aria-labelledby="contact-free-title"><h3 id="contact-free-title">100% free to use. Free to share.</h3><p>Share this website with friends, family, and anyone who could use encouragement through Scripture.</p></section>
-  <section class="contact-section contact-storage" aria-labelledby="contact-storage-title"><h3 id="contact-storage-title">Saved on your device</h3><p>Your progress, prayers, and preferences stay in this browser’s local storage. We don’t remotely access or sync your saved information.</p><p class="contact-online-note">An internet connection is used to load Scripture and media.</p></section>
+  <section class="contact-section contact-storage" aria-labelledby="contact-storage-title"><h3 id="contact-storage-title">Saved on your device</h3><p>Your data, progress, saved prayers, and preferences stay in this browser’s local storage. We don’t remotely access, share, or sync your saved data or progress.</p><p class="contact-online-note">An internet connection is used to load Scripture and media.</p></section>
   <div class="contact-legal-footer"><button id="contact-disclaimer-button" type="button" onclick="showDialog('content-disclaimer-dialog');document.getElementById('content-disclaimer-dialog').scrollTop=0" aria-haspopup="dialog" aria-controls="content-disclaimer-dialog"><svg class="faith-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v6 M12 7h.01"/></svg>Content &amp; Use Disclaimer</button></div>
  </div>
 </dialog>
@@ -3486,12 +3494,17 @@ const SiteTour=(()=>{
         {
                 "target": "#streak-button",
                 "title": "Your Streak",
-                "text": "Visit daily to build your streak and earn milestones. Tap here to see your progress."
+                "text": "Daily visits earn milestones. Lifetime Achievements holds earned styles; faded choices show the streak needed to unlock them."
         },
         {
                 "target": "#grow-toggle",
                 "title": "Listen to a Prayer",
                 "text": "Pick a topic and press Play. Save Prayer changes to Saved; tap again to remove it."
+        },
+        {
+                "target": "#grow-toggle",
+                "title": "Kidz of Creation",
+                "text": "Coming soon: a children’s series featuring kids’ content and illustrated Bible stories. Check back soon!"
         },
         {
                 "target": "#grow-toggle",
@@ -4264,10 +4277,18 @@ const MilestoneStyle=(()=>{
  function selected(){const raw=readJSON(key,{choice:'auto'});return raw&&typeof raw.choice==='string'?raw.choice:'auto';}
  function resolve(choice,longest=state.longest){const unlocked=available(longest);if(choice==='original')return 'original';if(choice==='auto')return unlocked.at(-1)?.id||'original';return unlocked.find(s=>s.id===choice)?.id||'original';}
  function apply(){document.documentElement.dataset.earnedStyle=resolve(selected());}
- function render(){apply();const unlocked=available(),section=$('earned-style-section');section.hidden=!unlocked.length;if(!unlocked.length)return;const select=$('earned-style-select');select.replaceChildren();for(const [value,label]of [['auto','Automatically use newest earned style'],['original','Original'],...unlocked.map(s=>[s.id,s.name])]){const o=element('option','',label);o.value=value;select.append(o);}const choice=selected();select.value=['auto','original',...unlocked.map(s=>s.id)].includes(choice)?choice:'original';const current=styles.find(s=>s.id===resolve(choice));$('earned-style-current').textContent=(current?'Saved appearance: '+current.name+' • Earned with a '+current.days+'-day milestone.':'Saved appearance: Original')+(window.CardThemes?.isCustom()?' Your custom theme is active. Return to your saved appearance in Menu → Customize Theme.':' Active now.');}
+ function render(){
+  apply();const unlocked=available(),section=$('earned-style-section');section.hidden=false;
+  const select=$('earned-style-select');select.replaceChildren();
+  const unlockedIds=new Set(unlocked.map(s=>s.id));
+  const choices=[['auto','Automatically use newest earned style',false],['original','Gold Trim',false],...styles.map(s=>{const locked=!unlockedIds.has(s.id);return [s.id,s.name+(locked?' — Unlocks at a '+s.days+'-day streak':''),locked];})];
+  for(const [value,label,locked]of choices){const o=element('option','',label);o.value=value;o.disabled=locked;select.append(o);}
+  const choice=selected();select.value=['auto','original',...unlocked.map(s=>s.id)].includes(choice)?choice:'original';
+  const current=styles.find(s=>s.id===resolve(choice));$('earned-style-current').textContent=(current?'Saved appearance: '+current.name+' • Earned with a '+current.days+'-day milestone.':'Saved appearance: Gold Trim')+(window.CardThemes?.isCustom()?' Your custom theme is active. Return to your saved appearance in Menu → Customize Theme.':' Active now.');
+ }
  function setChoice(choice){if(!['auto','original',...available().map(s=>s.id)].includes(choice))return false;if(!put(key,JSON.stringify({choice})))return false;render();return true;}
  function enhance(root){for(const card of root.querySelectorAll('[data-milestone]')){const days=Number(card.dataset.milestone);if(!state.badges.includes(days)&&days>Number(state.longest))continue;card.querySelector('.faith-icon')?.replaceWith(emblem(days));card.dataset.badgeTier=days>=90?'ornate':days>=14?'halo':days>=7?'double':'simple';}}
- $('earned-style-select').addEventListener('change',e=>setChoice(e.target.value));
+ $('earned-style-select').addEventListener('change',e=>{if(!setChoice(e.target.value))render();});
  window.addEventListener('storage',e=>{if(e.key===key||e.key===null){delete memory[key];apply();if($('lifetime-dialog').open)render();}});
  apply();return {apply,render,enhance,emblem,available,resolve,setChoice,unlockedAt:n=>styles.find(s=>s.days===n)};
 })();
